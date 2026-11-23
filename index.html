@@ -13,10 +13,9 @@
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:Inter,sans-serif;color:var(--text);background:var(--bg);position:relative}
 body:before,body:after{content:"";position:fixed;top:0;bottom:0;z-index:-1;background-size:cover;background-position:center}
-body:before{left:0;right:50%;background-image:linear-gradient(rgba(2,14,8,.72),rgba(2,14,8,.9)),url(bg.jpg)}
-body:after{left:50%;right:0;background-image:linear-gradient(rgba(2,14,8,.72),rgba(2,14,8,.9)),url(bg2.jpg)}
+body:before{left:0;right:0;background-image:linear-gradient(rgba(2,14,8,.72),rgba(2,14,8,.9)),url(bg.jpg)}
+body:after{display:none}
 :root[data-theme=light] body:before{background-image:linear-gradient(rgba(234,244,238,.88),rgba(234,244,238,.95)),url(bg.jpg)}
-:root[data-theme=light] body:after{background-image:linear-gradient(rgba(234,244,238,.88),rgba(234,244,238,.95)),url(bg2.jpg)}
 header{display:flex;justify-content:space-between;align-items:center;padding:10px 24px;background:rgba(2,12,7,.9);border-bottom:2px solid #1fd16a;box-shadow:0 2px 18px rgba(31,209,106,.25);position:sticky;top:0;z-index:9;backdrop-filter:blur(6px)}
 :root[data-theme=light] header{background:rgba(255,255,255,.95)}
 .brand{display:flex;gap:14px;align-items:center;min-width:0}
@@ -46,7 +45,8 @@ input:focus,select:focus,textarea:focus{border-color:var(--gold)}input[type=colo
 #fit{position:relative;width:100%}
 .page{width:794px;height:1122px;position:absolute;left:0;top:0;transform-origin:0 0;overflow:hidden;background:var(--paper);color:var(--ink);font-family:var(--ff),'Noto Serif Bengali',serif;box-shadow:0 12px 50px rgba(0,0,0,.45)}
 .page>svg{position:absolute;left:0;top:0}
-.ct{position:absolute;top:62px;display:flex;flex-direction:column;align-items:center;justify-content:space-between;text-align:center}
+.ct{position:absolute;top:62px;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;text-align:center}
+.ct>.g,.ct>.bx,.ct>.ft{margin-top:16px}.ct>.nu{margin-top:0}.dg{flex:1;min-height:0;justify-content:center}
 /* NU: logo on top, name below, bigger */
 .nu{display:flex;flex-direction:column;align-items:center;gap:6px;font-size:19px;letter-spacing:.06em;text-transform:uppercase;font-weight:700}
 .nu .nl{width:88px;height:88px;flex:none}
@@ -54,12 +54,12 @@ input:focus,select:focus,textarea:focus{border-color:var(--gold)}input[type=colo
 .g{display:flex;flex-direction:column;align-items:center;width:100%}
 .lw{width:150px;height:150px;display:grid;place-items:center}
 .lw img,.lw svg{width:100%;height:100%;object-fit:contain}
-.cn{font:700 34px/1.2 var(--ff),'Noto Serif Bengali',serif;color:var(--c1);margin-top:10px}
+.cn{font:800 41px/1.15 var(--ff),'Noto Serif Bengali',serif;color:var(--c1);margin-top:10px;letter-spacing:.01em}
 .sub{font-size:16px;margin-top:6px}
-.rb{margin-top:4px;padding:8px 34px;background:var(--c1);color:var(--ht);font-weight:700;font-size:21px;border-radius:4px;border-bottom:3px solid var(--c2)}
+.rb{margin-top:2px;padding:9px 46px;background:linear-gradient(180deg,var(--c1),var(--c1));color:var(--ht);font-weight:800;font-size:29px;letter-spacing:.04em;border-radius:12px;border:2px solid var(--c2);box-shadow:0 0 0 3px var(--paper),0 0 0 5px var(--c1)}
 .sm{font-size:16px;margin-top:6px}
 .dt{padding:6px 40px;border:2px solid var(--c1);font:700 26px var(--ff),'Noto Serif Bengali',serif;letter-spacing:.12em;text-transform:uppercase;color:var(--c1)}
-.tp{width:100%;height:130px;margin-top:12px;padding:10px 22px;display:flex;align-items:center;justify-content:center;border-top:1.5px solid var(--c2);border-bottom:1.5px solid var(--c2);font-weight:700;line-height:1.35;overflow:hidden}
+.tp{width:100%;flex:1;min-height:110px;max-height:190px;margin-top:12px;padding:10px 22px;display:flex;align-items:center;justify-content:center;border-top:1.5px solid var(--c2);border-bottom:1.5px solid var(--c2);font-weight:700;line-height:1.35;overflow:hidden}
 .bx{display:flex;gap:18px;width:100%}
 .b{flex:1;border:1.5px solid var(--c1);text-align:left}
 .b h4{background:var(--c1);color:var(--ht);padding:6px 14px;font-size:15px;letter-spacing:.05em}
@@ -71,10 +71,10 @@ input:focus,select:focus,textarea:focus{border-color:var(--gold)}input[type=colo
 .hub{max-width:1300px;margin:0 auto 26px;padding:0 18px}
 .hub h2{font:700 22px 'Playfair Display',serif;margin-bottom:4px}
 .hub>p{color:var(--muted);font-size:13px;margin-bottom:14px}
-.hg{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px}
-.hc{text-align:left;cursor:pointer;color:var(--text);font:inherit;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px 14px 12px;transition:.2s}
+.hg{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}
+.hc{text-align:left;cursor:pointer;color:var(--text);font:inherit;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:10px 11px 9px;transition:.2s}
 .hc:hover{transform:translateY(-3px);border-color:#3ddc84;box-shadow:0 6px 22px rgba(31,209,106,.25)}
-.hc b{display:block;font-size:14px;margin:6px 0 2px}.hc span{font-size:11.5px;color:var(--muted)}.hc .ic{font-size:26px}
+.hc b{display:block;font-size:13px;margin:4px 0 2px}.hc span{font-size:11px;color:var(--muted)}.hc .ic{font-size:22px}
 .hc em{display:inline-block;margin-top:6px;font:600 10px Inter;padding:2px 8px;border-radius:99px;background:rgba(61,220,132,.15);color:var(--gold);font-style:normal}
 .hc em.soon{background:rgba(240,168,48,.18);color:#f0a830}
 #vw{display:none;position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:98;overflow:auto;padding:16px}
@@ -127,7 +127,7 @@ input:focus,select:focus,textarea:focus{border-color:var(--gold)}input[type=colo
  .dev{margin:0 6px 24px;padding:20px 10px 16px}
  .dev .dn{font-size:22px}.dev .dd{font-size:12px;padding:5px 14px}.dev .dc{font-size:13px}
 }
-</style></head><body>
+</style><link rel="stylesheet" href="extra.css"></head><body>
 <header><div class="brand"><div class="lg"><img src="logo.png" alt="" onerror="this.style.display='none'"></div>
 <div><h1>Rajendra Student Hub</h1><p>Create your cover page easily &middot; Govt. Rajendra College, Faridpur</p></div></div>
 <div class="hb"><a class="ib" href="#hub" style="text-decoration:none;font-size:13px">Features</a><a class="ib" href="#dev" style="text-decoration:none;font-size:13px">Developer</a><button class="ib" id="th" title="Dark / Light">&#9788;</button></div></header>
@@ -148,7 +148,7 @@ input:focus,select:focus,textarea:focus{border-color:var(--gold)}input[type=colo
 <h3>Submitted to</h3><input id="toName" placeholder="Teacher name (optional)"><input id="toDesig" placeholder="Designation" style="margin-top:6px" value="Head of the Department">
 <h3>Submitted by</h3><input id="name" placeholder="Your name">
 <div class="r"><div><label>Class roll</label><input id="roll"></div><div><label>Session</label><input id="sess" value="2025-2026"></div></div>
-<div class="r"><div><label>Reg. no (optional)</label><input id="reg"></div><div><label>Mobile number </label><input id="ph" type="tel"></div></div>
+<div class="r"><div><label>Reg. no (optional)</label><input id="reg"></div><div><label>Mobile number (optional)</label><input id="ph" type="tel"></div></div>
 <label>Submission date</label><input type="date" id="date">
 <button class="btn pr" id="dl">&#11015; Download PDF</button><button class="btn pr" id="dli">&#128247; Download Image</button><button class="btn gh" id="rs">&#8635; Reset</button>
 </section>
@@ -159,6 +159,7 @@ input:focus,select:focus,textarea:focus{border-color:var(--gold)}input[type=colo
 <div id="vw"><div class="in"><div class="panel" id="vwb"></div></div></div>
 
 <div id="adm"><div class="panel" style="max-width:360px;width:100%;text-align:center"><h3 style="justify-content:center">Download shuru korar age</h3><div id="adbox" style="min-height:110px;margin:12px 0;font-size:13px;color:var(--muted)"></div><button class="btn pr" id="adbtn" disabled>Wait</button></div></div>
+<section class="hub" id="calsec"></section>
 <footer class="dev" id="dev"></footer>
 <script>
 const $=i=>document.getElementById(i);
@@ -239,7 +240,7 @@ function render(){
  <div class="g"><div class="lw">${lg}</div><div class="cn">${oth?cname:two(L.en.col,L.bn.col)}</div></div>
  <div class="g"><div class="rb">${esc(dLine)}</div>
  ${v('ccode')?`<div class="sm"><b>${T('code')}:</b> ${esc(bd(v('ccode')))}</div>`:''}${v('ctitle')?`<div class="sm"><b>${T('ct')}:</b> ${esc(v('ctitle'))}</div>`:''}</div>
- <div class="g"><div class="dt">${esc(dc)}</div><div class="sm" style="font-weight:700">${T('on')}</div>
+ <div class="g dg"><div class="dt">${esc(dc)}</div><div class="sm" style="font-weight:700">${T('on')}</div>
  <div class="tp"><span class="tt">&ldquo;${esc(v('topic')||'Your topic will appear here')}&rdquo;</span></div></div>
  <div class="bx"><div class="b"><h4>${T('to')}</h4><div>${to}</div></div><div class="b"><h4>${T('by')}</h4><div>${by}</div></div></div>
  <div class="ft">${T('date')}: ${esc(fdate($('date').value))}</div></div>`;
@@ -301,15 +302,15 @@ if(window.ResizeObserver)new ResizeObserver(fitP).observe($('fit'));
 /* ================= FEATURE HUB ================= */
 const HUB=[
 ['📄','cover','Cover Page Generator','কভার পেজ তৈরি','live'],
-['🧑‍💼','cv','CV Generator','সিভি তৈরি করুন','soon'],
+['🧑‍💼','cv','CV Generator','সিভি তৈরি করুন','live'],
 ['✉️','app','Application Generator','আবেদনপত্র তৈরি','live'],
 ['🧮','calc','Academic Calculator','GPA, CGPA, Percentage, Attendance','live'],
-['🗓️','plan','Study Planner','রুটিন, লক্ষ্য ও Exam Countdown','soon'],
-['🏛️','dir','Department Directory','বিভাগভিত্তিক তথ্যকেন্দ্র','soon'],
+['🗓️','plan','Study Planner','রুটিন, লক্ষ্য ও Exam Countdown','live'],
+['🏛️','dir','Department Directory','বিভাগভিত্তিক তথ্যকেন্দ্র','live'],
 ['🗂️','pdf','PDF & Document Tools','Image to PDF, Merge, Split, Compress','live'],
-['📚','lib','Academic Resource Library','সিলেবাস, প্রশ্নপত্র, সাজেশন','soon'],
-['👤','dash','Student Dashboard','নিজস্ব প্রোফাইল ও ডকুমেন্ট','soon'],
-['📢','notice','College Notice Board','নোটিশ ও একাডেমিক আপডেট','soon'],
+['📚','lib','Academic Resource Library','সিলেবাস, প্রশ্নপত্র, সাজেশন','live'],
+['👤','dash','Student Dashboard','নিজস্ব প্রোফাইল ও ডকুমেন্ট','live'],
+['📢','notice','College Notice Board','নোটিশ ও একাডেমিক আপডেট','live'],
 ['🤖','ai','Smart Academic Assistant','AI সহকারী','soon'],
 ['🛒','shop','Student Marketplace','বই ও শিক্ষা সরঞ্জাম কেনাবেচা','soon'],
 ['🔔','noti','Notification System','তাৎক্ষণিক আপডেট','live'],
@@ -368,14 +369,14 @@ function gpaC(){let a=0,c=0;document.querySelectorAll('#gpar .mini').forEach(r=>
 function pcC(){const o=+$('pco').value,t=+$('pct').value;$('pcr').textContent=t?'Percentage = '+(o/t*100).toFixed(2)+'%':'—'}
 function atC(){const a=+$('ata').value,t=+$('att').value;if(!t){$('atr').textContent='—';return}const p=a/t*100;$('atr').textContent='Attendance = '+p.toFixed(2)+'% '+(p>=75?'✅ (পরীক্ষার যোগ্য)':'⚠️ (৭৫% এর কম)')}
 /* ---- Planner ---- */
-function plR(){const ex=ld('rsh_ex',[]).sort((a,b)=>a.d.localeCompare(b.d)),tk=ld('rsh_tk',[]),td=new Date(new Date().toDateString());
+function plR(){setTimeout(()=>window.calR&&calR(),0);const ex=ld('rsh_ex',[]).sort((a,b)=>a.d.localeCompare(b.d)),tk=ld('rsh_tk',[]),td=new Date(new Date().toDateString());
  $('exl').innerHTML=ex.map((e,i)=>{const n=Math.ceil((new Date(e.d)-td)/864e5);return`<div class="ex"><span>${esc(e.n)} · ${e.d}</span><span><b>${n>0?n+' দিন বাকি':n===0?'আজ!':'শেষ'}</b> <button class="ib" onclick="plD('rsh_ex',${i})">✕</button></span></div>`}).join('')||'<p style="color:var(--muted);font-size:13px">কোনো পরীক্ষা যোগ করা হয়নি</p>';
  const dn=tk.filter(t=>t.k).length;
- $('tkl').innerHTML=`<div style="font-size:13px;margin:6px 0">অগ্রগতি: <b>${dn}/${tk.length}</b></div><div style="height:8px;background:var(--line);border-radius:9px;overflow:hidden"><div style="height:100%;width:${tk.length?dn/tk.length*100:0}%;background:#3ddc84"></div></div>`+tk.map((t,i)=>`<div class="ex"><label style="margin:0;display:flex;gap:8px;align-items:center;font-size:14px;color:var(--text)"><input type="checkbox" style="width:auto" ${t.k?'checked':''} onchange="plT(${i})">${esc(t.n)}</label><button class="ib" onclick="plD('rsh_tk',${i})">✕</button></div>`).join('')}
+ $('tkl').innerHTML=`<div style="font-size:13px;margin:6px 0">অগ্রগতি: <b>${dn}/${tk.length}</b></div><div style="height:8px;background:var(--line);border-radius:9px;overflow:hidden"><div style="height:100%;width:${tk.length?dn/tk.length*100:0}%;background:#3ddc84"></div></div>`+tk.map((t,i)=>`<div class="ex"><label style="margin:0;display:flex;gap:8px;align-items:center;font-size:14px;color:var(--text)"><input type="checkbox" style="width:auto" ${t.k?'checked':''} onchange="plT(${i})">${esc(t.n)}${t.d?` <small style="color:var(--gold)">· ${t.d}</small>`:''}</label><button class="ib" onclick="plD('rsh_tk',${i})">✕</button></div>`).join('')}
 function plD(k,i){const a=ld(k,[]);a.splice(i,1);sv(k,a);plR()}
 function plT(i){const a=ld('rsh_tk',[]);a[i].k=!a[i].k;sv('rsh_tk',a);plR()}
 function plAE(){if(!$('exn').value||!$('exd').value)return;const a=ld('rsh_ex',[]);a.push({n:$('exn').value,d:$('exd').value});sv('rsh_ex',a);$('exn').value='';plR()}
-function plAT(){if(!$('tkn').value)return;const a=ld('rsh_tk',[]);a.push({n:$('tkn').value,k:0});sv('rsh_tk',a);$('tkn').value='';plR()}
+function plAT(){if(!$('tkn').value)return;const a=ld('rsh_tk',[]);a.push({n:$('tkn').value,k:0,d:($('tkd')||{}).value||''});sv('rsh_tk',a);$('tkn').value='';plR()}
 function dirR(){const q=$('dq').value.toLowerCase();$('dgr').innerHTML=Object.entries(DEPT).filter(([e,b])=>(e+b).toLowerCase().includes(q)).map(([e,b])=>`<button class="hc" onclick="pickDept('${e}')"><b>${b}</b><span>Department of ${e}</span></button>`).join('')}
 function pickDept(e){closeV();$('clg').value='r';$('dept').value=e;render();window.scrollTo({top:0,behavior:'smooth'})}
 
@@ -426,7 +427,12 @@ calc:['Academic Calculator',`<div class="two"><div><h3>GPA / CGPA Calculator</h3
 <div><h3>Percentage</h3>${F2(`<div><label>প্রাপ্ত নম্বর</label><input id="pco" type="number" oninput="pcC()"></div>`,`<div><label>মোট নম্বর</label><input id="pct" type="number" oninput="pcC()"></div>`)}<div class="res" id="pcr">—</div>
 <h3>Attendance</h3>${F2(`<div><label>উপস্থিত ক্লাস</label><input id="ata" type="number" oninput="atC()"></div>`,`<div><label>মোট ক্লাস</label><input id="att" type="number" oninput="atC()"></div>`)}<div class="res" id="atr">—</div></div></div>`,()=>{gpaRow();gpaRow();gpaRow();gpaC()}],
 plan:['Study Planner',`<div class="two"><div><h3>Exam Countdown</h3>${F2(IN('exn','পরীক্ষার নাম'),IN('exd','তারিখ','','date'))}<button class="btn gh" onclick="plAE()">+ পরীক্ষা যোগ করুন</button><div id="exl"></div></div>
-<div><h3>Daily Goals / Routine</h3>${IN('tkn','আজকের লক্ষ্য','যেমন: ইংরেজি ২ অধ্যায় পড়া')}<button class="btn gh" onclick="plAT()">+ লক্ষ্য যোগ করুন</button><div id="tkl"></div></div></div>`,plR],
+<div><h3>Daily Goals / Routine</h3>${IN('tkn','লক্ষ্য / প্ল্যান','যেমন: ইংরেজি ২ অধ্যায় পড়া')}${IN('tkd','তারিখ (ক্যালেন্ডারে দেখাবে)','','date')}<button class="btn gh" onclick="plAT()">+ লক্ষ্য যোগ করুন</button><div id="tkl"></div></div></div>`,plR],
 dir:['Department Directory',`<input id="dq" placeholder="বিভাগ খুঁজুন..." oninput="dirR()"><p style="color:var(--muted);font-size:12px;margin:8px 0">বিভাগে ক্লিক করলে কভার পেজে সেই বিভাগ সিলেক্ট হবে</p><div class="hg" id="dgr"></div>`,dirR]};
-</script></body></html>
-
+</script>
+<script src="calendar.js"></script>
+<script src="cvtpl.js"></script>
+<script src="cv.js"></script>
+<script src="tuition.js"></script>
+<script src="admin.js"></script>
+</body></html>
