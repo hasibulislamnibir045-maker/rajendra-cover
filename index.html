@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en"><head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="monetag" content="05c3d24b192c71a05031638602134bd7"/>
 <title>Rajendra Student Hub - Cover Page Generator</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Tinos:ital,wght@0,400;0,700;1,400&family=Noto+Serif+Bengali:wght@400;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
@@ -234,4 +235,5 @@ $('dl').onclick=async()=>{if(ADS_ON&&!await adGate())return;const b=$('dl');b.di
  [['logo.png',x=>logoSrc=x],['nu-logo.png',x=>nuSrc=x],['bg.jpg',x=>photoSrc=x]].forEach(a=>{const m=new Image();m.onload=()=>{const cur=a[0]==='logo.png'?logoSrc:a[0]==='nu-logo.png'?nuSrc:photoSrc;if(!cur){a[1](a[0]);render()}};m.src=a[0]});
  pick(tpl,false);fitP()})();
 window.addEventListener('resize',fitP);window.addEventListener('load',fitP);
+
 </script></body></html>
