@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Rajendra Student Hub - Cover Page Generator</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Tinos:ital,wght@0,400;0,700;1,400&family=Noto+Serif+Bengali:wght@400;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<style>
+:root{--gold:#e0b44c;--g:#0f6b3a;--bg:#07140d;--panel:rgba(10,32,20,.9);--line:rgba(224,180,76,.3);--text:#f1efe4;--muted:#b4c4b8;--input:#0b1f14}
+:root[data-theme=light]{--bg:#eef5ef;--panel:rgba(255,255,255,.92);--line:rgba(15,107,58,.28);--text:#14261b;--muted:#53685a;--input:#fff}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Inter,sans-serif;color:var(--text);background:var(--bg)}
+header{display:flex;justify-content:space-between;align-items:center;padding:12px 24px;background:rgba(4,16,10,.92);border-bottom:2px solid var(--gold);position:sticky;top:0;z-index:9}
+:root[data-theme=light] header{background:rgba(255,255,255,.95)}
+.brand{display:flex;gap:14px;align-items:center}
+.lg{width:48px;height:48px;border-radius:50%;background:#fff;border:2px solid var(--gold);overflow:hidden;flex:none}
+.lg img{width:100%;height:100%;object-fit:contain}
+h1{font:700 20px 'Playfair Display',serif;color:#f3d98a}:root[data-theme=light] h1{color:var(--g)}
+.brand p{font-size:12px;color:var(--muted)}
+.ib{background:none;border:1px solid var(--line);color:inherit;border-radius:8px;padding:6px 11px;cursor:pointer;font-size:16px}
+main{display:grid;grid-template-columns:420px 1fr;gap:26px;max-width:1300px;margin:0 auto;padding:24px 18px 50px;align-items:start}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:16px 18px;box-shadow:0 10px 40px rgba(0,0,0,.3)}
+h3{font-size:12px;letter-spacing:.07em;text-transform:uppercase;color:var(--gold);margin:14px 0 6px}
+:root[data-theme=light] h3{color:var(--g)}
+label{display:block;font-size:12px;color:var(--muted);margin:8px 0 3px}
+input,select{width:100%;padding:9px 11px;border-radius:10px;border:1px solid var(--line);background:var(--input);color:var(--text);font:inherit;font-size:14px;outline:none}
+input:focus,select:focus{border-color:var(--gold)}input[type=color]{padding:2px;height:38px}input[type=checkbox]{width:auto}
+.r{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.tg{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.tb{border:2px solid transparent;border-radius:10px;background:none;cursor:pointer;color:var(--text);font:600 10px Inter;padding:4px}
+.tb i{display:block;height:44px;border-radius:7px;margin-bottom:3px;border:1px solid rgba(128,128,128,.4)}
+.tb.on{border-color:var(--gold)}
+.btn{width:100%;padding:13px;border-radius:12px;border:0;font:700 15px Inter;cursor:pointer;margin-top:10px}
+.pr{background:linear-gradient(135deg,#e0b44c,#c98f1c);color:#1d2a10}.gh{background:none;border:1px solid var(--line);color:var(--text)}
+.btn:disabled{opacity:.6}
+#fit{position:relative;width:100%}
+.page{width:794px;height:1122px;position:absolute;left:0;top:0;transform-origin:0 0;overflow:hidden;background:var(--paper);color:var(--ink);font-family:var(--ff),'Noto Serif Bengali',serif;box-shadow:0 12px 50px rgba(0,0,0,.45)}
+.page>svg{position:absolute;left:0;top:0}
+.pw{position:absolute;bottom:40px;height:250px;overflow:hidden}
+.pw img{width:100%;height:100%;object-fit:cover;display:block}
+.pw:after{content:"";position:absolute;inset:0;background:linear-gradient(to bottom,var(--paper) 0%,var(--paper) 4%,transparent 60%)}
+.ct{position:absolute;top:58px;display:flex;flex-direction:column;align-items:center;justify-content:space-between;text-align:center}
+.nu{display:flex;align-items:center;gap:12px;font-size:15px;letter-spacing:.06em;text-transform:uppercase;font-weight:700}
+.nu .nl{width:46px;height:46px;flex:none}
+.nu img,.nu svg{width:100%;height:100%;object-fit:contain}
+.g{display:flex;flex-direction:column;align-items:center;width:100%}
+.lw{width:150px;height:150px;display:grid;place-items:center}
+.lw img,.lw svg{width:100%;height:100%;object-fit:contain}
+.cn{font:700 34px/1.2 var(--ff),'Noto Serif Bengali',serif;color:var(--c1);margin-top:10px}
+.sub{font-size:16px;margin-top:6px}
+.rb{margin-top:4px;padding:8px 34px;background:var(--c1);color:var(--ht);font-weight:700;font-size:21px;border-radius:4px;border-bottom:3px solid var(--c2)}
+.sm{font-size:16px;margin-top:6px}
+.dt{padding:6px 40px;border:2px solid var(--c1);font:700 26px var(--ff),'Noto Serif Bengali',serif;letter-spacing:.12em;text-transform:uppercase;color:var(--c1)}
+.tp{width:100%;height:112px;margin-top:12px;padding:10px 22px;display:flex;align-items:center;justify-content:center;border-top:1.5px solid var(--c2);border-bottom:1.5px solid var(--c2);font-weight:700;line-height:1.35;overflow:hidden}
+.bx{display:flex;gap:18px;width:100%}
+.b{flex:1;border:1.5px solid var(--c1);text-align:left}
+.b h4{background:var(--c1);color:var(--ht);padding:6px 14px;font-size:15px;letter-spacing:.05em}
+.b div{padding:9px 14px;font-size:15.5px;line-height:1.55}
+.ft{font-weight:700;font-size:16px;padding:5px 26px;border-top:2px solid var(--c2);border-bottom:2px solid var(--c2)}
+@media(max-width:1000px){main{grid-template-columns:1fr}}
+
+/* ---- Rajendra College web theme (cover page design untouched) ---- */
+:root{--gold:#f2c14e;--g:#1f3bb3;--bg:#050a1c;--panel:rgba(8,16,44,.88);--line:rgba(242,193,78,.28);--text:#eef1fb;--muted:#a9b3d1;--input:#0a1330;--red:#e0262d}
+:root[data-theme=light]{--bg:#f1f3fa;--panel:rgba(255,255,255,.94);--line:rgba(31,59,179,.25);--text:#101733;--muted:#555f80;--input:#fff}
+body{background:var(--bg) linear-gradient(rgba(5,10,28,.82),rgba(5,10,28,.95)),url(bg.jpg) center/cover fixed}
+:root[data-theme=light] body{background:var(--bg) linear-gradient(rgba(241,243,250,.9),rgba(241,243,250,.96)),url(bg.jpg) center/cover fixed}
+header{background:rgba(4,8,24,.92);border-bottom:3px solid;border-image:linear-gradient(90deg,#e0262d,#f2c14e,#1f3bb3) 1;backdrop-filter:blur(6px)}
+:root[data-theme=light] header{background:rgba(255,255,255,.95)}
+.lg{border-color:var(--red)}
+h1{color:#fff}:root[data-theme=light] h1{color:#1f3bb3}
+.panel{border-top:3px solid var(--red);backdrop-filter:blur(8px)}
+h3{display:flex;align-items:center;gap:8px;color:var(--gold)}
+:root[data-theme=light] h3{color:#1f3bb3}
+h3:before{content:"";width:4px;height:14px;background:var(--red);border-radius:2px}
+.tb.on{border-color:var(--red)}
+.pr{background:linear-gradient(135deg,#e0262d,#b3121b);color:#fff}
+.dev{max-width:1300px;margin:0 auto 34px;padding:20px 18px;text-align:center;background:var(--panel);border:1px solid var(--line);border-top:3px solid var(--red);border-radius:18px}
+.dev h4{font:700 12px Inter;letter-spacing:.1em;text-transform:uppercase;color:var(--gold)}
+.dev .dn{font:700 18px 'Playfair Display',serif;margin:6px 0 2px}
+.dev .ds{font-size:12px;color:var(--muted)}
+.dl{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin-top:12px}
+.dl a{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:999px;border:1px solid var(--line);color:var(--text);text-decoration:none;font:600 13px Inter;background:rgba(128,128,128,.1)}
+.dl a:hover{border-color:var(--red);background:var(--red);color:#fff}
+.cp{font-size:11px;color:var(--muted);margin-top:12px}
+
+/* ---- v3: PSTU-style green web theme ---- */
+:root{--gold:#3ddc84;--g:#0f7a3f;--bg:#04120a;--panel:rgba(5,26,15,.82);--line:rgba(61,220,132,.3);--text:#eaf7ef;--muted:#9fc4ad;--input:#082016}
+:root[data-theme=light]{--gold:#0f7a3f;--bg:#eaf4ee;--panel:rgba(255,255,255,.92);--line:rgba(15,122,63,.3);--text:#10261a;--muted:#4f6b5b;--input:#fff}
+body{background:var(--bg)!important;position:relative}
+body:before,body:after{content:"";position:fixed;top:0;bottom:0;z-index:-1;background-size:cover;background-position:center}
+body:before{left:0;right:50%;background-image:linear-gradient(rgba(2,14,8,.72),rgba(2,14,8,.9)),url(bg.jpg)}
+body:after{left:50%;right:0;background-image:linear-gradient(rgba(2,14,8,.72),rgba(2,14,8,.9)),url(bg2.jpg)}
+:root[data-theme=light] body:before{background-image:linear-gradient(rgba(234,244,238,.88),rgba(234,244,238,.95)),url(bg.jpg)}
+:root[data-theme=light] body:after{background-image:linear-gradient(rgba(234,244,238,.88),rgba(234,244,238,.95)),url(bg2.jpg)}
+header{background:rgba(2,12,7,.9);border-bottom:2px solid #1fd16a;border-image:none;box-shadow:0 2px 18px rgba(31,209,106,.25)}
+:root[data-theme=light] header{background:rgba(255,255,255,.95)}
+.lg{border-color:#3ddc84;box-shadow:0 0 14px rgba(61,220,132,.5);width:56px;height:56px}
+h1{color:#fff}:root[data-theme=light] h1{color:#0f7a3f}
+.panel{border:1px solid rgba(61,220,132,.45);border-top:1px solid rgba(61,220,132,.45);box-shadow:0 0 28px rgba(31,209,106,.15),0 10px 40px rgba(0,0,0,.4)}
+h3:before{background:#3ddc84}
+.tb.on{border-color:#3ddc84}
+.pr{background:linear-gradient(135deg,#22d46d,#0fa352);color:#032010}
+.dev{border:1px solid rgba(61,220,132,.45)}
+.dl a:hover{background:#0fa352;border-color:#3ddc84}
+#adm{display:none;position:fixed;inset:0;background:rgba(0,0,0,.78);z-index:99;align-items:center;justify-content:center;padding:18px}
+</style></head><body>
+<header><div class="brand"><div class="lg"><img src="logo.png" alt="" onerror="this.style.display='none'"></div>
+<div><h1>Rajendra Student Hub</h1><p>Create your cover page easily &middot; Govt. Rajendra College, Faridpur</p></div></div>
+<div style="display:flex;gap:10px;align-items:center"><a class="ib" href="#dev" style="text-decoration:none;font-size:13px">Developer</a><button class="ib" id="th" title="Dark / Light">&#9788;</button></div></header>
+<main>
+<section class="panel">
+<h3>College</h3><select id="clg"><option value="r">Govt. Rajendra College, Faridpur</option><option value="o">Other college</option></select>
+<div id="oc" style="display:none"><label>College name</label><input id="ocn" placeholder="Your college name"><label>University name</label><input id="ocu" placeholder="e.g. National University"><label>Department name</label><input id="ocd" placeholder="Your department"><label>College logo</label><input type="file" id="upOC" accept="image/*"></div>
+<h3>Template</h3><div class="tg" id="tg"></div>
+<div class="r"><div><label>Main colour</label><input type="color" id="color"></div>
+<div><label>Language</label><select id="lang"><option value="en">English</option><option value="bn">বাংলা</option><option value="both">Bangla + English</option></select></div></div>
+<div class="r"><div><label>Font style</label><select id="font"><option>Tinos</option><option>Playfair Display</option><option>Inter</option></select></div>
+<div><label>Document</label><select id="doc"><option>Assignment</option><option>Lab Report</option><option>Presentation</option><option>Project</option><option>Term Paper</option></select></div></div>
+<div id="rd"><h3>Department</h3><select id="dept"></select></div>
+<div class="r"><div><label>Program</label><select id="prog"><option>Honours</option><option>Degree (Pass)</option><option>Masters</option></select></div>
+<div><label>Year</label><select id="year"><option>First Year</option><option>Second Year</option><option>Third Year</option><option>Fourth Year</option></select></div></div>
+<h3>Assignment</h3><label>Topic</label><input id="topic" placeholder="Assignment topic">
+<div class="r"><div><label>Course code</label><input id="ccode"></div><div><label>Course title (optional)</label><input id="ctitle"></div></div>
+<h3>Submitted to</h3><input id="toName" placeholder="Teacher name (optional)"><input id="toDesig" placeholder="Designation" style="margin-top:6px" value="Head of the Department">
+<h3>Submitted by</h3><input id="name" placeholder="Your name">
+<div class="r"><div><label>Class roll</label><input id="roll"></div><div><label>Session</label><input id="sess" value="2025-2026"></div></div>
+<div class="r"><div><label>Reg. no (optional)</label><input id="reg"></div><div><label>Student ID (optional)</label><input id="sid"></div></div>
+<div class="r"><div><label>Phone (optional)</label><input id="ph"></div><div><label>Submission date</label><input type="date" id="date"></div></div>
+<h3>Images</h3>
+<div id="rl"><label>College logo</label><input type="file" id="upLogo" accept="image/*">
+<label>National University logo</label><input type="file" id="upNU" accept="image/*"></div>
+<label>Campus photo (bottom)</label><input type="file" id="upPhoto" accept="image/*">
+<label><input type="checkbox" id="showPh" checked> Show campus photo at bottom</label>
+<button class="btn pr" id="dl">&#11015; Download PDF</button><button class="btn gh" id="rs">&#8635; Reset</button>
+</section>
+<section><div id="fit"><div class="page" id="pg"></div></div></section>
+</main>
+<div id="adm"><div class="panel" style="max-width:360px;width:100%;text-align:center"><h3 style="justify-content:center">Download shuru korar age</h3><div id="adbox" style="min-height:110px;margin:12px 0;font-size:13px;color:var(--muted)"></div><button class="btn pr" id="adbtn" disabled>Wait</button></div></div>
+<footer class="dev" id="dev"></footer>
+<script>
+const $=i=>document.getElementById(i);
+/* ===== DEVELOPER INFO: nijer tothyo ekhane boshao ===== */
+const ADS_ON=false, ADS_SECONDS=10, ADS_HTML='<!-- ekhane Monetag/Adsterra ad code boshao -->Ad ekhane dekhabe';
+function adGate(){return new Promise(res=>{const m=$('adm'),b=$('adbtn');$('adbox').innerHTML=ADS_HTML;m.style.display='flex';let n=ADS_SECONDS;b.disabled=true;b.textContent='Wait '+n+'s';
+ const iv=setInterval(()=>{n--;if(n>0)b.textContent='Wait '+n+'s';else{clearInterval(iv);b.disabled=false;b.textContent='Download Now'}},1000);
+ b.onclick=()=>{m.style.display='none';res(true)}})}
+const DEV={name:'Hasibul Islam Nibir',role:'Department of English',role:' Govt. Rajendra College, Faridpur',whatsapp:'8801921826249',facebook:'https://www.facebook.com/rsnibirkhalifa',email:'hasibulislamnibir045@gmail.com'}; 
+$('dev').innerHTML=`<h4>Developed by</h4><div class="dn">${DEV.name}</div><div class="ds">${DEV.role}</div><div class="dl"><a href="https://wa.me/${DEV.whatsapp}" target="_blank" rel="noopener">WhatsApp</a><a href="${DEV.facebook}" target="_blank" rel="noopener">Facebook</a><a href="mailto:${DEV.email}">Gmail</a></div><div class="cp">&copy; ${new Date().getFullYear()} Rajendra Student Hub</div>`;
+const TPL=[
+{n:'Emerald',c1:'#0f6b3a',c2:'#d4a937',p:'#ffffff',ink:'#12261a',ht:'#fff',k:'dbl'},
+{n:'Royal Blue',c1:'#1b4fb8',c2:'#8fb4f2',p:'#ffffff',ink:'#10213f',ht:'#fff',k:'band'},
+{n:'Navy Gold',c1:'#0e2347',c2:'#d4a937',p:'#fbf9f2',ink:'#0e1c36',ht:'#f3d98a',k:'corner'},
+{n:'Maroon',c1:'#7a1020',c2:'#c9a24a',p:'#fbf3e1',ink:'#3a1218',ht:'#fbf3e1',k:'dbl'},
+{n:'Black Gold',c1:'#c9a33a',c2:'#f1d98a',p:'#0e0e0e',ink:'#f2e6c4',ht:'#111',k:'band'},
+{n:'Botanical',c1:'#2f7d4f',c2:'#9ccb6b',p:'#fbfdf8',ink:'#1d3524',ht:'#fff',k:'corner'},
+{n:'Purple',c1:'#6a2c91',c2:'#f0a830',p:'#ffffff',ink:'#271338',ht:'#fff',k:'side'},
+{n:'Minimal',c1:'#1f2933',c2:'#e0554a',p:'#ffffff',ink:'#1f2933',ht:'#fff',k:'side'}];
+const DEPT={English:'ইংরেজি',Bangla:'বাংলা',History:'ইতিহাস','Islamic History and Culture':'ইসলামের ইতিহাস ও সংস্কৃতি','Islamic Studies':'ইসলামিক স্টাডিজ',Philosophy:'দর্শন','Political Science':'রাষ্ট্রবিজ্ঞান',Economics:'অর্থনীতি',Sociology:'সমাজবিজ্ঞান','Social Work':'সমাজকর্ম',Psychology:'মনোবিজ্ঞান','Geography and Environment':'ভূগোল ও পরিবেশ',Management:'ব্যবস্থাপনা',Accounting:'হিসাববিজ্ঞান',Marketing:'মার্কেটিং','Finance and Banking':'ফিন্যান্স ও ব্যাংকিং',Physics:'পদার্থবিজ্ঞান',Chemistry:'রসায়ন',Mathematics:'গণিত',Botany:'উদ্ভিদবিজ্ঞান',Zoology:'প্রাণিবিজ্ঞান',Statistics:'পরিসংখ্যান'};
+const L={en:{aff:'National University',col:'Govt. Rajendra College, Faridpur',dept:'Department of ',code:'Course Code',ct:'Course Title',on:'on',to:'Submitted to',by:'Submitted by',roll:'Class Roll',reg:'Reg. No',sid:'Student ID',sess:'Session',ph:'Cell',date:'Date of Submission'},
+bn:{aff:'জাতীয় বিশ্ববিদ্যালয়',col:'সরকারি রাজেন্দ্র কলেজ, ফরিদপুর',dept:'বিভাগ: ',code:'কোর্স কোড',ct:'কোর্সের শিরোনাম',on:'বিষয়',to:'প্রাপক',by:'প্রস্তুতকারক',roll:'শ্রেণি রোল',reg:'রেজি. নং',sid:'আইডি',sess:'সেশন',ph:'মোবাইল',date:'জমাদানের তারিখ'}};
+const DOCBN={Assignment:'অ্যাসাইনমেন্ট','Lab Report':'ল্যাব রিপোর্ট',Presentation:'উপস্থাপনা',Project:'প্রকল্প','Term Paper':'টার্ম পেপার'};
+const PROGBN={Honours:'অনার্স','Degree (Pass)':'ডিগ্রি (পাস)',Masters:'মাস্টার্স'};
+const YRBN=['প্রথম বর্ষ','দ্বিতীয় বর্ষ','তৃতীয় বর্ষ','চতুর্থ বর্ষ'];
+const MBN=['জানুয়ারি','ফেব্রুয়ারি','মার্চ','এপ্রিল','মে','জুন','জুলাই','আগস্ট','সেপ্টেম্বর','অক্টোবর','নভেম্বর','ডিসেম্বর'];
+const MEN=['January','February','March','April','May','June','July','August','September','October','November','December'];
+let tpl=0,logoSrc='',nuSrc='',photoSrc='',ocLogo='',ocPhoto='';
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const bn=s=>String(s).replace(/\d/g,d=>'০১২৩৪৫৬৭৮৯'[d]);
+const bd=s=>$('lang').value==='bn'?bn(s):s;
+function T(k){const l=$('lang').value;return l==='en'?L.en[k]:l==='bn'?L.bn[k]:L.en[k]+' | '+L.bn[k]}
+function two(en,b){const l=$('lang').value;return l==='en'?en:l==='bn'?b:en+'<br><span style="font-size:.7em;font-weight:400">'+b+'</span>'}
+function fdate(v){if(!v)return'';const[y,m,d]=v.split('-'),l=$('lang').value,mi=+m-1;
+ return l==='bn'?bn(+d+' '+MBN[mi]+', '+y):(+d)+' '+MEN[mi]+', '+y+(l==='both'?'  |  '+bn(+d+' '+MBN[mi]+', '+y):'')}
+const crest=(a,b)=>`<svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="47" fill="${a}"/><circle cx="50" cy="50" r="41" fill="none" stroke="${b}" stroke-width="2"/><polygon points="50,15 54,26 66,26 56,33 60,44 50,37 40,44 44,33 34,26 46,26" fill="${b}"/><path d="M24 54C35 48 44 50 50 57C56 50 65 48 76 54V69C65 63 56 65 50 71C44 65 35 63 24 69Z" fill="#fff"/><path d="M50 57V71" stroke="${a}" stroke-width="1.5"/><text x="50" y="87" font-size="12" font-weight="700" text-anchor="middle" fill="#fff" font-family="Tinos,serif">GRC</text></svg>`;
+const nuMark=(a,b)=>`<svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="46" fill="none" stroke="${a}" stroke-width="5"/><circle cx="50" cy="50" r="36" fill="none" stroke="${b}" stroke-width="2"/><text x="50" y="61" font-size="30" font-weight="700" text-anchor="middle" fill="${a}" font-family="Tinos,serif">NU</text></svg>`;
+function deco(t,c1){const c2=t.c2;let s='';
+ const R=(x,y,w,h,st,sw)=>`<rect x="${x}" y="${y}" width="${w}" height="${h}" fill="none" stroke="${st}" stroke-width="${sw}"/>`;
+ const F=(x,y,w,h,f)=>`<rect x="${x}" y="${y}" width="${w}" height="${h}" fill="${f}"/>`;
+ if(t.k==='dbl')s=R(24,24,746,1074,c1,3)+R(32,32,730,1058,c2,1);
+ if(t.k==='band')s=F(0,0,794,14,c1)+F(0,14,794,3,c2)+F(0,1108,794,14,c1)+F(0,1105,794,3,c2)+R(30,34,734,1054,c1,1.2);
+ if(t.k==='corner'){s=R(34,34,726,1054,c2,1);[[24,24,1,1],[770,24,-1,1],[24,1098,1,-1],[770,1098,-1,-1]].forEach(q=>s+=`<path d="M${q[0]} ${q[1]+q[3]*80}V${q[1]}H${q[0]+q[2]*80}" fill="none" stroke="${c1}" stroke-width="5"/>`)}
+ if(t.k==='side')s=F(0,0,26,1122,c1)+F(32,0,4,1122,c2)+R(44,24,726,1074,c1,1.2);
+ return `<svg width="794" height="1122" viewBox="0 0 794 1122">${s}</svg>`}
+function fitText(){const tp=document.querySelector('#pg .tp'),tt=tp&&tp.firstElementChild;if(!tt)return;let fs=27;tt.style.fontSize=fs+'px';
+ while(tt.offsetHeight>tp.clientHeight-20&&fs>12){fs--;tt.style.fontSize=fs+'px'}}
+function render(){
+ const t=TPL[tpl],c1=$('color').value,v=i=>$(i).value.trim(),l=$('lang').value,dk=$('dept').value,db=DEPT[dk];
+ const pg=$('pg');pg.style.cssText=`--c1:${c1};--c2:${t.c2};--paper:${t.p};--ink:${t.ink};--ht:${t.ht};--ff:'${$('font').value}'`;
+ const dn=l==='en'?dk:l==='bn'?db:dk+' | '+db;
+ const oth=$('clg').value==='o';$('oc').style.display=oth?'block':'none';$('rd').style.display=oth?'none':'block';$('rl').style.display=oth?'none':'block';
+ const cname=esc(v('ocn')||'Your College Name'),dnn=oth?(v('ocd')||'Department'):dn,dshort=oth?dnn:(l==='bn'?db:dk);
+ const yi=$('year').selectedIndex,prog=l==='bn'?PROGBN[$('prog').value]:$('prog').value,yr=l==='bn'?YRBN[yi]:$('year').value;
+ const dc=l==='en'?$('doc').value:l==='bn'?DOCBN[$('doc').value]:$('doc').value+' | '+DOCBN[$('doc').value];
+ const dl=l==='bn'?L.bn.dept:L.en.dept;
+ let to='';if(v('toName'))to+=`<b>${esc(v('toName'))}</b><br>`;
+ to+=esc(v('toDesig')||'Head of the Department')+'<br>'+dl+esc(dshort)+'<br>'+(oth?cname:(l==='bn'?L.bn.col:L.en.col));
+ let by=`<b>${esc(v('name')||'Your Name')}</b><br>${T('roll')}: ${esc(bd(v('roll')||'—'))}<br>`;
+ if(v('reg'))by+=`${T('reg')}: ${esc(bd(v('reg')))}<br>`;if(v('sid'))by+=`${T('sid')}: ${esc(bd(v('sid')))}<br>`;
+ by+=esc(prog)+' '+esc(yr)+`<br>${T('sess')}: ${esc(bd(v('sess')||'—'))}`;if(v('ph'))by+=`<br>${T('ph')}: ${esc(bd(v('ph')))}`;
+ const phS=oth?ocPhoto:photoSrc,hasPh=$('showPh').checked&&phS,side=t.k==='side';
+ const pl=side?50:40,pw=754-pl;
+ const ph=hasPh?`<div class="pw" style="left:${pl}px;width:${pw}px"><img src="${phS}" onerror="this.parentNode.remove()"></div>`:'';
+ const lsrc=oth?ocLogo:logoSrc,lg=lsrc?`<img src="${lsrc}">`:crest(c1,t.c2);
+ const nl=oth?'':(nuSrc?`<img src="${nuSrc}">`:nuMark(c1,t.c2));
+ const left=side?96:70,right=70;
+ pg.innerHTML=deco(t,c1)+ph+`<div class="ct" style="left:${left}px;right:${right}px;bottom:${hasPh?272:64}px">
+ <div class="nu">${oth?'':`<span class="nl">${nl}</span>`}<span>${oth?esc(v('ocu')||'University'):(l==='bn'?L.bn.aff:two(L.en.aff,L.bn.aff).replace(/<br>.*$/,''))}</span></div>
+ <div class="g"><div class="lw">${lg}</div><div class="cn">${oth?cname:two(L.en.col,L.bn.col)}</div></div>
+ <div class="g"><div class="rb">${dl}${esc(dnn)}</div>
+ ${v('ccode')?`<div class="sm"><b>${T('code')}:</b> ${esc(bd(v('ccode')))}</div>`:''}${v('ctitle')?`<div class="sm"><b>${T('ct')}:</b> ${esc(v('ctitle'))}</div>`:''}</div>
+ <div class="g"><div class="dt">${esc(dc)}</div><div class="sm" style="font-weight:700">${T('on')}</div>
+ <div class="tp"><span class="tt">&ldquo;${esc(v('topic')||'Your topic will appear here')}&rdquo;</span></div></div>
+ <div class="bx"><div class="b"><h4>${T('to')}</h4><div>${to}</div></div><div class="b"><h4>${T('by')}</h4><div>${by}</div></div></div>
+ <div class="ft">${T('date')}: ${esc(fdate($('date').value))}</div></div>`;
+ fitText();
+ try{localStorage.setItem('rsh3',JSON.stringify({tpl,f:[...document.querySelectorAll('input:not([type=file]),select')].map(e=>e.type==='checkbox'?e.checked:e.value)}))}catch(e){}}
+function fitP(){const s=Math.min(1,$('fit').clientWidth/794);$('pg').style.transform=`scale(${s})`;$('fit').style.height=1122*s+'px'}
+function pick(i,setColor=true){tpl=i;if(setColor)$('color').value=TPL[i].c1;document.querySelectorAll('.tb').forEach((b,j)=>b.classList.toggle('on',j===i));render()}
+$('tg').innerHTML=TPL.map((t,i)=>`<button class="tb" onclick="pick(${i})"><i style="background:linear-gradient(135deg,${t.p} 38%,${t.c1} 38%,${t.c1} 70%,${t.c2} 70%)"></i>${t.n}</button>`).join('');
+$('dept').innerHTML=Object.keys(DEPT).map(d=>`<option>${d}</option>`).join('');
+document.querySelectorAll('input,select').forEach(e=>{e.addEventListener('input',render);e.addEventListener('change',render)});
+function up(id,cb){$(id).onchange=e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{cb(r.result);render()};r.readAsDataURL(f)}}
+up('upLogo',s=>logoSrc=s);up('upOC',s=>ocLogo=s);up('upNU',s=>nuSrc=s);up('upPhoto',s=>{if($('clg').value==='o')ocPhoto=s;else photoSrc=s});
+$('th').onclick=()=>{const r=document.documentElement;r.dataset.theme=r.dataset.theme==='light'?'dark':'light'};
+$('rs').onclick=()=>{try{localStorage.removeItem('rsh3')}catch(e){}location.reload()};
+$('dl').onclick=async()=>{if(ADS_ON&&!await adGate())return;const b=$('dl');b.disabled=true;b.textContent='Generating PDF...';
+ try{await document.fonts.ready;fitText();const c=$('pg').cloneNode(true);c.removeAttribute('id');c.style.cssText+=';transform:none;position:relative;box-shadow:none';
+  const h=document.createElement('div');h.style.cssText='position:fixed;left:-10000px;top:0;width:794px;height:1122px';h.appendChild(c);document.body.appendChild(h);
+  const nm=($('name').value.trim()||'Student').replace(/[^\w\-]+/g,'_');
+  await html2pdf().set({margin:0,filename:'Cover_'+nm+'.pdf',image:{type:'jpeg',quality:.98},html2canvas:{scale:2,useCORS:true,width:794,height:1122,scrollX:0,scrollY:0},jsPDF:{unit:'mm',format:'a4',orientation:'portrait'},pagebreak:{mode:['avoid-all']}}).from(c).save();h.remove()}
+ catch(e){alert('PDF hocche na, page refresh kore abar try koro.');console.error(e)}
+ b.disabled=false;b.innerHTML='&#11015; Download PDF'};
+(function(){const d=new Date();$('date').value=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+ try{const o=JSON.parse(localStorage.getItem('rsh3')||'null');if(o){tpl=o.tpl;[...document.querySelectorAll('input:not([type=file]),select')].forEach((e,i)=>{if(o.f[i]!==undefined){if(e.type==='checkbox')e.checked=o.f[i];else e.value=o.f[i]}})}else $('color').value=TPL[0].c1}catch(e){$('color').value=TPL[0].c1}
+ [['logo.png',x=>logoSrc=x],['nu-logo.png',x=>nuSrc=x],['bg.jpg',x=>photoSrc=x]].forEach(a=>{const m=new Image();m.onload=()=>{const cur=a[0]==='logo.png'?logoSrc:a[0]==='nu-logo.png'?nuSrc:photoSrc;if(!cur){a[1](a[0]);render()}};m.src=a[0]});
+ pick(tpl,false);fitP()})();
+window.addEventListener('resize',fitP);window.addEventListener('load',fitP);
+</script></body></html>
