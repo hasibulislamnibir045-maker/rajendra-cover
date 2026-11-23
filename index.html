@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="en"><head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="monetag" content="05c3d24b192c71a05031638602134bd7"/>
 <title>Rajendra Student Hub - Cover Page Generator</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Tinos:ital,wght@0,400;0,700;1,400&family=Noto+Serif+Bengali:wght@400;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
@@ -140,11 +139,11 @@ h3:before{background:#3ddc84}
 <script>
 const $=i=>document.getElementById(i);
 /* ===== DEVELOPER INFO: nijer tothyo ekhane boshao ===== */
-const ADS_ON=true, ADS_SECONDS=10, ADS_HTML='<script>(function(s){s.dataset.zone='12334183',s.src='https://n6wxm.com/vignette.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))</script>';
+const ADS_ON=false, ADS_SECONDS=10, ADS_HTML='<!-- ekhane Monetag/Adsterra ad code boshao -->Ad ekhane dekhabe';
 function adGate(){return new Promise(res=>{const m=$('adm'),b=$('adbtn');$('adbox').innerHTML=ADS_HTML;m.style.display='flex';let n=ADS_SECONDS;b.disabled=true;b.textContent='Wait '+n+'s';
  const iv=setInterval(()=>{n--;if(n>0)b.textContent='Wait '+n+'s';else{clearInterval(iv);b.disabled=false;b.textContent='Download Now'}},1000);
  b.onclick=()=>{m.style.display='none';res(true)}})}
-const DEV={name:'Hasibul Islam Nibir',role:'Student,English Dept,Govt. Rajendra College',whatsapp:'8801921826249',facebook:'https://www.facebook.com/rsnibirkhalifa',email:'hasibulislamnibir045@gmail.com'}; 
+const DEV={name:'Hasibul Islam Nibir',role:'Department of English',role:' Govt. Rajendra College, Faridpur',whatsapp:'8801921826249',facebook:'https://www.facebook.com/rsnibirkhalifa',email:'hasibulislamnibir045@gmail.com'}; 
 $('dev').innerHTML=`<h4>Developed by</h4><div class="dn">${DEV.name}</div><div class="ds">${DEV.role}</div><div class="dl"><a href="https://wa.me/${DEV.whatsapp}" target="_blank" rel="noopener">WhatsApp</a><a href="${DEV.facebook}" target="_blank" rel="noopener">Facebook</a><a href="mailto:${DEV.email}">Gmail</a></div><div class="cp">&copy; ${new Date().getFullYear()} Rajendra Student Hub</div>`;
 const TPL=[
 {n:'Emerald',c1:'#0f6b3a',c2:'#d4a937',p:'#ffffff',ink:'#12261a',ht:'#fff',k:'dbl'},
@@ -235,6 +234,4 @@ $('dl').onclick=async()=>{if(ADS_ON&&!await adGate())return;const b=$('dl');b.di
  [['logo.png',x=>logoSrc=x],['nu-logo.png',x=>nuSrc=x],['bg.jpg',x=>photoSrc=x]].forEach(a=>{const m=new Image();m.onload=()=>{const cur=a[0]==='logo.png'?logoSrc:a[0]==='nu-logo.png'?nuSrc:photoSrc;if(!cur){a[1](a[0]);render()}};m.src=a[0]});
  pick(tpl,false);fitP()})();
 window.addEventListener('resize',fitP);window.addEventListener('load',fitP);
-
 </script></body></html>
-
