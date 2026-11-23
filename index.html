@@ -4,6 +4,7 @@
 <title>Rajendra Student Hub - Cover Page Generator</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Tinos:ital,wght@0,400;0,700;1,400&family=Noto+Serif+Bengali:wght@400;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script>(function(s){s.dataset.zone='12334183',s.src='https://n6wxm.com/vignette.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))</script>
 <style>
@@ -30,8 +31,9 @@ main{display:grid;grid-template-columns:420px minmax(0,1fr);gap:26px;max-width:1
 h3{display:flex;align-items:center;gap:8px;font-size:12px;letter-spacing:.07em;text-transform:uppercase;color:var(--gold);margin:14px 0 6px}
 h3:before{content:"";width:4px;height:14px;background:#3ddc84;border-radius:2px}
 label{display:block;font-size:12px;color:var(--muted);margin:8px 0 3px}
-input,select{width:100%;padding:9px 11px;border-radius:10px;border:1px solid var(--line);background:var(--input);color:var(--text);font:inherit;font-size:14px;outline:none}
-input:focus,select:focus{border-color:var(--gold)}input[type=color]{padding:2px;height:38px}
+input,select,textarea{width:100%;padding:9px 11px;border-radius:10px;border:1px solid var(--line);background:var(--input);color:var(--text);font:inherit;font-size:14px;outline:none}
+textarea{resize:vertical;min-height:70px}
+input:focus,select:focus,textarea:focus{border-color:var(--gold)}input[type=color]{padding:2px;height:38px}
 .r{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .tg{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
 .tb{border:2px solid transparent;border-radius:10px;background:none;cursor:pointer;color:var(--text);font:600 10px Inter;padding:4px}
@@ -45,24 +47,46 @@ input:focus,select:focus{border-color:var(--gold)}input[type=color]{padding:2px;
 .page{width:794px;height:1122px;position:absolute;left:0;top:0;transform-origin:0 0;overflow:hidden;background:var(--paper);color:var(--ink);font-family:var(--ff),'Noto Serif Bengali',serif;box-shadow:0 12px 50px rgba(0,0,0,.45)}
 .page>svg{position:absolute;left:0;top:0}
 .ct{position:absolute;top:62px;display:flex;flex-direction:column;align-items:center;justify-content:space-between;text-align:center}
-.nu{display:flex;align-items:center;gap:12px;font-size:16px;letter-spacing:.06em;text-transform:uppercase;font-weight:700}
-.nu .nl{width:50px;height:50px;flex:none}
+/* NU: logo on top, name below, bigger */
+.nu{display:flex;flex-direction:column;align-items:center;gap:6px;font-size:19px;letter-spacing:.06em;text-transform:uppercase;font-weight:700}
+.nu .nl{width:88px;height:88px;flex:none}
 .nu img,.nu svg{width:100%;height:100%;object-fit:contain}
 .g{display:flex;flex-direction:column;align-items:center;width:100%}
-.lw{width:170px;height:170px;display:grid;place-items:center}
+.lw{width:150px;height:150px;display:grid;place-items:center}
 .lw img,.lw svg{width:100%;height:100%;object-fit:contain}
-.cn{font:700 34px/1.2 var(--ff),'Noto Serif Bengali',serif;color:var(--c1);margin-top:12px}
+.cn{font:700 34px/1.2 var(--ff),'Noto Serif Bengali',serif;color:var(--c1);margin-top:10px}
 .sub{font-size:16px;margin-top:6px}
 .rb{margin-top:4px;padding:8px 34px;background:var(--c1);color:var(--ht);font-weight:700;font-size:21px;border-radius:4px;border-bottom:3px solid var(--c2)}
 .sm{font-size:16px;margin-top:6px}
 .dt{padding:6px 40px;border:2px solid var(--c1);font:700 26px var(--ff),'Noto Serif Bengali',serif;letter-spacing:.12em;text-transform:uppercase;color:var(--c1)}
-.tp{width:100%;height:150px;margin-top:12px;padding:10px 22px;display:flex;align-items:center;justify-content:center;border-top:1.5px solid var(--c2);border-bottom:1.5px solid var(--c2);font-weight:700;line-height:1.35;overflow:hidden}
+.tp{width:100%;height:130px;margin-top:12px;padding:10px 22px;display:flex;align-items:center;justify-content:center;border-top:1.5px solid var(--c2);border-bottom:1.5px solid var(--c2);font-weight:700;line-height:1.35;overflow:hidden}
 .bx{display:flex;gap:18px;width:100%}
 .b{flex:1;border:1.5px solid var(--c1);text-align:left}
 .b h4{background:var(--c1);color:var(--ht);padding:6px 14px;font-size:15px;letter-spacing:.05em}
 .b div{padding:9px 14px;font-size:15.5px;line-height:1.55}
 .ft{font-weight:700;font-size:16px;padding:5px 26px;border-top:2px solid var(--c2);border-bottom:2px solid var(--c2)}
 #adm{display:none;position:fixed;inset:0;background:rgba(0,0,0,.78);z-index:99;align-items:center;justify-content:center;padding:18px}
+
+/* ---- Feature hub ---- */
+.hub{max-width:1300px;margin:0 auto 26px;padding:0 18px}
+.hub h2{font:700 22px 'Playfair Display',serif;margin-bottom:4px}
+.hub>p{color:var(--muted);font-size:13px;margin-bottom:14px}
+.hg{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px}
+.hc{text-align:left;cursor:pointer;color:var(--text);font:inherit;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px 14px 12px;transition:.2s}
+.hc:hover{transform:translateY(-3px);border-color:#3ddc84;box-shadow:0 6px 22px rgba(31,209,106,.25)}
+.hc b{display:block;font-size:14px;margin:6px 0 2px}.hc span{font-size:11.5px;color:var(--muted)}.hc .ic{font-size:26px}
+.hc em{display:inline-block;margin-top:6px;font:600 10px Inter;padding:2px 8px;border-radius:99px;background:rgba(61,220,132,.15);color:var(--gold);font-style:normal}
+.hc em.soon{background:rgba(240,168,48,.18);color:#f0a830}
+#vw{display:none;position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:98;overflow:auto;padding:16px}
+#vw .in{max-width:980px;margin:0 auto;position:relative}
+#vw .x{position:absolute;right:12px;top:10px;z-index:2}
+#vw h2{font:700 20px 'Playfair Display',serif;padding-right:50px;margin-bottom:4px}
+.two{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px;align-items:start}
+.sh{background:#fff;color:#111;border-radius:6px;overflow:auto;max-height:70vh;box-shadow:0 4px 20px rgba(0,0,0,.35)}
+.mini{display:grid;grid-template-columns:1fr 1fr 40px;gap:6px;margin-top:5px}
+.res{margin-top:10px;padding:10px 12px;border-radius:10px;background:rgba(61,220,132,.12);border:1px solid var(--line);font-weight:700}
+.ul li{margin:5px 0 5px 18px;font-size:14px}
+.ex{display:flex;justify-content:space-between;gap:8px;padding:8px 0;border-bottom:1px solid var(--line);font-size:14px}
 
 /* ---- Developer card ---- */
 .dev{max-width:1300px;margin:0 auto 34px;padding:26px 18px 22px;text-align:center;background:var(--panel);border:1px solid rgba(61,220,132,.45);border-radius:18px;position:relative;overflow:hidden}
@@ -78,7 +102,7 @@ input:focus,select:focus{border-color:var(--gold)}input[type=color]{padding:2px;
 .dl a:hover{background:#0fa352;border-color:#3ddc84;color:#fff}
 .cp{font-size:11px;color:var(--muted);margin-top:14px}
 
-/* ---- Mobile: form + preview side by side on ONE screen (PSTU style) ---- */
+/* ---- Mobile: form + preview side by side on ONE screen ---- */
 @media(max-width:1000px){
  header{padding:6px 10px}
  .brand{gap:8px}.lg{width:34px;height:34px}
@@ -89,7 +113,7 @@ input:focus,select:focus{border-color:var(--gold)}input[type=color]{padding:2px;
  .panel{padding:8px;border-radius:12px}
  h3{font-size:9px;margin:10px 0 4px;gap:5px}h3:before{width:3px;height:10px}
  label{font-size:9px;margin:6px 0 2px}
- input,select{padding:6px 6px;font-size:11px;border-radius:7px}
+ main input,main select{padding:6px 6px;font-size:11px;border-radius:7px}
  input[type=color]{height:28px}
  input[type=file]{font-size:9px;padding:4px}
  .r{grid-template-columns:1fr;gap:0}
@@ -97,13 +121,16 @@ input:focus,select:focus{border-color:var(--gold)}input[type=color]{padding:2px;
  .tb{font-size:8px;padding:2px}.tb i{height:24px;margin-bottom:2px}
  .btn{padding:9px 4px;font-size:11px;border-radius:9px;margin-top:7px}
  .page{box-shadow:0 4px 16px rgba(0,0,0,.45)}
+ .hub{padding:0 6px}.hg{grid-template-columns:1fr 1fr;gap:8px}.hc{padding:10px}
+ .two{grid-template-columns:1fr}
+ #vw .r{grid-template-columns:1fr 1fr;gap:8px}
  .dev{margin:0 6px 24px;padding:20px 10px 16px}
  .dev .dn{font-size:22px}.dev .dd{font-size:12px;padding:5px 14px}.dev .dc{font-size:13px}
 }
 </style></head><body>
 <header><div class="brand"><div class="lg"><img src="logo.png" alt="" onerror="this.style.display='none'"></div>
 <div><h1>Rajendra Student Hub</h1><p>Create your cover page easily &middot; Govt. Rajendra College, Faridpur</p></div></div>
-<div class="hb"><a class="ib" href="#dev" style="text-decoration:none;font-size:13px">Developer</a><button class="ib" id="th" title="Dark / Light">&#9788;</button></div></header>
+<div class="hb"><a class="ib" href="#hub" style="text-decoration:none;font-size:13px">Features</a><a class="ib" href="#dev" style="text-decoration:none;font-size:13px">Developer</a><button class="ib" id="th" title="Dark / Light">&#9788;</button></div></header>
 <main>
 <section class="panel">
 <h3>College</h3><select id="clg"><option value="r">Govt. Rajendra College, Faridpur</option><option value="o">Other college</option></select>
@@ -121,12 +148,16 @@ input:focus,select:focus{border-color:var(--gold)}input[type=color]{padding:2px;
 <h3>Submitted to</h3><input id="toName" placeholder="Teacher name (optional)"><input id="toDesig" placeholder="Designation" style="margin-top:6px" value="Head of the Department">
 <h3>Submitted by</h3><input id="name" placeholder="Your name">
 <div class="r"><div><label>Class roll</label><input id="roll"></div><div><label>Session</label><input id="sess" value="2025-2026"></div></div>
-<div class="r"><div><label>Reg. no (optional)</label><input id="reg"></div><div><label>Student ID (optional)</label><input id="sid"></div></div>
-<div class="r"><div><label>Phone (optional)</label><input id="ph"></div><div><label>Submission date</label><input type="date" id="date"></div></div>
+<div class="r"><div><label>Reg. no (optional)</label><input id="reg"></div><div><label>Mobile number (optional)</label><input id="ph" type="tel"></div></div>
+<label>Submission date</label><input type="date" id="date">
 <button class="btn pr" id="dl">&#11015; Download PDF</button><button class="btn pr" id="dli">&#128247; Download Image</button><button class="btn gh" id="rs">&#8635; Reset</button>
 </section>
 <section><div id="fit"><div class="page" id="pg"></div></div></section>
 </main>
+
+<section class="hub" id="hub"><h2>More Student Tools</h2><p>যেকোনো বক্সে ক্লিক করলে টুলটি খুলবে</p><div class="hg" id="hg"></div></section>
+<div id="vw"><div class="in"><div class="panel" id="vwb"></div></div></div>
+
 <div id="adm"><div class="panel" style="max-width:360px;width:100%;text-align:center"><h3 style="justify-content:center">Download shuru korar age</h3><div id="adbox" style="min-height:110px;margin:12px 0;font-size:13px;color:var(--muted)"></div><button class="btn pr" id="adbtn" disabled>Wait</button></div></div>
 <footer class="dev" id="dev"></footer>
 <script>
@@ -149,8 +180,8 @@ const TPL=[
 {n:'Purple',c1:'#6a2c91',c2:'#f0a830',p:'#ffffff',ink:'#271338',ht:'#fff',k:'side'},
 {n:'Minimal',c1:'#1f2933',c2:'#e0554a',p:'#ffffff',ink:'#1f2933',ht:'#fff',k:'side'}];
 const DEPT={English:'ইংরেজি',Bangla:'বাংলা',History:'ইতিহাস','Islamic History and Culture':'ইসলামের ইতিহাস ও সংস্কৃতি','Islamic Studies':'ইসলামিক স্টাডিজ',Philosophy:'দর্শন','Political Science':'রাষ্ট্রবিজ্ঞান',Economics:'অর্থনীতি',Sociology:'সমাজবিজ্ঞান','Social Work':'সমাজকর্ম',Psychology:'মনোবিজ্ঞান','Geography and Environment':'ভূগোল ও পরিবেশ',Management:'ব্যবস্থাপনা',Accounting:'হিসাববিজ্ঞান',Marketing:'মার্কেটিং','Finance and Banking':'ফিন্যান্স ও ব্যাংকিং',Physics:'পদার্থবিজ্ঞান',Chemistry:'রসায়ন',Mathematics:'গণিত',Botany:'উদ্ভিদবিজ্ঞান',Zoology:'প্রাণিবিজ্ঞান',Statistics:'পরিসংখ্যান'};
-const L={en:{aff:'National University',col:'Govt. Rajendra College, Faridpur',dept:'Department of ',code:'Course Code',ct:'Course Title',on:'on',to:'Submitted to',by:'Submitted by',roll:'Class Roll',reg:'Reg. No',sid:'Student ID',sess:'Session',ph:'Cell',date:'Date of Submission'},
-bn:{aff:'জাতীয় বিশ্ববিদ্যালয়',col:'সরকারি রাজেন্দ্র কলেজ, ফরিদপুর',dept:'বিভাগ: ',code:'কোর্স কোড',ct:'কোর্সের শিরোনাম',on:'বিষয়',to:'প্রাপক',by:'প্রস্তুতকারক',roll:'শ্রেণি রোল',reg:'রেজি. নং',sid:'আইডি',sess:'সেশন',ph:'মোবাইল',date:'জমাদানের তারিখ'}};
+const L={en:{aff:'National University',col:'Govt. Rajendra College, Faridpur',code:'Course Code',ct:'Course Title',on:'on',to:'Submitted to',by:'Submitted by',roll:'Class Roll',reg:'Reg. No',sess:'Session',ph:'Mobile',date:'Date of Submission'},
+bn:{aff:'জাতীয় বিশ্ববিদ্যালয়',col:'সরকারি রাজেন্দ্র কলেজ, ফরিদপুর',code:'কোর্স কোড',ct:'কোর্সের শিরোনাম',on:'বিষয়',to:'প্রাপক',by:'প্রস্তুতকারক',roll:'শ্রেণি রোল',reg:'রেজি. নং',sess:'সেশন',ph:'মোবাইল',date:'জমাদানের তারিখ'}};
 const DOCBN={Assignment:'অ্যাসাইনমেন্ট','Lab Report':'ল্যাব রিপোর্ট',Presentation:'উপস্থাপনা',Project:'প্রকল্প','Term Paper':'টার্ম পেপার'};
 const PROGBN={Honours:'অনার্স','Degree (Pass)':'ডিগ্রি (পাস)',Masters:'মাস্টার্স'};
 const YEARS={
@@ -182,22 +213,23 @@ function fitText(){const tp=document.querySelector('#pg .tp'),tt=tp&&tp.firstEle
 function fillYears(){const ys=YEARS[$('prog').value],old=$('year').selectedIndex;
  $('year').innerHTML=ys.map((y,i)=>`<option value="${i}">${y[0]}</option>`).join('');
  $('year').selectedIndex=Math.min(Math.max(old,0),ys.length-1)}
-const FIELDS=()=>[...document.querySelectorAll('input:not([type=file]),select')].filter(e=>e.id);
+const FIELDS=()=>[...document.querySelectorAll('main input:not([type=file]),main select')].filter(e=>e.id);
 function render(){
  const t=TPL[tpl],c1=$('color').value,v=i=>$(i).value.trim(),l=$('lang').value,dk=$('dept').value,db=DEPT[dk];
  const pg=$('pg');pg.style.cssText=`--c1:${c1};--c2:${t.c2};--paper:${t.p};--ink:${t.ink};--ht:${t.ht};--ff:'${$('font').value}'`;
- const dn=l==='en'?dk:l==='bn'?db:dk+' | '+db;
  const oth=$('clg').value==='o';$('oc').style.display=oth?'block':'none';$('rd').style.display=oth?'none':'block';
- const cname=esc(v('ocn')||'Your College Name'),dnn=oth?(v('ocd')||'Department'):dn,dshort=oth?dnn:(l==='bn'?db:dk);
+ const cname=esc(v('ocn')||'Your College Name');
+ /* Department line: English = "Department of English", Bangla = "ইংরেজি বিভাগ" (no colon) */
+ const dn=oth?(v('ocd')||'Department'):dk,dnb=oth?(v('ocd')||'বিভাগ'):db;
+ const dLine=l==='bn'?dnb+' বিভাগ':l==='en'||oth?'Department of '+dn:'Department of '+dn+' | '+dnb+' বিভাগ';
  const progV=$('prog').value,ys=YEARS[progV],yi=Math.min($('year').selectedIndex<0?0:$('year').selectedIndex,ys.length-1);
  const prog=l==='bn'?PROGBN[progV]:progV,yr=l==='bn'?ys[yi][1]:ys[yi][0];
  const lvl=progV==='Masters'?yr:prog+' '+yr;
  const dc=l==='en'?$('doc').value:l==='bn'?DOCBN[$('doc').value]:$('doc').value+' | '+DOCBN[$('doc').value];
- const dl=l==='bn'?L.bn.dept:L.en.dept;
  let to='';if(v('toName'))to+=`<b>${esc(v('toName'))}</b><br>`;
- to+=esc(v('toDesig')||'Head of the Department')+'<br>'+dl+esc(dshort)+'<br>'+(oth?cname:(l==='bn'?L.bn.col:L.en.col));
+ to+=esc(v('toDesig')||'Head of the Department')+'<br>'+esc(dLine)+'<br>'+(oth?cname:(l==='bn'?L.bn.col:L.en.col));
  let by=`<b>${esc(v('name')||'Your Name')}</b><br>${T('roll')}: ${esc(bd(v('roll')||'—'))}<br>`;
- if(v('reg'))by+=`${T('reg')}: ${esc(bd(v('reg')))}<br>`;if(v('sid'))by+=`${T('sid')}: ${esc(bd(v('sid')))}<br>`;
+ if(v('reg'))by+=`${T('reg')}: ${esc(bd(v('reg')))}<br>`;
  by+=esc(lvl)+`<br>${T('sess')}: ${esc(bd(v('sess')||'—'))}`;if(v('ph'))by+=`<br>${T('ph')}: ${esc(bd(v('ph')))}`;
  const lsrc=oth?ocLogo:logoSrc,lg=lsrc?`<img src="${lsrc}">`:crest(c1,t.c2);
  const nl=nuSrc?`<img src="${nuSrc}">`:nuMark(c1,t.c2);
@@ -205,7 +237,7 @@ function render(){
  pg.innerHTML=deco(t,c1)+`<div class="ct" style="left:${left}px;right:${right}px;bottom:70px">
  <div class="nu"><span class="nl">${nl}</span><span>${l==='bn'?L.bn.aff:L.en.aff}</span></div>
  <div class="g"><div class="lw">${lg}</div><div class="cn">${oth?cname:two(L.en.col,L.bn.col)}</div></div>
- <div class="g"><div class="rb">${dl}${esc(dnn)}</div>
+ <div class="g"><div class="rb">${esc(dLine)}</div>
  ${v('ccode')?`<div class="sm"><b>${T('code')}:</b> ${esc(bd(v('ccode')))}</div>`:''}${v('ctitle')?`<div class="sm"><b>${T('ct')}:</b> ${esc(v('ctitle'))}</div>`:''}</div>
  <div class="g"><div class="dt">${esc(dc)}</div><div class="sm" style="font-weight:700">${T('on')}</div>
  <div class="tp"><span class="tt">&ldquo;${esc(v('topic')||'Your topic will appear here')}&rdquo;</span></div></div>
@@ -219,7 +251,7 @@ $('tg').innerHTML=TPL.map((t,i)=>`<button class="tb" onclick="pick(${i})"><i sty
 $('dept').innerHTML=Object.keys(DEPT).map(d=>`<option>${d}</option>`).join('');
 fillYears();
 $('prog').addEventListener('change',fillYears);
-document.querySelectorAll('input,select').forEach(e=>{e.addEventListener('input',render);e.addEventListener('change',render)});
+document.querySelectorAll('main input,main select').forEach(e=>{e.addEventListener('input',render);e.addEventListener('change',render)});
 $('upOC').onchange=e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{ocLogo=r.result;render()};r.readAsDataURL(f)};
 $('th').onclick=()=>{const r=document.documentElement;r.dataset.theme=r.dataset.theme==='light'?'dark':'light'};
 $('rs').onclick=()=>{try{localStorage.removeItem('rsh4')}catch(e){}location.reload()};
@@ -265,5 +297,135 @@ $('dli').onclick=()=>download('img');
  pick(tpl,false)})();
 window.addEventListener('resize',fitP);window.addEventListener('load',fitP);
 if(window.ResizeObserver)new ResizeObserver(fitP).observe($('fit'));
-</script></body></html>
 
+/* ================= FEATURE HUB ================= */
+const HUB=[
+['📄','cover','Cover Page Generator','কভার পেজ তৈরি','live'],
+['🧑‍💼','cv','CV Generator','সিভি তৈরি করুন','live'],
+['✉️','app','Application Generator','আবেদনপত্র তৈরি','live'],
+['🧮','calc','Academic Calculator','GPA, CGPA, Percentage, Attendance','live'],
+['🗓️','plan','Study Planner','রুটিন, লক্ষ্য ও Exam Countdown','live'],
+['🏛️','dir','Department Directory','বিভাগভিত্তিক তথ্যকেন্দ্র','live'],
+['🗂️','pdf','PDF & Document Tools','Image to PDF, Merge, Split, Compress','live'],
+['📚','lib','Academic Resource Library','সিলেবাস, প্রশ্নপত্র, সাজেশন','live'],
+['👤','dash','Student Dashboard','নিজস্ব প্রোফাইল ও ডকুমেন্ট','live'],
+['📢','notice','College Notice Board','নোটিশ ও একাডেমিক আপডেট','live'],
+['🤖','ai','Smart Academic Assistant','AI সহকারী','soon'],
+['🛒','shop','Student Marketplace','বই ও শিক্ষা সরঞ্জাম কেনাবেচা','soon'],
+['🔔','noti','Notification System','তাৎক্ষণিক আপডেট','live'],
+['🛠️','admin','Advanced Admin Dashboard','কোড ছাড়াই ওয়েবসাইট পরিচালনা','soon'],
+['🌐','exp','Future Expansion','অন্য কলেজেও ব্যবহারের পরিকল্পনা','soon']];
+$('hg').innerHTML=HUB.map(h=>`<button class="hc" onclick="openV('${h[1]}')"><span class="ic">${h[0]}</span><b>${h[2]}</b><span>${h[3]}</span><br>${h[4]==='live'?'<em>চালু আছে</em>':'<em class="soon">শীঘ্রই আসছে</em>'}</button>`).join('');
+const SOON={
+pdf:['PDF & Document Tools',['Image to PDF','PDF to Image','PDF Merge / Split','PDF Compress / Rotate','JPG / PNG to PDF','PDF Page Organizer']],
+lib:['Academic Resource Library',['বিভাগভিত্তিক সিলেবাস','পূর্ববর্তী বছরের প্রশ্নপত্র','বইয়ের তালিকা','সাজেশন ও স্টাডি ম্যাটেরিয়াল','বিভাগ, বর্ষ, বিষয় ও শিক্ষাবর্ষ অনুযায়ী খোঁজা']],
+dash:['Student Dashboard',['নাম, বিভাগ, সেশন, রোল, রেজি. নম্বর সংরক্ষণ','My Documents ও Saved Templates','Recent Activities ও Download History','Personal Study Planner']],
+notice:['College Notice Board',['কলেজের সাধারণ ও পরীক্ষার নোটিশ','ফরম পূরণ ও ভর্তি তথ্য','বিভাগীয় নোটিশ ও একাডেমিক ক্যালেন্ডার','Admin নোটিশ প্রকাশ করতে পারবে']],
+ai:['Smart Academic Assistant',['কঠিন বিষয় সহজভাবে বোঝা','Assignment-এর কাঠামো তৈরি','Reference ও Citation','পরীক্ষার প্রস্তুতির পরিকল্পনা','সহায়ক ব্যবস্থা, পড়াশোনার বিকল্প নয়']],
+shop:['Student Marketplace',['পুরোনো বই বিক্রি ও নতুন বই কেনা','শিক্ষা উপকরণ বিনিময়','ব্যবহৃত ক্যালকুলেটর ও সরঞ্জাম বিক্রি']],
+noti:['Notification System',['নতুন নোটিশ ও পরীক্ষার তারিখ','ফরম পূরণের সময়সীমা','নতুন শিক্ষাসামগ্রী','পরবর্তীতে Web Push Notification']],
+admin:['Advanced Admin Dashboard',['বিভাগ ও শিক্ষাবর্ষ পরিচালনা','নতুন Template তৈরি','Resource Upload ও Notice Publish','শিক্ষার্থীদের অ্যাকাউন্ট ও ব্যবহারের পরিসংখ্যান','সবকিছু কোড পরিবর্তন ছাড়াই']],
+exp:['Future Expansion',['অন্যান্য কলেজ যুক্ত করা','কলেজভিত্তিক প্রোফাইল ও লোগো','প্রতিষ্ঠানভিত্তিক Document Templates','Student Assistance Network']]};
+const head=t=>`<button class="ib x" onclick="closeV()">✕</button><h2>${t}</h2>`;
+function openV(k){
+ if(k==='cover'){window.scrollTo({top:0,behavior:'smooth'});return}
+ const b=$('vwb');
+ if(SOON[k]){const s=SOON[k];b.innerHTML=head(s[0])+`<p style="color:var(--muted);font-size:13px;margin:6px 0 10px">🚧 এই ফিচারটি শীঘ্রই আসছে। এখানে থাকবে:</p><ul class="ul">${s[1].map(x=>'<li>'+x+'</li>').join('')}</ul>`}
+ else{b.innerHTML=head(VW[k][0])+VW[k][1];if(VW[k][2])VW[k][2]()}
+ $('vw').style.display='block';document.body.style.overflow='hidden'}
+function closeV(){$('vw').style.display='none';document.body.style.overflow=''}
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeV()});
+async function pdfOf(html,name){
+ const h=document.createElement('div');h.style.cssText='position:fixed;left:-10000px;top:0;width:794px;min-height:1122px;background:#fff;color:#111';h.innerHTML=html;document.body.appendChild(h);
+ try{await document.fonts.ready;const cv=await html2canvas(h,{scale:2,backgroundColor:'#fff'});const {jsPDF}=window.jspdf;const p=new jsPDF({unit:'mm',format:'a4'});
+  p.addImage(cv.toDataURL('image/jpeg',.95),'JPEG',0,0,210,Math.min(297,cv.height/cv.width*210));p.save(name+'.pdf')}
+ catch(e){alert('Download hocche na, abar try koro.');console.error(e)}
+ h.remove()}
+const F2=(a,b)=>`<div class="r">${a}${b}</div>`,IN=(id,lb,ph='',ty='text')=>`<div><label>${lb}</label><input id="${id}" type="${ty}" placeholder="${ph}"></div>`,TA=(id,lb,ph='')=>`<label>${lb}</label><textarea id="${id}" placeholder="${ph}"></textarea>`;
+const sv=(k,o)=>{try{localStorage.setItem(k,JSON.stringify(o))}catch(e){}},ld=(k,d)=>{try{return JSON.parse(localStorage.getItem(k))||d}catch(e){return d}};
+
+/* ---- CV ---- */
+function cvHTML(){const g=i=>$(i).value.trim(),c=$('cvc').value,li=s=>s.split('\n').filter(x=>x.trim()).map(x=>'<li>'+esc(x)+'</li>').join('');
+ const sec=(t,b)=>b?`<div style="color:${c};border-bottom:2px solid ${c};font:700 14px Inter,sans-serif;letter-spacing:.12em;text-transform:uppercase;margin:20px 0 8px;padding-bottom:4px">${t}</div>${b}`:'';
+ const ct=[g('cvph'),g('cve'),g('cva')].filter(Boolean).map(esc).join(' &nbsp;|&nbsp; ');
+ return `<div style="padding:50px 56px;font:15px/1.6 Tinos,'Noto Serif Bengali',serif;color:#111"><div style="border-left:8px solid ${c};padding-left:16px"><div style="font:700 36px 'Playfair Display',serif;color:${c}">${esc(g('cvn')||'Your Name')}</div><div style="font-size:18px">${esc(g('cvt'))}</div></div><div style="margin-top:12px;font-size:14px">${ct}</div>`
+ +sec('Objective',g('cvs')?`<p>${esc(g('cvs'))}</p>`:'')+sec('Education',g('cved')?`<ul style="margin-left:18px">${li(g('cved'))}</ul>`:'')+sec('Experience / Projects',g('cvex')?`<ul style="margin-left:18px">${li(g('cvex'))}</ul>`:'')+sec('Skills',g('cvsk')?`<p>${esc(g('cvsk'))}</p>`:'')+sec('Languages',g('cvlg')?`<p>${esc(g('cvlg'))}</p>`:'')+'</div>'}
+function cvR(){$('cvv').innerHTML=cvHTML();const w=$('cvw').clientWidth;$('cvv').style.cssText='width:794px;zoom:'+Math.min(1,w/794);sv('rsh_cv',[...document.querySelectorAll('#vwb [id^=cv]')].filter(e=>e.id!=='cvv'&&e.id!=='cvw').map(e=>[e.id,e.value]))}
+/* ---- Application ---- */
+const AP={
+leave:{en:['Application for Leave','I respectfully state that I am a student of {y} ({d}), Roll No. {r}. I am unable to attend classes {f} due to {x}. I therefore pray that you would kindly grant me leave for the said period.'],bn:['ছুটির জন্য আবেদন','বিনীত নিবেদন এই যে, আমি আপনার কলেজের {d} বিভাগের {y} শ্রেণির শিক্ষার্থী, রোল নম্বর {r}। {x} কারণে আমি {f} ক্লাসে উপস্থিত থাকতে অসমর্থ। অতএব, উক্ত সময়ের জন্য আমাকে ছুটি মঞ্জুর করতে মহোদয়ের মর্জি হয়।']},
+fee:{en:['Application for Fee Waiver','I am a student of {y} ({d}), Roll No. {r}. My family is facing financial hardship due to {x}, and I am unable to pay the fees ({f}). I therefore humbly request you to kindly waive or reduce my fees.'],bn:['ফি মওকুফের আবেদন','আমি {d} বিভাগের {y} শ্রেণির শিক্ষার্থী, রোল নম্বর {r}। {x} কারণে আমার পরিবার আর্থিক সংকটে থাকায় ({f}) ফি পরিশোধ করতে অসমর্থ। অতএব, আমার ফি মওকুফ বা হ্রাস করার জন্য বিনীত অনুরোধ করছি।']},
+idc:{en:['Application for a New ID Card','I am a student of {y} ({d}), Roll No. {r}. My ID card has been {x}. I therefore request you to kindly issue a new ID card ({f}).'],bn:['নতুন আইডি কার্ডের আবেদন','আমি {d} বিভাগের {y} শ্রেণির শিক্ষার্থী, রোল নম্বর {r}। আমার আইডি কার্ডটি {x}। অতএব, একটি নতুন আইডি কার্ড ইস্যু করার জন্য বিনীত অনুরোধ করছি ({f})।']}};
+function apHTML(){const g=i=>$(i).value.trim(),k=$('apt').value,l=$('apl').value,[sub,body0]=AP[k][l],f=g('apf');
+ let body=body0;if(!f)body=body.replace(/\s*\(\{f\}\)|\s*\{f\}/g,'');
+ body=body.replace('{y}',esc(g('apy')||'…')).replace('{d}',esc(g('apd')||'…')).replace('{r}',esc(g('apr')||'…')).replace('{x}',esc(g('apx')||'…')).replace('{f}',esc(f));
+ const en=l==='en',nm=esc(g('apn')||'Your Name');
+ return `<div style="padding:60px 64px;font:16px/1.8 Tinos,'Noto Serif Bengali',serif;color:#111;min-height:700px"><p>${esc(g('apdt'))}</p><p style="margin-top:14px">${en?'To<br>The Principal<br>Govt. Rajendra College, Faridpur':'বরাবর<br>অধ্যক্ষ<br>সরকারি রাজেন্দ্র কলেজ, ফরিদপুর'}</p><p style="margin-top:14px"><b>${en?'Subject':'বিষয়'}: ${sub}</b></p><p style="margin-top:14px">${en?'Sir,':'জনাব,'}</p><p style="text-align:justify">${body}</p><p style="margin-top:24px">${en?'Yours obediently,':'বিনীত নিবেদক,'}<br><b>${nm}</b><br>${en?'Roll':'রোল'}: ${esc(g('apr'))}<br>${esc(g('apy'))}, ${esc(g('apd'))}</p></div>`}
+function apR(){$('apv').innerHTML=apHTML()}
+/* ---- Calculators ---- */
+function gpaRow(){const d=document.createElement('div');d.className='mini';d.innerHTML='<input type="number" step="0.01" placeholder="Grade point" oninput="gpaC()"><input type="number" step="0.5" placeholder="Credit" oninput="gpaC()"><button class="ib" onclick="this.parentNode.remove();gpaC()">✕</button>';$('gpar').appendChild(d)}
+function gpaC(){let a=0,c=0;document.querySelectorAll('#gpar .mini').forEach(r=>{const[g,k]=r.querySelectorAll('input');if(g.value!==''&&k.value!==''){a+=+g.value*+k.value;c+=+k.value}});$('gpao').textContent=c?'GPA / CGPA = '+(a/c).toFixed(2)+'  (Total credit '+c+')':'গ্রেড পয়েন্ট ও ক্রেডিট দিন'}
+function pcC(){const o=+$('pco').value,t=+$('pct').value;$('pcr').textContent=t?'Percentage = '+(o/t*100).toFixed(2)+'%':'—'}
+function atC(){const a=+$('ata').value,t=+$('att').value;if(!t){$('atr').textContent='—';return}const p=a/t*100;$('atr').textContent='Attendance = '+p.toFixed(2)+'% '+(p>=75?'✅ (পরীক্ষার যোগ্য)':'⚠️ (৭৫% এর কম)')}
+/* ---- Planner ---- */
+function plR(){const ex=ld('rsh_ex',[]).sort((a,b)=>a.d.localeCompare(b.d)),tk=ld('rsh_tk',[]),td=new Date(new Date().toDateString());
+ $('exl').innerHTML=ex.map((e,i)=>{const n=Math.ceil((new Date(e.d)-td)/864e5);return`<div class="ex"><span>${esc(e.n)} · ${e.d}</span><span><b>${n>0?n+' দিন বাকি':n===0?'আজ!':'শেষ'}</b> <button class="ib" onclick="plD('rsh_ex',${i})">✕</button></span></div>`}).join('')||'<p style="color:var(--muted);font-size:13px">কোনো পরীক্ষা যোগ করা হয়নি</p>';
+ const dn=tk.filter(t=>t.k).length;
+ $('tkl').innerHTML=`<div style="font-size:13px;margin:6px 0">অগ্রগতি: <b>${dn}/${tk.length}</b></div><div style="height:8px;background:var(--line);border-radius:9px;overflow:hidden"><div style="height:100%;width:${tk.length?dn/tk.length*100:0}%;background:#3ddc84"></div></div>`+tk.map((t,i)=>`<div class="ex"><label style="margin:0;display:flex;gap:8px;align-items:center;font-size:14px;color:var(--text)"><input type="checkbox" style="width:auto" ${t.k?'checked':''} onchange="plT(${i})">${esc(t.n)}</label><button class="ib" onclick="plD('rsh_tk',${i})">✕</button></div>`).join('')}
+function plD(k,i){const a=ld(k,[]);a.splice(i,1);sv(k,a);plR()}
+function plT(i){const a=ld('rsh_tk',[]);a[i].k=!a[i].k;sv('rsh_tk',a);plR()}
+function plAE(){if(!$('exn').value||!$('exd').value)return;const a=ld('rsh_ex',[]);a.push({n:$('exn').value,d:$('exd').value});sv('rsh_ex',a);$('exn').value='';plR()}
+function plAT(){if(!$('tkn').value)return;const a=ld('rsh_tk',[]);a.push({n:$('tkn').value,k:0});sv('rsh_tk',a);$('tkn').value='';plR()}
+function dirR(){const q=$('dq').value.toLowerCase();$('dgr').innerHTML=Object.entries(DEPT).filter(([e,b])=>(e+b).toLowerCase().includes(q)).map(([e,b])=>`<button class="hc" onclick="pickDept('${e}')"><b>${b}</b><span>Department of ${e}</span></button>`).join('')}
+function pickDept(e){closeV();$('clg').value='r';$('dept').value=e;render();window.scrollTo({top:0,behavior:'smooth'})}
+
+['pdf','lib','dash','notice','noti'].forEach(k=>delete SOON[k]);
+/* ===== ADMIN DATA: নোটিশ ও রিসোর্স এখানে যোগ করুন, সবাই দেখতে পাবে ===== */
+const NOTICES=[/* {d:'2026-11-24',c:'পরীক্ষা',t:'নোটিশের শিরোনাম',x:'বিস্তারিত',u:'link (optional)'} */];
+const RES=[/* {t:'শিরোনাম',dept:'English',yr:'First Year',type:'প্রশ্নপত্র',u:'https://...'} */];
+const dlB=(b,n)=>{const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([b],{type:'application/pdf'}));a.download=n;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),5e3)};
+async function pdfRun(m){const fs=[...$('pf').files];if(!fs.length)return alert('আগে ফাইল বাছাই করুন');const {PDFDocument,degrees}=PDFLib;
+ try{
+ if(m==='i2p'){const d=await PDFDocument.create();for(const f of fs){const bm=await createImageBitmap(f),c=document.createElement('canvas');c.width=bm.width;c.height=bm.height;c.getContext('2d').drawImage(bm,0,0);
+  const im=await d.embedPng(await new Promise(r=>c.toBlob(b=>b.arrayBuffer().then(r)))),W=595,H=842,k=Math.min(W/im.width,H/im.height,1);
+  d.addPage([W,H]).drawImage(im,{x:(W-im.width*k)/2,y:(H-im.height*k)/2,width:im.width*k,height:im.height*k})}dlB(await d.save(),'Images.pdf')}
+ else if(m==='merge'){const d=await PDFDocument.create();for(const f of fs){const s=await PDFDocument.load(await f.arrayBuffer());(await d.copyPages(s,s.getPageIndices())).forEach(p=>d.addPage(p))}dlB(await d.save(),'Merged.pdf')}
+ else{const s=await PDFDocument.load(await fs[0].arrayBuffer());
+  if(m==='rot'){s.getPages().forEach(p=>p.setRotation(degrees((p.getRotation().angle+90)%360)));dlB(await s.save(),'Rotated.pdf')}
+  else{const ix=[];($('pr').value||'1').split(',').forEach(x=>{const[a,b]=x.split('-').map(Number);for(let i=a;i<=(b||a);i++)if(i>=1&&i<=s.getPageCount())ix.push(i-1)});
+   const d=await PDFDocument.create();(await d.copyPages(s,ix)).forEach(p=>d.addPage(p));dlB(await d.save(),'Split.pdf')}}
+ }catch(e){alert('ফাইল প্রসেস করা যায়নি। সঠিক ফাইল দিন।');console.error(e)}}
+function libR(){const q=$('lq').value.toLowerCase(),d=$('ld').value;$('lr').innerHTML=RES.filter(r=>(!d||r.dept===d)&&(r.t+r.type+r.yr).toLowerCase().includes(q)).map(r=>`<div class="ex"><span><b>${esc(r.t)}</b><br><small style="color:var(--muted)">${esc(r.dept)} · ${esc(r.yr)} · ${esc(r.type)}</small></span><a class="ib" style="text-decoration:none;font-size:13px" href="${esc(r.u)}" target="_blank" rel="noopener">খুলুন</a></div>`).join('')||'<p style="color:var(--muted);font-size:13px">এখনো কিছু যোগ হয়নি</p>'}
+function noticeR(){return [...NOTICES].sort((a,b)=>b.d.localeCompare(a.d)).map(n=>`<div class="ex" style="display:block"><b>${esc(n.t)}</b> <small style="color:var(--gold)">${esc(n.c||'')} · ${esc(n.d)}</small><div style="color:var(--muted);font-size:13px;margin-top:3px">${esc(n.x||'')} ${n.u?`<a style="color:var(--gold)" href="${esc(n.u)}" target="_blank" rel="noopener">লিংক</a>`:''}</div></div>`).join('')||'<p style="color:var(--muted);font-size:13px">এখন কোনো নোটিশ নেই</p>'}
+const DSF=['dsn','dsr','dsg','dss','dsp'];
+function dsS(){sv('rsh_pf',{...Object.fromEntries(DSF.map(i=>[i,$(i).value])),dd:$('dsd').value,pg:$('dsq').value,yr:$('dsy').selectedIndex});$('dsm').textContent='সংরক্ষিত ✅'}
+function dsY(){$('dsy').innerHTML=YEARS[$('dsq').value].map((y,i)=>`<option value="${i}">${y[0]}</option>`).join('')}
+function dsA(){dsS();$('name').value=$('dsn').value;$('roll').value=$('dsr').value;$('reg').value=$('dsg').value;$('sess').value=$('dss').value;$('ph').value=$('dsp').value;$('dept').value=$('dsd').value;$('prog').value=$('dsq').value;fillYears();$('year').selectedIndex=$('dsy').selectedIndex;render();closeV();window.scrollTo({top:0,behavior:'smooth'})}
+async function notiOn(){if(!('Notification' in window))return alert('এই ব্রাউজারে সাপোর্ট নেই');const p=await Notification.requestPermission();$('nm').textContent=p==='granted'?'চালু হয়েছে ✅ সাইট খুললে ৩ দিনের মধ্যে পরীক্ষা থাকলে জানানো হবে':'অনুমতি দেওয়া হয়নি';if(p==='granted')notiChk()}
+function notiChk(){try{if(Notification.permission!=='granted')return;const td=new Date(new Date().toDateString());ld('rsh_ex',[]).forEach(e=>{const n=Math.ceil((new Date(e.d)-td)/864e5);if(n>=0&&n<=3)new Notification('📚 '+e.n,{body:n?n+' দিন বাকি':'আজ পরীক্ষা!'})})}catch(e){}}
+notiChk();
+const DO=Object.keys(DEPT).map(d=>`<option>${d}</option>`).join('');
+const VW={
+pdf:['PDF & Document Tools',`<p style="color:var(--muted);font-size:13px;margin:4px 0 8px">ফাইল আপনার ফোনেই প্রসেস হয়, কোথাও আপলোড হয় না</p><input type="file" id="pf" multiple accept="image/*,application/pdf"><label>Split-এর জন্য পেজ (যেমন 1-3,5)</label><input id="pr" placeholder="1-3,5"><div class="r"><button class="btn pr" onclick="pdfRun('i2p')">Image → PDF</button><button class="btn pr" onclick="pdfRun('merge')">PDF Merge</button><button class="btn pr" onclick="pdfRun('split')">PDF Split</button><button class="btn pr" onclick="pdfRun('rot')">PDF Rotate 90°</button></div><p style="color:var(--muted);font-size:12px;margin-top:8px">Split ও Rotate প্রথম ফাইলে কাজ করে। Merge-এ একসাথে একাধিক PDF বাছাই করুন।</p>`],
+lib:['Academic Resource Library',`${F2(`<div><label>বিভাগ</label><select id="ld" onchange="libR()"><option value="">সব বিভাগ</option>${DO}</select></div>`,IN('lq','খুঁজুন','বিষয় / বর্ষ / ধরন'))}<div id="lr" oninput="libR()"></div>`,()=>{$('lq').oninput=libR;libR()}],
+notice:['College Notice Board',noticeR()],
+dash:['Student Dashboard',`<p style="color:var(--muted);font-size:13px;margin:4px 0">একবার তথ্য সেভ করুন, কভার পেজে এক ক্লিকে বসে যাবে (শুধু এই ডিভাইসে সেভ থাকে)</p>${IN('dsn','নাম')}${F2(IN('dsr','রোল'),IN('dsg','রেজি. নং'))}${F2(IN('dss','সেশন','2025-2026'),IN('dsp','মোবাইল','','tel'))}
+${F2(`<div><label>বিভাগ</label><select id="dsd">${DO}</select></div>`,`<div><label>স্তর</label><select id="dsq" onchange="dsY()"><option>Honours</option><option>Degree (Pass)</option><option>Masters</option></select></div>`)}<label>বর্ষ</label><select id="dsy"></select>
+<div class="r"><button class="btn pr" onclick="dsS()">সেভ করুন</button><button class="btn gh" onclick="dsA()">কভার পেজে ব্যবহার করুন</button></div><div class="res" id="dsm" style="margin-top:8px">My Documents: CV ও Planner এই ব্রাউজারে সেভ হয়</div>`,()=>{dsY();const o=ld('rsh_pf',null);if(o){DSF.forEach(i=>$(i).value=o[i]||'');$('dsd').value=o.dd;$('dsq').value=o.pg;dsY();$('dsy').selectedIndex=o.yr||0}}],
+noti:['Notification System',`<p style="color:var(--muted);font-size:13px;margin:4px 0 8px">Study Planner-এ যোগ করা পরীক্ষা ৩ দিনের মধ্যে থাকলে সাইট খুললে ব্রাউজার নোটিফিকেশন আসবে। Web Push (সাইট বন্ধ থাকলেও) পরে সার্ভার দিয়ে যোগ করা যাবে।</p><button class="btn pr" onclick="notiOn()">🔔 নোটিফিকেশন চালু করুন</button><div class="res" id="nm" style="margin-top:8px">—</div>`],
+cv:['CV Generator',`<p style="color:var(--muted);font-size:13px;margin:4px 0 8px">তথ্য দিন, ডানে লাইভ প্রিভিউ দেখুন, তারপর PDF নামান</p><div class="two"><div oninput="cvR()">
+${F2(IN('cvn','Full name','Your name'),IN('cvt','Title / Position','e.g. Student, English Honours'))}${F2(IN('cvph','Mobile','01XXXXXXXXX','tel'),IN('cve','Email','you@mail.com','email'))}${IN('cva','Address','Faridpur')}
+${TA('cvs','Objective / Summary')}${TA('cved','Education (প্রতি লাইনে একটি)','HSC - Govt. Rajendra College, 2024\nBA (Hons) English - NU, running')}${TA('cvex','Experience / Projects (প্রতি লাইনে একটি)')}${IN('cvsk','Skills (comma দিয়ে)','MS Word, Communication')}${IN('cvlg','Languages','Bangla, English')}
+<label>Colour</label><input type="color" id="cvc" value="#0f6b3a"><button class="btn pr" onclick="pdfOf(cvHTML(),'CV_'+($('cvn').value.trim()||'Student').replace(/[^\\w\\-]+/g,'_'))">⬇ Download CV (PDF)</button></div>
+<div class="sh" id="cvw"><div id="cvv"></div></div></div>`,()=>{ld('rsh_cv',[]).forEach(([i,v])=>{if($(i))$(i).value=v});cvR()}],
+app:['Application Generator',`<div class="two"><div oninput="apR()" onchange="apR()">
+${F2(`<div><label>Type</label><select id="apt"><option value="leave">Leave / ছুটি</option><option value="fee">Fee waiver / ফি মওকুফ</option><option value="idc">ID card / আইডি কার্ড</option></select></div>`,`<div><label>Language</label><select id="apl"><option value="bn">বাংলা</option><option value="en">English</option></select></div>`)}
+${IN('apn','Your name')}${F2(IN('apr','Roll'),IN('apy','Year / Class','যেমন: অনার্স ২য় বর্ষ'))}${IN('apd','Department','যেমন: ইংরেজি')}${TA('apx','কারণ / Reason')}${IN('apf','সময় / বিস্তারিত (optional)','যেমন: ৩ দিন')}${IN('apdt','Date','')}
+<button class="btn pr" onclick="pdfOf(apHTML(),'Application')">⬇ Download PDF</button></div><div class="sh"><div id="apv"></div></div></div>`,()=>{const d=new Date();$('apdt').value=d.getDate()+' '+MEN[d.getMonth()]+', '+d.getFullYear();apR()}],
+calc:['Academic Calculator',`<div class="two"><div><h3>GPA / CGPA Calculator</h3><div id="gpar"></div><button class="btn gh" onclick="gpaRow()">+ বিষয় যোগ করুন</button><div class="res" id="gpao"></div></div>
+<div><h3>Percentage</h3>${F2(`<div><label>প্রাপ্ত নম্বর</label><input id="pco" type="number" oninput="pcC()"></div>`,`<div><label>মোট নম্বর</label><input id="pct" type="number" oninput="pcC()"></div>`)}<div class="res" id="pcr">—</div>
+<h3>Attendance</h3>${F2(`<div><label>উপস্থিত ক্লাস</label><input id="ata" type="number" oninput="atC()"></div>`,`<div><label>মোট ক্লাস</label><input id="att" type="number" oninput="atC()"></div>`)}<div class="res" id="atr">—</div></div></div>`,()=>{gpaRow();gpaRow();gpaRow();gpaC()}],
+plan:['Study Planner',`<div class="two"><div><h3>Exam Countdown</h3>${F2(IN('exn','পরীক্ষার নাম'),IN('exd','তারিখ','','date'))}<button class="btn gh" onclick="plAE()">+ পরীক্ষা যোগ করুন</button><div id="exl"></div></div>
+<div><h3>Daily Goals / Routine</h3>${IN('tkn','আজকের লক্ষ্য','যেমন: ইংরেজি ২ অধ্যায় পড়া')}<button class="btn gh" onclick="plAT()">+ লক্ষ্য যোগ করুন</button><div id="tkl"></div></div></div>`,plR],
+dir:['Department Directory',`<input id="dq" placeholder="বিভাগ খুঁজুন..." oninput="dirR()"><p style="color:var(--muted);font-size:12px;margin:8px 0">বিভাগে ক্লিক করলে কভার পেজে সেই বিভাগ সিলেক্ট হবে</p><div class="hg" id="dgr"></div>`,dirR]};
+</script></body></html>
