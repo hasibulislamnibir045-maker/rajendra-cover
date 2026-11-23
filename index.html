@@ -148,7 +148,7 @@ input:focus,select:focus,textarea:focus{border-color:var(--gold)}input[type=colo
 <h3>Submitted to</h3><input id="toName" placeholder="Teacher name (optional)"><input id="toDesig" placeholder="Designation" style="margin-top:6px" value="Head of the Department">
 <h3>Submitted by</h3><input id="name" placeholder="Your name">
 <div class="r"><div><label>Class roll</label><input id="roll"></div><div><label>Session</label><input id="sess" value="2025-2026"></div></div>
-<div class="r"><div><label>Reg. no (optional)</label><input id="reg"></div><div><label>Mobile number (optional)</label><input id="ph" type="tel"></div></div>
+<div class="r"><div><label>Reg. no (optional)</label><input id="reg"></div><div><label>Mobile number </label><input id="ph" type="tel"></div></div>
 <label>Submission date</label><input type="date" id="date">
 <button class="btn pr" id="dl">&#11015; Download PDF</button><button class="btn pr" id="dli">&#128247; Download Image</button><button class="btn gh" id="rs">&#8635; Reset</button>
 </section>
@@ -301,15 +301,15 @@ if(window.ResizeObserver)new ResizeObserver(fitP).observe($('fit'));
 /* ================= FEATURE HUB ================= */
 const HUB=[
 ['📄','cover','Cover Page Generator','কভার পেজ তৈরি','live'],
-['🧑‍💼','cv','CV Generator','সিভি তৈরি করুন','live'],
+['🧑‍💼','cv','CV Generator','সিভি তৈরি করুন','soon'],
 ['✉️','app','Application Generator','আবেদনপত্র তৈরি','live'],
 ['🧮','calc','Academic Calculator','GPA, CGPA, Percentage, Attendance','live'],
-['🗓️','plan','Study Planner','রুটিন, লক্ষ্য ও Exam Countdown','live'],
-['🏛️','dir','Department Directory','বিভাগভিত্তিক তথ্যকেন্দ্র','live'],
+['🗓️','plan','Study Planner','রুটিন, লক্ষ্য ও Exam Countdown','soon'],
+['🏛️','dir','Department Directory','বিভাগভিত্তিক তথ্যকেন্দ্র','soon'],
 ['🗂️','pdf','PDF & Document Tools','Image to PDF, Merge, Split, Compress','live'],
-['📚','lib','Academic Resource Library','সিলেবাস, প্রশ্নপত্র, সাজেশন','live'],
-['👤','dash','Student Dashboard','নিজস্ব প্রোফাইল ও ডকুমেন্ট','live'],
-['📢','notice','College Notice Board','নোটিশ ও একাডেমিক আপডেট','live'],
+['📚','lib','Academic Resource Library','সিলেবাস, প্রশ্নপত্র, সাজেশন','soon'],
+['👤','dash','Student Dashboard','নিজস্ব প্রোফাইল ও ডকুমেন্ট','soon'],
+['📢','notice','College Notice Board','নোটিশ ও একাডেমিক আপডেট','soon'],
 ['🤖','ai','Smart Academic Assistant','AI সহকারী','soon'],
 ['🛒','shop','Student Marketplace','বই ও শিক্ষা সরঞ্জাম কেনাবেচা','soon'],
 ['🔔','noti','Notification System','তাৎক্ষণিক আপডেট','live'],
@@ -429,3 +429,4 @@ plan:['Study Planner',`<div class="two"><div><h3>Exam Countdown</h3>${F2(IN('exn
 <div><h3>Daily Goals / Routine</h3>${IN('tkn','আজকের লক্ষ্য','যেমন: ইংরেজি ২ অধ্যায় পড়া')}<button class="btn gh" onclick="plAT()">+ লক্ষ্য যোগ করুন</button><div id="tkl"></div></div></div>`,plR],
 dir:['Department Directory',`<input id="dq" placeholder="বিভাগ খুঁজুন..." oninput="dirR()"><p style="color:var(--muted);font-size:12px;margin:8px 0">বিভাগে ক্লিক করলে কভার পেজে সেই বিভাগ সিলেক্ট হবে</p><div class="hg" id="dgr"></div>`,dirR]};
 </script></body></html>
+
