@@ -1,6 +1,7 @@
 /* ===== Tuition Hub: tutor registration, tuition post, dashboard, admin approval ===== */
 (function () {
   var API = 'https://script.google.com/macros/s/AKfycbxM3COcrkebmp17kL8tOEM3SbIYbmffrQW1ISx2qvhwer3VeeocQoo_EqxULxkPZuId/exec'; // Apps Script Web app URL ekhane boshan
+  window.RSH_API = API;
   var ST = { t: [], p: [], tab: 'posts', q: '', cr: ld('rsh_tu_cr', null), my: null, ad: null, ap: '', msg: '' };
   var LB = { pending: '⏳ অনুমোদনের অপেক্ষায়', approved: '✅ চালু আছে', rejected: '❌ বাতিল', confirmed: '🎉 টিউটর ঠিক হয়েছে' };
   var MED = 'sel:বাংলা মাধ্যম,ইংরেজি ভার্সন,ইংরেজি মাধ্যম,মাদ্রাসা';
