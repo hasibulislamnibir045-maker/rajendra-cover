@@ -17,6 +17,8 @@
     var ex = {}, go = {};
     D.ex.forEach(function (e) { (ex[e.d] = ex[e.d] || []).push(e.n); });
     D.tk.forEach(function (t) { if (t.d) (go[t.d] = go[t.d] || []).push(t); });
+    var rt = {}, hasRt = window.stuIn && stuIn();
+    if (hasRt) for (var q = 1; q <= days; q++) { var kk = key(y, m, q), L = stuRt(kk); if (L.length) rt[kk] = L; }
 
     var h = '<div class="cal-h"><button class="ib" id="calP">‹</button><b>' + MBN[m] + ' ' + bn(y) +
       '</b><button class="ib" id="calN">›</button></div><div class="cal-g">';
@@ -24,17 +26,21 @@
     for (var i = 0; i < first; i++) h += '<div class="cal-d off"></div>';
     for (var d = 1; d <= days; d++) {
       var k = key(y, m, d), c = 'cal-d';
-      if (ex[k]) c += ' ex'; else if (go[k]) c += ' go';
+      if (ex[k]) c += ' ex'; else if (go[k]) c += ' go'; else if (rt[k]) c += ' rt';
       if (k === tk) c += ' td';
       if (k === sel) c += ' sl';
-      var dots = (ex[k] ? '<i class="dx"></i>' : '') + (go[k] ? '<i class="dg2"></i>' : '');
+      var dots = (ex[k] ? '<i class="dx"></i>' : '') + (go[k] ? '<i class="dg2"></i>' : '') + (rt[k] ? '<i class="dr"></i>' : '');
       h += '<button class="' + c + '" data-k="' + k + '"><span>' + bn(d) + '</span>' + dots + '</button>';
     }
-    h += '</div><div class="cal-l"><span><i class="dx"></i> পরীক্ষা</span><span><i class="dg2"></i> লক্ষ্য / প্ল্যান</span><span><i class="dt2"></i> আজ</span></div>';
+    h += '</div><div class="cal-l"><span><i class="dx"></i> পরীক্ষা</span><span><i class="dg2"></i> লক্ষ্য / প্ল্যান</span><span><i class="dt2"></i> আজ</span>' + (hasRt ? '<span><i class="dr"></i> আপনার ক্লাস রুটিন</span>' : '') + '</div>';
 
     // selected day panel
     if (sel) {
-      var items = (ex[sel] || []).map(function (n) { return '<div class="ex"><span>📚 <b>' + esc(n) + '</b></span></div>'; })
+      var items = (rt[sel] || []).map(function (r) {
+        var tm = r.st ? bn(r.st) + (r.en ? '–' + bn(r.en) : '') : '';
+        return '<div class="ex rtl ' + esc(r.k) + '"><span><b>' + esc(r.sub) + '</b> <small>' + ({ exam: '📝 পরীক্ষা', holiday: '🏖️ ছুটি' }[r.k] || '📘 ক্লাস') + '</small><br><small style="color:var(--muted)">' +
+          [tm && '⏰ ' + tm, r.tch && '👨‍🏫 ' + esc(r.tch), r.room && '🚪 ' + esc(r.room)].filter(Boolean).join(' · ') + '</small></span></div>';
+      }).concat((ex[sel] || []).map(function (n) { return '<div class="ex"><span>📚 <b>' + esc(n) + '</b></span></div>'; }))
         .concat((go[sel] || []).map(function (t) { return '<div class="ex"><span>' + (t.k ? '✅' : '🎯') + ' ' + esc(t.n) + '</span></div>'; }));
       h += '<div class="cal-p"><b>' + bnDay(sel) + '</b>' + (items.join('') || '<p class="cal-e">এই দিনে কিছু নেই</p>') +
         '<div class="mini" style="grid-template-columns:1fr auto auto"><input id="calT" placeholder="নতুন লক্ষ্য / পরীক্ষার নাম">' +
@@ -47,7 +53,7 @@
 
   function mount() {
     var s = document.getElementById('calsec'); if (!s) return;
-    s.innerHTML = '<h2>📅 Student Calendar</h2><p>Study Planner-এর পরীক্ষা ও লক্ষ্য এখানে হাইলাইট হয়ে দেখাবে</p><div class="cal" id="calbox"></div>';
+    s.innerHTML = '<h2>📅 Student Calendar</h2><p>Study Planner-এর পরীক্ষা ও লক্ষ্য হাইলাইট হবে। Student Login করলে আপনার ক্লাসের রুটিনও (নীল রঙে) দেখাবে</p><div class="cal" id="calbox"></div>';
     document.getElementById('calbox').addEventListener('click', function (e) {
       var b = e.target.closest('button'); if (!b) return;
       if (b.id === 'calP') { cur.setMonth(cur.getMonth() - 1); calR(); return; }
