@@ -1,1 +1,20 @@
-
+<!DOCTYPE html>
+<html lang="bn"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Student Book Marketplace · Rajendra Student Hub</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Noto+Serif+Bengali:wght@400;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/market.css"></head><body>
+<header class="bm-h"><a class="bm-ib" href="../" title="হোমে ফিরুন">←</a><b class="bm-logo">বইহাট</b>
+<input id="q" type="search" placeholder="বই, লেখক বা বিষয় খুঁজুন"><button class="bm-ib" id="acc">👤</button></header>
+<main>
+<div class="bm-tabs" id="tabs"><button data-c="" class="on">সব বই</button><button data-c="new">নতুন বই</button><button data-c="used">পুরোনো বই</button><select id="dept"><option value="">সব বিভাগ</option></select></div>
+<div id="cfg" class="bm-note" hidden></div>
+<div class="bm-grid" id="grid"></div>
+<div id="empty" class="bm-note" hidden>কোনো বই পাওয়া যায়নি। প্রথম বইটি আপনিই বিক্রির জন্য তুলুন।</div>
+</main>
+<nav class="bm-nav"><button data-n="home"><i>🏠</i>হোম</button><button data-n="sell" class="sell"><i>＋</i>বই বেচুন</button><button data-n="mine"><i>📦</i>আমার বই</button><button data-n="acc"><i>👤</i>অ্যাকাউন্ট</button></nav>
+<div id="md" class="bm-m" hidden><div class="bm-box" id="mb"></div></div>
+<div id="cf" class="bm-m top" hidden><div class="bm-box sm" id="cb"></div></div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+<script src="js/config.js"></script><script src="js/app.js"></script>
+</body></html>
