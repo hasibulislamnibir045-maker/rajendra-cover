@@ -50,10 +50,17 @@ function authForm(m='in'){const up=m==='up';
  openM(`<h2>${up?'নতুন অ্যাকাউন্ট':'লগইন'}</h2><form id="af"><label>ইমেইল</label><input id="e" type="email" required>${up?`<label>নাম</label><input id="n" required><label>বিভাগ</label><select id="d">${opt(DEPTS)}</select><div class="row"><div><label>সেশন</label><input id="s" placeholder="2025-2026"></div><div><label>মোবাইল</label><input id="m" type="tel" required></div></div>`:''}
  <label>পাসওয়ার্ড (কমপক্ষে ৬ অক্ষর)</label><input id="pw" type="password" minlength="6" required><button class="btn">${up?'অ্যাকাউন্ট খুলুন':'লগইন করুন'}</button></form>
  <button class="btn gh" onclick="authForm('${up?'in':'up'}')">${up?'আগে থেকেই অ্যাকাউন্ট আছে':'নতুন অ্যাকাউন্ট খুলুন'}</button>`);
- $('af').onsubmit=async e=>{e.preventDefault();const em=$('e').value,pw=$('pw').value;let r;
-  if(up)r=await sb.auth.signUp({email:em,password:pw,options:{data:{full_name:$('n').value,department:$('d').value,session:$('s').value,mobile:$('m').value}}});
-  else r=await sb.auth.signInWithPassword({email:em,password:pw});
-  if(r.error)return toast(r.error.message);if(up&&!r.data.session)return toast('ইমেইলে যাচাই লিংক গেছে, যাচাই করে লগইন করুন');closeM();toast('স্বাগতম!')}}
+ $('af').onsubmit=async e=>{e.preventDefault();
+  try{
+   if(!sb)throw new Error('Supabase connect hoyni. index.html e supabase script line nei, othoba config.js e bhul ache');
+   const em=$('e').value,pw=$('pw').value;let r;
+   if(up)r=await sb.auth.signUp({email:em,password:pw,options:{data:{full_name:$('n').value,department:$('d').value,session:$('s').value,mobile:$('m').value}}});
+   else r=await sb.auth.signInWithPassword({email:em,password:pw});
+   if(r.error)throw r.error;
+   if(up&&!r.data.session){alert('Account khola hoyeche kintu login hoyni. Supabase e Confirm email bondho kora ache kina dekho, tarpor "আগে থেকেই অ্যাকাউন্ট আছে" chepe login koro.');return}
+   closeM();toast('স্বাগতম!');
+  }catch(er){alert('Error: '+(er.message||er))}
+ }}
 async function account(){if(!ok)return toast('আগে Supabase সংযোগ দিন');if(!me)return authForm();if(!prof)await loadProf();
  openM(`<h2>আমার প্রোফাইল</h2>${prof?.is_blocked?'<p class="bm-note" style="color:var(--bad)">আপনার অ্যাকাউন্ট ব্লক করা আছে।</p>':''}<form id="pf"><label>ইমেইল</label><input value="${esc(me.email)}" disabled>
  <label>নাম</label><input id="n" value="${esc(prof?.full_name)}" required><label>বিভাগ</label><select id="d">${opt(DEPTS,prof?.department)}</select>
