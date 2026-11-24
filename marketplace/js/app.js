@@ -17,6 +17,7 @@ const shrink=f=>new Promise(r=>{const i=new Image();i.onload=()=>{const k=Math.m
 async function init(){
  $('dept').innerHTML='<option value="">সব বিভাগ</option>'+opt(DEPTS);
  if(!ok){$('cfg').hidden=false;$('cfg').innerHTML='⚙️ Supabase সংযোগ বাকি আছে। <b>js/config.js</b> ফাইলে URL ও anon key বসান।';return}
+ if(typeof supabase==='undefined'){$('cfg').hidden=false;$('cfg').innerHTML='⚠️ Supabase library লোড হয়নি। index.html-এ script লাইন ঠিক আছে কিনা দেখুন।';return}
  sb=supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
  sb.auth.onAuthStateChange((_e,s)=>{me=s?.user||null;loadProf()});
  const{data}=await sb.auth.getSession();me=data.session?.user||null;await loadProf();load()}
