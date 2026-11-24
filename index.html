@@ -437,4 +437,13 @@ dir:['Department Directory',`<input id="dq" placeholder="বিভাগ খু�
 <script src="student.js"></script>
 <script src="market.js"></script>
 <script src="admin.js"></script>
+<script>
+document.addEventListener('click',function(e){
+  var b=e.target.closest('.hc');
+  if(b&&/'shop'/.test(b.getAttribute('onclick')||'')){
+    e.preventDefault();e.stopImmediatePropagation();
+    location.href='marketplace/';
+  }
+},true);
+</script>
 </body></html>
