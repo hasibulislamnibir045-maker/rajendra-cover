@@ -19,7 +19,7 @@ details=function(id){const p=items.find(x=>x.id===id);if(!p)return;
  <div style="color:var(--muted)">${esc(p.author||'')}</div><div class="pr" style="font-size:26px">${tk(p.price)}${p.original_price?`<s>${tk(p.original_price)}</s>`:''}</div>
  <div class="chips"><span>${p.condition==='new'?'নতুন':'পুরোনো'}</span>${[p.category,p.department,p.subject,p.semester].filter(Boolean).map(x=>`<span>${esc(x)}</span>`).join('')}${p.status==='sold'?'<span style="color:var(--bad)">বিক্রি হয়ে গেছে</span>':''}</div>
  <p>${esc(p.description||'')}</p><label>বিক্রেতা</label><b>${esc(p.seller_name||'')}</b>
- ${p.status!=='available'?'<p class="bm-note">এটি আর কেনা যাবে না।</p>':me&&me.id===p.seller_id?'<p class="bm-note">এটি আপনার নিজের পোস্ট।</p>':`<button class="btn" onclick="orderForm('${p.id}')">🛒 অর্ডার করুন</button><p class="bm-note" style="margin-top:10px">ক্যাশ অন ডেলিভারি · ফরিদপুরের মধ্যে। বিক্রেতা নিশ্চিত করলে যোগাযোগের নম্বর পাবেন।</p>`}
+ ${p.status!=='available'?'<p class="bm-note">এটি আর কেনা যাবে না।</p>':p.kind==='rokomari'?(/^https?:\/\//.test(p.affiliate_url||'')?`<a ${bigBtn} href="${esc(p.affiliate_url)}" target="_blank" rel="noopener sponsored">রকমারিতে কিনুন</a>`:''):me&&me.id===p.seller_id?'<p class="bm-note">এটি আপনার নিজের পোস্ট।</p>':`<button class="btn" onclick="orderForm('${p.id}')">🛒 অর্ডার করুন</button><p class="bm-note" style="margin-top:10px">ক্যাশ অন ডেলিভারি · ফরিদপুরের মধ্যে। বিক্রেতা নিশ্চিত করলে যোগাযোগের নম্বর পাবেন।</p>`}
  ${me&&me.id!==p.seller_id?`<button class="btn gh" onclick="report('${p.id}')">⚑ রিপোর্ট করুন</button>`:''}`)};
 
 function orderForm(id){if(!need())return;const p=items.find(x=>x.id===id);
@@ -62,8 +62,18 @@ const _sell=sellForm;sellForm=function(p){_sell(p);const f=$('sf');if(!f||$('cat
  f.insertAdjacentHTML('afterbegin','<label>ক্যাটাগরি</label><select id="cat">'+cats.map(c=>`<option ${p&&c.name===p.category?'selected':''}>${esc(c.name)}</option>`).join('')+'</select>');
  $('mb').querySelectorAll('h2,label').forEach(n=>n.textContent=n.textContent.replace('বইয়ের','পণ্যের').replace('বই ','পণ্য '))};
 
-const _mine=mine;mine=async function(){if(!need())return;await _mine();
- const h=items.filter(p=>p.seller_id===me.id&&p.approval!=='approved').map(p=>`<div class="od"><b>${esc(p.title)}</b><span class="st ${p.approval==='rejected'?'cancelled':'new'}">${p.approval==='rejected'?'বাতিল':'অনুমোদনের অপেক্ষায়'}</span>${p.reject_reason?`<div><small>কারণ: ${esc(p.reject_reason)}</small></div>`:''}</div>`).join('');
- $('mb').insertAdjacentHTML('beforeend',(h?'<h3 class="sh">অনুমোদনের অপেক্ষায়</h3>'+h:'')+'<button class="btn gh" onclick="ordersView()">📋 আমার অর্ডার</button>')};
+/* আমার দোকান: nijer shob pronno, order, bikroy ekhane */
+mine=async function(){if(!need())return;await load();
+ const mp=items.filter(p=>p.seller_id===me.id),{data}=await sb.from('orders').select('status,order_items(price,qty)').eq('seller_id',me.id),o=data||[];
+ const earn=o.filter(x=>x.status==='completed').reduce((t,x)=>t+x.order_items.reduce((a,i)=>a+i.price*i.qty,0),0),nw=o.filter(x=>x.status==='new').length,n=f=>mp.filter(f).length;
+ const c=[['📦','মোট পণ্য',mp.length],['🟢','বিক্রির জন্য',n(p=>p.approval==='approved'&&p.status==='available')],['✅','বিক্রি হয়েছে',n(p=>p.status==='sold')],['⏳','অপেক্ষায়',n(p=>p.approval==='pending')],['📥','নতুন অর্ডার',nw],['💰','মোট বিক্রয়',tk(earn)]];
+ const sp=p=>p.is_hidden?`<span class="st cancelled">Admin লুকিয়েছেন${p.hidden_reason?': '+esc(p.hidden_reason):''}</span>`:p.approval==='pending'?'<span class="st new">অনুমোদনের অপেক্ষায়</span>':p.approval==='rejected'?`<span class="st cancelled">বাতিল${p.reject_reason?': '+esc(p.reject_reason):''}</span>`:p.status==='sold'?'<span class="st completed">বিক্রি হয়েছে</span>':'<span class="st accepted">বিক্রির জন্য আছে</span>';
+ openM(`<div class="shop"><i>🏪</i><div><h2>${esc(prof?.full_name||'আমার')}-এর দোকান</h2><small>${esc(prof?.department||'')}</small></div></div>
+ <div class="dash">${c.map(x=>`<div><i>${x[0]}</i><b>${x[2]}</b><small>${x[1]}</small></div>`).join('')}</div>
+ <div class="row"><button class="btn" onclick="sellForm()">＋ নতুন পণ্য</button><button class="btn gh" onclick="ordersView()">🧾 অর্ডার${nw?' ('+nw+')':''}</button></div>
+ <h3 class="sh">আমার পণ্য</h3>${mp.map(p=>`<div class="mine">${p.images[0]?`<img src="${img(p.images[0])}" alt="">`:'<div class="ph"></div>'}<div><b>${esc(p.title)}</b><br>${tk(p.price)} ${sp(p)}
+ <div class="acts">${p.status==='available'?`<button onclick="editP('${p.id}')">✏️ এডিট</button><button onclick="markSold('${p.id}')">✅ বিক্রি হয়েছে</button>`:''}<button class="dl" onclick="delP('${p.id}')">🗑 ${p.status==='sold'?'সরান':'মুছুন'}</button></div></div></div>`).join('')||'<p class="bm-note">আপনার দোকানে এখনো কোনো পণ্য নেই। ওপরের ＋ বোতামে চাপুন।</p>'}`)};
+const _ov=ordersView;ordersView=async function(){await _ov();if($('mb').querySelector('h2'))$('mb').insertAdjacentHTML('beforeend','<button class="btn gh" onclick="mine()">← আমার দোকান</button>')};
+const _acc=account;account=async function(){await _acc();if(!me||!$('pf')||prof?.role!=='admin')return;$('mb').insertAdjacentHTML('beforeend',`<a ${bigBtn} href="admin.html">⚙️ অ্যাডমিন ড্যাশবোর্ড</a>`)};
 
 if(sb)loadCats().then(()=>{if(items.length)render()});
