@@ -10,7 +10,7 @@
    const el=document.getElementById(id),list=data.filter(b=>(b.position||'top')===pos);
    if(!el||!list.length)return;
    el.innerHTML='<div class="bn-t">'+list.map(b=>{
-    const i=`<img src="${u(b.image)}" alt="" loading="lazy">`;
+    const i=`<img src="${u(b.image)}" alt="" loading="lazy" onerror="this.closest('.bn-s').remove()">`;
     return `<div class="bn-s">${/^https?:\/\//.test(b.link||'')?`<a href="${b.link}" rel="noopener">${i}</a>`:i}</div>`}).join('')+'</div>'
     +(list.length>1?'<div class="bn-d">'+list.map((_,i)=>`<i class="${i?'':'on'}"></i>`).join('')+'</div>':'');
    el.hidden=false;
