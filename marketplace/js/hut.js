@@ -1,5 +1,6 @@
 /* Campus Hut · Dhap 2: category, order flow, approval screen. app.js-er PORE load hoy. */
 let cats=[],cat='';
+const IC={"home": "<path d=\"M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z\"/>", "store": "<path d=\"M4 9l1-5h14l1 5M4 9a2.5 2.5 0 0 0 5 0 2.5 2.5 0 0 0 6 0 2.5 2.5 0 0 0 5 0M5 12v8h14v-8M10 20v-4h4v4\"/>", "plus": "<path d=\"M12 5v14M5 12h14\"/>", "user": "<circle cx=\"12\" cy=\"8\" r=\"4\"/><path d=\"M4 21c0-4 4-6 8-6s8 2 8 6\"/>", "back": "<path d=\"M19 12H5M12 19l-7-7 7-7\"/>", "search": "<circle cx=\"11\" cy=\"11\" r=\"7\"/><path d=\"M21 21l-4.3-4.3\"/>", "list": "<path d=\"M9 6h11M9 12h11M9 18h11M4 6h.01M4 12h.01M4 18h.01\"/>", "gear": "<circle cx=\"12\" cy=\"12\" r=\"3\"/><path d=\"M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9 7 7M17 17l2.1 2.1M4.9 19.1 7 17M17 7l2.1-2.1\"/>", "logout": "<path d=\"M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9\"/>", "edit": "<path d=\"M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z\"/>"};const ic=n=>`<svg class="ic" viewBox="0 0 24 24">${IC[n]}</svg>`;
 const ST={new:'অপেক্ষমাণ',accepted:'নিশ্চিত',processing:'প্রস্তুত হচ্ছে',ready:'প্রস্তুত',completed:'সম্পন্ন',cancelled:'বাতিল'};
 const waLink=(n,t)=>'https://wa.me/'+String(n).replace(/\D/g,'').replace(/^0/,'880')+'?text='+encodeURIComponent(t);
 const bigBtn='class="btn" style="display:block;text-align:center;text-decoration:none"';
@@ -74,6 +75,23 @@ mine=async function(){if(!need())return;await load();
  <h3 class="sh">আমার পণ্য</h3>${mp.map(p=>`<div class="mine">${p.images[0]?`<img src="${img(p.images[0])}" alt="">`:'<div class="ph"></div>'}<div><b>${esc(p.title)}</b><br>${tk(p.price)} ${sp(p)}
  <div class="acts">${p.status==='available'?`<button onclick="editP('${p.id}')">✏️ এডিট</button><button onclick="markSold('${p.id}')">✅ বিক্রি হয়েছে</button>`:''}<button class="dl" onclick="delP('${p.id}')">🗑 ${p.status==='sold'?'সরান':'মুছুন'}</button></div></div></div>`).join('')||'<p class="bm-note">আপনার দোকানে এখনো কোনো পণ্য নেই। ওপরের ＋ বোতামে চাপুন।</p>'}`)};
 const _ov=ordersView;ordersView=async function(){await _ov();if($('mb').querySelector('h2'))$('mb').insertAdjacentHTML('beforeend','<button class="btn gh" onclick="mine()">← আমার দোকান</button>')};
-const _acc=account;account=async function(){await _acc();if(!me||!$('pf')||prof?.role!=='admin')return;$('mb').insertAdjacentHTML('beforeend',`<a ${bigBtn} href="admin.html">⚙️ অ্যাডমিন ড্যাশবোর্ড</a>`)};
+/* প্রোফাইল */
+const _accEdit=account;
+const editProfile=async()=>{await _accEdit();$('mb').insertAdjacentHTML('beforeend','<button class="btn gh" onclick="account()">← প্রোফাইল</button>')};
+account=async function(){
+ if(!ok)return toast('আগে Supabase সংযোগ দিন');if(!me)return authForm();if(!prof)await loadProf();
+ const{data}=await sb.from('orders').select('buyer_id,seller_id,status'),o=data||[],mp=items.filter(p=>p.seller_id===me.id),nm=prof?.full_name||'ইউজার';
+ const m=(i,t,f,c)=>`<button class="mn ${c||''}" onclick="${f}"><span>${ic(i)}</span>${t}<em>›</em></button>`;
+ openM(`<div class="pf"><div class="av">${esc(nm.trim().charAt(0).toUpperCase())}</div><h2>${esc(nm)}</h2><small>${esc(me.email)}</small>
+ <div class="chips">${[prof?.department,prof?.session&&'সেশন '+prof.session,prof?.role==='admin'&&'অ্যাডমিন'].filter(Boolean).map(x=>`<span>${esc(x)}</span>`).join('')}</div></div>
+ <div class="dash"><div><b>${mp.length}</b><small>আমার পোস্ট</small></div><div><b>${o.filter(x=>x.buyer_id===me.id).length}</b><small>আমার কেনা</small></div><div><b>${o.filter(x=>x.seller_id===me.id&&x.status==='new').length}</b><small>নতুন অর্ডার</small></div></div>
+ ${m('store','আমার দোকান','mine()')}${m('list','আমার অর্ডার','ordersView()')}${m('plus','নতুন পণ্য বিক্রি করুন','sellForm()')}${m('edit','প্রোফাইল এডিট','editProfile()')}
+ ${prof?.role==='admin'?`<a class="mn" href="admin.html"><span>${ic('gear')}</span>অ্যাডমিন ড্যাশবোর্ড<em>›</em></a>`:''}
+ ${m('logout','লগআউট',"sb.auth.signOut().then(()=>{closeM();toast('লগআউট হয়েছে')})",'red')}`)};
+card=function(p){const off=p.original_price>p.price?Math.round((1-p.price/p.original_price)*100):0,sold=p.status==='sold';
+ return `<button class="bm-c ${sold?'off':''}" onclick="details('${p.id}')"><div class="im">${p.images[0]?`<img loading="lazy" src="${img(p.images[0])}" alt="">`:'📦'}</div>${off&&!sold?`<span class="ds">-${off}%</span>`:''}
+ <span class="bd ${sold?'sold':''}">${sold?'বিক্রি হয়ে গেছে':p.kind==='shop'?'শপ':p.kind==='rokomari'?'রকমারি':p.condition==='new'?'নতুন':'পুরোনো'}</span>
+ <div class="in"><b>${esc(p.title)}</b><small>${esc(p.category||p.author||'')}</small><div class="pr">${tk(p.price)}${p.original_price?`<s>${tk(p.original_price)}</s>`:''}</div>${p.free_delivery?'<span class="fd">ফ্রি ডেলিভারি</span>':''}
+ <span class="cta">${sold?'কেনা যাবে না':p.kind==='rokomari'?'রকমারিতে দেখুন':'অর্ডার করুন'}</span></div></button>`};
 
 if(sb)loadCats().then(()=>{if(items.length)render()});
