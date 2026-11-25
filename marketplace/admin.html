@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="bn"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Campus Hut · অ্যাডমিন</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Noto+Serif+Bengali:wght@400;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/market.css"><link rel="stylesheet" href="css/hut.css">
+<style>body{padding-bottom:30px}.bm-h{justify-content:space-between}#app{max-width:980px;margin:0 auto;padding:12px}
+.sg{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:12px}@media(min-width:700px){.sg{grid-template-columns:repeat(4,1fr)}}
+.sc{background:#fff;border:1px solid var(--line);border-radius:12px;padding:12px;text-align:center}.sc b{display:block;font-size:24px;color:var(--g2)}.sc small{color:var(--muted)}
+.tb{display:flex;gap:8px;overflow-x:auto;padding-bottom:10px;position:sticky;top:0;background:var(--bg);z-index:3}.tb button{flex:none;border:1px solid var(--line);background:#fff;border-radius:99px;padding:8px 16px;cursor:pointer}.tb .on{background:var(--g);color:#fff;border-color:var(--g);font-weight:700}
+.ar{display:flex;gap:10px}.ar img{width:64px;height:64px;object-fit:cover;border-radius:8px}.od .btn,#pane>.btn{margin-top:8px}.pv2{max-width:100%;border-radius:10px;margin-top:6px}
+#pane form{background:#fff;border:1px solid var(--line);border-radius:12px;padding:12px;margin-bottom:12px}</style></head><body>
+<header class="bm-h"><b class="bm-logo">Campus <span>Hut</span> অ্যাডমিন</b><a class="bm-ib" href="./" style="width:auto;padding:0 14px;border-radius:99px">দোকানে যান</a></header>
+<div id="app"></div>
+<div id="md" class="bm-m" hidden><div class="bm-box" id="mb"></div></div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+<script src="js/config.js"></script>
+<script>
+const $=i=>document.getElementById(i),esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const tk=n=>'৳'+Number(n||0).toLocaleString('bn-BD'),ST={new:'অপেক্ষমাণ',accepted:'নিশ্চিত',completed:'সম্পন্ন',cancelled:'বাতিল'};
+const T={ap:'📋 অনুমোদন',pr:'🛍️ পণ্য',od:'🧾 অর্ডার',ca:'🏷️ ক্যাটাগরি',bn:'🖼️ ব্যানার',se:'⚙️ সেটিং'};
+let sb,me,tab='ap',CATS=[];const P={};
+const img=(p,b='book-images')=>sb.storage.from(b).getPublicUrl(p).data.publicUrl;
+const toast=m=>{const t=document.createElement('div');t.className='tg';t.textContent=m;document.body.appendChild(t);setTimeout(()=>t.remove(),3500)};
+const openM=h=>{$('mb').innerHTML='<button class="bm-ib x" onclick="closeM()">✕</button>'+h;$('md').hidden=false},closeM=()=>$('md').hidden=true;
+const shrink=(f,m,q)=>new Promise(r=>{const i=new Image();i.onload=()=>{const k=Math.min(1,m/Math.max(i.width,i.height)),c=document.createElement('canvas');c.width=i.width*k;c.height=i.height*k;c.getContext('2d').drawImage(i,0,0,c.width,c.height);c.toBlob(r,'image/jpeg',q)};i.src=URL.createObjectURL(f)});
+const run=async(p,ok)=>{const{error}=await p;if(error)return toast(error.message);toast(ok||'হয়েছে');closeM();show()};
+
+async function init(){
+ if(!window.SUPABASE_URL||/YOUR_/.test(SUPABASE_URL))return $('app').innerHTML='<p class="bm-note">config.js-এ Supabase URL ও key বসান।</p>';
+ sb=supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
+ const{data}=await sb.auth.getSession();me=data.session?.user;if(!me)return login();
+ const{data:p}=await sb.from('profiles').select('role').eq('id',me.id).maybeSingle();
+ if(!p||p.role!=='admin')return $('app').innerHTML='<p class="bm-note">এই অ্যাকাউন্ট অ্যাডমিন নয়। অ্যাডমিন ইমেইল দিয়ে লগইন করুন।</p><button class="btn gh" onclick="sb.auth.signOut().then(init)">লগআউট</button>';
+ const{data:c}=await sb.from('categories').select('*').order('sort');CATS=c||[];
+ $('app').innerHTML='<div class="sg" id="st"></div><div class="tb">'+Object.entries(T).map(([k,v])=>`<button data-t="${k}" onclick="show('${k}')">${v}</button>`).join('')+'</div><div id="pane"></div>';show('ap')}
+function login(){$('app').innerHTML='<form id="lf"><h2 style="margin-bottom:8px">অ্যাডমিন লগইন</h2><label>ইমেইল</label><input id="e" type="email" required><label>পাসওয়ার্ড</label><input id="pw" type="password" required><button class="btn">লগইন</button></form>';
+ $('lf').onsubmit=async e=>{e.preventDefault();const{error}=await sb.auth.signInWithPassword({email:$('e').value,password:$('pw').value});if(error)return toast(error.message);init()}}
+async function stats(){const c=(t,f)=>{const q=sb.from(t).select('id',{count:'exact',head:true});return f?f(q):q};
+ const[a,b,d,u]=await Promise.all([c('products',q=>q.eq('approval','pending')),c('products',q=>q.eq('approval','approved')),c('orders',q=>q.eq('status','new')),c('profiles')]);
+ $('st').innerHTML=[['⏳ অনুমোদনের অপেক্ষায়',a.count],['🛍️ চালু পণ্য',b.count],['🧾 নতুন অর্ডার',d.count],['👥 ইউজার',u.count]].map(x=>`<div class="sc"><b>${x[1]??0}</b><small>${x[0]}</small></div>`).join('')}
+async function show(t){tab=t||tab;document.querySelectorAll('.tb button').forEach(b=>b.classList.toggle('on',b.dataset.t===tab));stats();$('pane').innerHTML=await P[tab]()}
+const row=(p,extra)=>`<div class="od"><div class="ar">${p.images&&p.images[0]?`<img src="${img(p.images[0])}" alt="">`:''}<div><b>${esc(p.title)}</b><br><small>${esc(p.category||'')} · ${esc(p.seller_name||'')} · ${tk(p.price)}</small>${extra||''}</div></div>`;
+
+P.ap=async()=>{const{data}=await sb.from('products').select('*').eq('approval','pending').order('created_at');
+ return(data||[]).map(p=>row(p,`<div>${esc((p.description||'').slice(0,140))}</div>`)+`<div class="acts"><button onclick="ap('${p.id}')">✅ অনুমোদন</button><button class="dl" onclick="rj('${p.id}')">❌ বাতিল</button></div></div>`).join('')||'<p class="bm-note">কোনো পোস্ট অপেক্ষায় নেই।</p>'};
+const ap=id=>run(sb.from('products').update({approval:'approved',reject_reason:null}).eq('id',id),'অনুমোদিত');
+const rj=id=>{const r=prompt('বাতিলের কারণ (ছাত্র দেখবে):');if(r!==null)run(sb.from('products').update({approval:'rejected',reject_reason:r}).eq('id',id),'বাতিল হয়েছে')};
+
+P.pr=async()=>{const{data}=await sb.from('products').select('*').eq('approval','approved').order('created_at',{ascending:false});
+ return'<button class="btn" onclick="pf()">＋ নতুন পণ্য (শপ / রকমারি)</button>'+(data||[]).map(p=>row(p,` <span class="st ${p.is_hidden?'cancelled':'accepted'}">${p.is_hidden?'লুকানো':esc(p.kind)}</span><br><small>স্টক: ${p.stock??'সীমাহীন'}</small>`)+`<div class="acts"><button onclick="hd('${p.id}',${!p.is_hidden})">${p.is_hidden?'👁 দেখান':'🙈 লুকান'}</button><button class="dl" onclick="dp('${p.id}')">🗑 মুছুন</button></div></div>`).join('')};
+const hd=(id,h)=>run(sb.rpc('admin_hide_product',{p_id:id,p_hide:h,p_reason:h?'Admin':null}));
+const dp=id=>confirm('স্থায়ীভাবে মুছবেন?')&&run(sb.rpc('delete_product',{p_id:id}),'মুছে গেছে');
+function pf(){openM(`<h2>নতুন পণ্য</h2><form id="pff"><label>ধরন</label><select id="k"><option value="shop">শপ পণ্য</option><option value="rokomari">রকমারি (affiliate লিংক)</option></select>
+ <label>পণ্যের নাম</label><input id="t" required><label>ক্যাটাগরি</label><select id="c">${CATS.map(c=>`<option>${esc(c.name)}</option>`).join('')}</select>
+ <div class="row"><div><label>দাম (৳)</label><input id="p" type="number" min="0" required></div><div><label>আগের দাম (৳)</label><input id="o" type="number" min="0"></div></div>
+ <div class="row"><div><label>স্টক (খালি = সীমাহীন)</label><input id="s" type="number" min="0"></div><div><label>ডেলিভারি চার্জ (৳)</label><input id="d" type="number" min="0" value="0"></div></div>
+ <label><input id="f" type="checkbox" style="width:auto"> ফ্রি ডেলিভারি</label><label>রকমারি লিংক (শুধু রকমারির জন্য)</label><input id="a" type="url" placeholder="https://">
+ <label>ছবি (সর্বোচ্চ ৪টি)</label><input id="im" type="file" accept="image/*" multiple><label>বিবরণ</label><textarea id="ds"></textarea><button class="btn" id="pb">যোগ করুন</button></form>`);
+ $('pff').onsubmit=async e=>{e.preventDefault();$('pb').disabled=true;
+  try{const ims=[];for(const f of[...$('im').files].slice(0,4)){const path=`${me.id}/${Date.now()}-${ims.length}.jpg`,{error}=await sb.storage.from('book-images').upload(path,await shrink(f,900,.75),{contentType:'image/jpeg'});if(error)throw error;ims.push(path)}
+   const fr=$('f').checked;await run(sb.from('products').insert({seller_id:me.id,seller_name:'Campus Hut',kind:$('k').value,title:$('t').value,category:$('c').value,price:$('p').value,original_price:$('o').value||null,stock:$('s').value===''?null:+$('s').value,free_delivery:fr,delivery_charge:fr?0:+$('d').value||0,affiliate_url:$('a').value||null,description:$('ds').value,condition:'new',approval:'approved',images:ims}),'পণ্য যোগ হয়েছে')}
+  catch(er){toast(er.message);$('pb').disabled=false}}}
+
+P.od=async()=>{const{data}=await sb.from('orders').select('*,order_items(title,price)').order('created_at',{ascending:false}).limit(50);
+ return(data||[]).map(o=>`<div class="od"><b>${o.order_items.map(i=>esc(i.title)).join(', ')}</b><span class="st ${o.status}">${ST[o.status]||o.status}</span><div><small>${esc(o.buyer_name)} · ${esc(o.buyer_mobile)} · ${esc(o.address||'')}</small></div>
+ <div class="acts">${o.status==='new'?`<button onclick="os('${o.id}','accepted')">✅ নিশ্চিত</button><button class="dl" onclick="os('${o.id}','cancelled')">❌ বাতিল</button>`:o.status==='accepted'?`<button onclick="os('${o.id}','completed')">📦 সম্পন্ন</button>`:''}</div></div>`).join('')||'<p class="bm-note">কোনো অর্ডার নেই।</p>'};
+const os=(id,s)=>run(sb.rpc('set_order_status',{p_id:id,p_status:s}),'আপডেট হয়েছে');
+
+P.ca=async()=>{const{data}=await sb.from('categories').select('*').order('sort');CATS=data||[];
+ return`<form onsubmit="return ac(event)"><label>নতুন ক্যাটাগরি</label><input id="cn" placeholder="নাম" required><input id="ci" placeholder="আইকন (ইমোজি) 📦" maxlength="4" style="margin-top:6px"><button class="btn">যোগ করুন</button></form>`+CATS.map(c=>`<div class="od"><b>${esc(c.icon)} ${esc(c.name)}</b><span class="st ${c.active?'accepted':'cancelled'}">${c.active?'চালু':'বন্ধ'}</span><div class="acts"><button onclick="tc(${c.id},${!c.active})">${c.active?'বন্ধ করুন':'চালু করুন'}</button></div></div>`).join('')};
+const ac=e=>{e.preventDefault();run(sb.from('categories').insert({name:$('cn').value,icon:$('ci').value||'📦',sort:CATS.length+1}),'যোগ হয়েছে');return false};
+const tc=(id,a)=>run(sb.from('categories').update({active:a}).eq('id',id));
+
+P.bn=async()=>{const{data}=await sb.from('banners').select('*').order('position').order('sort');
+ return`<form onsubmit="return ab(event)"><label>ব্যানার ছবি (১২০০×৫২৫ ভালো)</label><input id="bf" type="file" accept="image/*" required>
+ <label>কোথায় দেখাবে</label><select id="bp"><option value="top">উপরে</option><option value="mid">মাঝে (ক্যাটাগরির নিচে)</option><option value="bottom">নিচে</option></select>
+ <label>লিংক (ঐচ্ছিক, https://...)</label><input id="bl" type="url"><label>ক্রম (১, ২, ৩...)</label><input id="bs" type="number" value="1" min="1"><button class="btn">যোগ করুন</button></form>`+(data||[]).map(b=>`<div class="od"><span class="st ${b.active?'accepted':'cancelled'}">${{top:'উপরে',mid:'মাঝে',bottom:'নিচে'}[b.position]}</span><img class="pv2" src="${img(b.image,'banners')}" alt=""><div class="acts"><button onclick="tb(${b.id},${!b.active})">${b.active?'বন্ধ':'চালু'}</button><button class="dl" onclick="db(${b.id},'${esc(b.image)}')">🗑 মুছুন</button></div></div>`).join('')};
+async function ab(e){e.preventDefault();const path=Date.now()+'.jpg',{error}=await sb.storage.from('banners').upload(path,await shrink($('bf').files[0],1600,.8),{contentType:'image/jpeg'});if(error){toast(error.message);return false}
+ run(sb.from('banners').insert({image:path,link:$('bl').value||null,position:$('bp').value,sort:+$('bs').value||1}),'ব্যানার যোগ হয়েছে');return false}
+const tb=(id,a)=>run(sb.from('banners').update({active:a}).eq('id',id));
+const db=async(id,f)=>{if(!confirm('মুছবেন?'))return;await sb.storage.from('banners').remove([f]);run(sb.from('banners').delete().eq('id',id),'মুছে গেছে')};
+
+const SK=[['pub_whatsapp','অ্যাডমিনের WhatsApp নম্বর'],['pub_approval_text','অনুমোদনের সময় (লেখা)'],['pub_bkash','bKash নম্বর'],['pub_nagad','Nagad নম্বর'],['pub_rocket','Rocket নম্বর']];
+P.se=async()=>{const{data}=await sb.from('app_settings').select('*').like('key','pub_%'),m={};(data||[]).forEach(r=>m[r.key]=r.value);const{data:w}=await sb.from('restricted_words').select('word').order('word');
+ return`<form onsubmit="return sv(event)">${SK.map(([k,l])=>`<label>${l}</label><input data-k="${k}" value="${esc(m[k]||'')}">`).join('')}<button class="btn">সেভ করুন</button></form>
+ <form onsubmit="return aw(event)"><label>নিষিদ্ধ শব্দ (পোস্টে থাকলে আটকাবে)</label><input id="rw" required><button class="btn">যোগ করুন</button></form>
+ <div class="acts">${(w||[]).map(x=>`<button onclick="dw('${esc(x.word)}')">${esc(x.word)} ✕</button>`).join('')}</div>`};
+const sv=e=>{e.preventDefault();run(sb.from('app_settings').upsert([...document.querySelectorAll('[data-k]')].map(i=>({key:i.dataset.k,value:i.value}))),'সেভ হয়েছে');return false};
+const aw=e=>{e.preventDefault();run(sb.from('restricted_words').insert({word:$('rw').value.trim()}),'যোগ হয়েছে');return false};
+const dw=w=>run(sb.from('restricted_words').delete().eq('word',w));
+init();
+</script></body></html>
