@@ -4,19 +4,22 @@
 <meta name="theme-color" content="#ffffff">
 <title>Campus Hut · Rajendra Student Hub</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Noto+Serif+Bengali:wght@400;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/market.css"></head><body>
+<link rel="stylesheet" href="css/market.css"><link rel="stylesheet" href="css/hut.css"></head><body>
 <header class="bm-h"><b class="bm-logo">Campus <span>Hut</span></b><button class="bm-ib" id="acc" title="অ্যাকাউন্ট">👤</button>
 <label class="bm-s"><span>🔍</span><input id="q" type="search" placeholder="পণ্য, লেখক বা বিষয় খুঁজুন"></label></header>
 <main>
 <section class="bm-ban" id="ban" hidden></section>
+<div class="cats" id="cats" hidden></div>
+<section class="bm-ban" id="ban2" hidden></section>
 <div class="bm-tabs" id="tabs"><button data-c="" class="on">সব</button><button data-c="new">নতুন</button><button data-c="used">পুরোনো</button><select id="dept"><option value="">সব বিভাগ</option></select></div>
 <div id="cfg" class="bm-note" hidden></div>
 <div class="bm-grid" id="grid"></div>
 <div id="empty" class="bm-note" hidden>কিছু পাওয়া যায়নি। প্রথম পণ্যটি আপনিই বিক্রির জন্য তুলুন।</div>
+<section class="bm-ban" id="ban3" hidden></section>
 </main>
 <nav class="bm-nav"><a href="../"><i>⬅️</i>হাবে ফিরুন</a><button data-n="home"><i>🏠</i>হোম</button><button data-n="sell" class="sell"><i>＋</i>বিক্রি করুন</button><button data-n="mine"><i>📦</i>আমার পোস্ট</button><button data-n="acc"><i>👤</i>অ্যাকাউন্ট</button></nav>
 <div id="md" class="bm-m" hidden><div class="bm-box" id="mb"></div></div>
 <div id="cf" class="bm-m top" hidden><div class="bm-box sm" id="cb"></div></div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
-<script src="js/config.js"></script><script src="js/app.js"></script><script src="js/banner.js"></script>
+<script src="js/config.js"></script><script src="js/app.js"></script><script src="js/hut.js"></script><script src="js/banner.js"></script>
 </body></html>
