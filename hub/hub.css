@@ -1,0 +1,24 @@
+/* ===== Hub UI kit (Hut-style): cards, chips, buttons, forms, toast ===== */
+:root{--hub-g:#e06a0b;--hub-g2:#b84e05;--hub-gl:#fff1e2;--hub-red:#e11d48;--hub-line:#eadfce;--hub-text:#2a1f14;--hub-muted:#7a6a58;--hub-panel:#fff;--hub-bg:#faf7f2}
+.hub-card{background:var(--hub-panel);border:1px solid var(--hub-line);border-radius:16px;padding:16px;margin:12px 0;box-shadow:0 1px 6px rgba(80,50,10,.08);transition:transform .15s,box-shadow .15s}
+.hub-card:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(80,50,10,.14)}
+.hub-card-top{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:8px}
+.hub-chip{font-size:12px;font-weight:700;padding:3px 11px;border-radius:99px;background:var(--hub-gl);color:var(--hub-g2)}
+.hub-chip.red{background:#fee2e2;color:#991b1b}
+.hub-date{margin-left:auto;font-size:12px;color:var(--hub-muted)}
+.hub-card h4{margin:0 0 6px;font:700 16.5px 'Noto Serif Bengali',Inter,sans-serif;line-height:1.4}
+.hub-card p{margin:0;font-size:14px;line-height:1.55;color:var(--hub-text)}
+.hub-link{display:inline-block;margin-top:8px;color:var(--hub-g2);font-weight:700;font-size:14px;text-decoration:none}
+.hub-link:hover{text-decoration:underline}
+.hub-empty{padding:24px;text-align:center;color:var(--hub-muted);border:1px dashed #d6c4aa;border-radius:14px;margin:12px 0;font-size:14px}
+.hub-tools{margin:4px 0 12px}
+.hub-btn{display:block;width:100%;margin-top:14px;padding:11px;min-height:44px;border:0;border-radius:10px;background:var(--hub-g);color:#fff;font-size:15px;font-weight:700;cursor:pointer}
+.hub-btn:disabled{opacity:.6;cursor:default}
+.hub-btn2{border:1px solid var(--hub-line);background:#fff;color:var(--hub-text);border-radius:99px;padding:8px 18px;font-size:14px;font-weight:600;cursor:pointer}
+.hub-btn2:hover{border-color:var(--hub-g);color:var(--hub-g2)}
+.hub-row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.hub-form label{display:block;font-size:13px;color:var(--hub-muted);margin:12px 0 4px}
+.hub-form input,.hub-form select,.hub-form textarea{width:100%;padding:10px 12px;border-radius:10px;border:1px solid var(--hub-line);background:#fff;font:inherit;font-size:16px;box-sizing:border-box;outline:none}
+.hub-form input:focus,.hub-form select:focus,.hub-form textarea:focus{outline:2px solid var(--hub-g);outline-offset:2px}
+.tg{position:fixed;left:50%;bottom:116px;transform:translateX(-50%);z-index:40;background:#2a1f14;color:#fff;padding:12px 18px;border-radius:12pxmax-width:90vw;font-size:15px}
+@media(max-width:520px){.hub-row2{grid-template-columns:1fr}}
