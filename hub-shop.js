@@ -1,5 +1,6 @@
 /* ===== HUB-SHOP :: Home page tiles (all features, one login) =====
-   HUB tile format: [icon, key, name, desc, 'live'|'soon']  (5 items!) */
+   HUB tile format: [icon, key, name, desc, 'live'|'soon']  (5 items!)
+   tuition + shop tile click -> full page (tuition.html / marketplace/) */
 (function () {
   if (!window.HUB || !document.getElementById('hg')) return;
   var T = {
@@ -18,7 +19,9 @@
     return '<button class="hc" onclick="openV(\'' + h[1] + '\')"><span class="ic">' + h[0] + '</span><b>' + h[2] + '</b><span>' + h[3] + '</span><br>' + (h[4] === 'live' ? '<em>\u099A\u09BE\u09B2\u09C1 \u0986\u099B\u09C7</em>' : '<em class="soon">\u09B6\u09C0\u0998\u09CD\u09B0\u09C7 \u0986\u09B8\u099B\u09C7</em>') + '</button>';
   }).join('');
   document.getElementById('hg').addEventListener('click', function (e) {
-    var b = e.target.closest('.hc');
-    if (b && /'shop'/.test(b.getAttribute('onclick') || '')) { e.preventDefault(); e.stopPropagation(); location.href = 'marketplace/'; }
+    var b = e.target.closest('.hc'), oc = b ? (b.getAttribute('onclick') || '') : '';
+    if (!oc) return;
+    if (/'shop'/.test(oc)) { e.preventDefault(); e.stopPropagation(); location.href = 'marketplace/'; }
+    else if (/'tuition'/.test(oc)) { e.preventDefault(); e.stopPropagation(); location.href = 'tuition.html'; }
   }, true);
 })();
