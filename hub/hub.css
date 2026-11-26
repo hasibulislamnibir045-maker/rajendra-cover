@@ -20,5 +20,5 @@
 .hub-form label{display:block;font-size:13px;color:var(--hub-muted);margin:12px 0 4px}
 .hub-form input,.hub-form select,.hub-form textarea{width:100%;padding:10px 12px;border-radius:10px;border:1px solid var(--hub-line);background:#fff;font:inherit;font-size:16px;box-sizing:border-box;outline:none}
 .hub-form input:focus,.hub-form select:focus,.hub-form textarea:focus{outline:2px solid var(--hub-g);outline-offset:2px}
-.tg{position:fixed;left:50%;bottom:116px;transform:translateX(-50%);z-index:40;background:#2a1f14;color:#fff;padding:12px 18px;border-radius:12pxmax-width:90vw;font-size:15px}
+.tg{position:fixed;left:50%;bottom:116px;transform:translateX(-50%);z-index:40;background:#2a1f14;color:#fff;padding:12px 18px;border-radius:12px;max-width:90vw;font-size:15px}
 @media(max-width:520px){.hub-row2{grid-template-columns:1fr}}
