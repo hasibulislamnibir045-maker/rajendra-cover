@@ -1,10 +1,10 @@
 /* ===== Tuition Hub v2: professional tuition platform style (CareTutors/TutorSheba-inspired)
    Full-page experience (no popup feel) · Hero + quick actions · Stats · Job cards · Tutor cards
-   Feed · Dashboard · Admin approval — Google Apps Script API unchanged ===== */
+   Feed · Dashboard · Admin approval (login/tlist/tset — backend v3 actions) ===== */
 (function () {
   var API = 'https://script.google.com/macros/s/AKfycbxM3COcrkebmp17kL8tOEM3SbIYbmffrQW1ISx2qvhwer3VeeocQoo_EqxULxkPZuId/exec'; // Apps Script Web app URL ekhane boshan
   window.RSH_API = API;
-  var ST = { t: [], p: [], tab: 'feed', q: '', cr: ld('rsh_tu_cr', null), my: null, ad: null, ap: '', msg: '' };
+  var ST = { t: [], p: [], tab: 'feed', q: '', cr: ld('rsh_tu_cr', null), my: null, ad: null, au: '', ap: '', adT: [], adP: [], msg: '' };
   var LB = { pending: 'অনুমোদনের অপেক্ষায়', approved: 'চালু আছে', rejected: 'বাতিল', confirmed: 'টিউটর ঠিক হয়েছে' };
   var MED = 'sel:বাংলা মাধ্যম,ইংরেজি ভার্সন,ইংরেজি মাধ্যম,মাদ্রাসা';
   var TF = [['n', 'নাম *'], ['m', 'মোবাইল *', '01XXXXXXXXX'], ['g', 'লিঙ্গ', 'sel:ছেলে,মেয়ে'], ['ins', 'প্রতিষ্ঠান / বিভাগ *', 'Rajendra College, English'], ['yr', 'বর্ষ / যোগ্যতা', 'Honours 2nd year'],
@@ -121,7 +121,7 @@
     if (ST.q) {
       var q = ST.q.toLowerCase();
       cards = [].concat(P, T).filter(function (x) { return JSON.stringify(x).toLowerCase().indexOf(q) > -1; })
-        .map(function (x) { return x.days !== undefined || x.cls ? jobC(x) : tutorC(x); }).join('') || '<div class="tu-empty">🔎 কিছু পাওয়া যায়নি</div>';
+        .map(function (x) { return x.cls ? jobC(x) : tutorC(x); }).join('') || '<div class="tu-empty">🔎 কিছু পাওয়া যায়নি</div>';
     } else {
       cards = P.map(function (x) { return jobC(x); }).join('') + T.map(function (x) { return tutorC(x); }).join('');
     }
@@ -153,14 +153,18 @@
       (ST.my.posts.length ? '<p class="tu-sec">📌 আমার টিউশন পোস্ট</p>' + ST.my.posts.map(function (x) { return jobC(x, 'my'); }).join('') : '') +
       '<button class="tu-btn gh" style="margin-top:14px" onclick="TU.out()">বের হন</button>';
   }
+  /* Admin: backend v3-er 'login' action (u: username, p: password) → tlist → tset */
   function adBody() {
     if (!ST.ad) return '<h3 class="tu-h3">🔐 Admin</h3>' +
-      '<div class="tug"><div style="grid-column:1/-1"><label>Password</label><input id="ap" type="password"></div></div>' +
-      '<button class="tu-btn pr" style="width:100%;margin-top:12px" onclick="TU.adl()">ঢুকুন</button>';
+      '<p class="tu-sub">মূল Admin Panel-এর একই username ও password দিয়ে ঢুকুন (যেমন: owner)।</p>' +
+      '<div class="tug"><div><label>Username</label><input id="au" placeholder="owner" value="' + esc(ST.au) + '"></div><div><label>Password</label><input id="ap" type="password"></div></div>' +
+      '<button class="tu-btn pr" style="width:100%;margin-top:12px" onclick="TU.adl()">🔓 ঢুকুন</button>';
     var srt = function (a) { return a.slice().sort(function (x, y) { return (x.status === 'pending' ? 0 : 1) - (y.status === 'pending' ? 0 : 1); }); };
     return '<h3 class="tu-h3">🔐 Admin Panel</h3>' +
-      '<p class="tu-sec">🎓 টিউটর (' + bn(ST.ad.tutors.length) + ')</p>' + srt(ST.ad.tutors).map(function (x) { return tutorC(x, 'ad'); }).join('') +
-      '<p class="tu-sec">📌 টিউশন পোস্ট (' + bn(ST.ad.posts.length) + ')</p>' + srt(ST.ad.posts).map(function (x) { return jobC(x, 'ad'); }).join('');
+      '<div class="tu-who" style="margin:2px 0 6px"><b>👤 ' + esc(ST.ad.name) + (ST.ad.su ? ' (মালিক)' : '') + '</b><small>টিউটর ও টিউশন পোস্ট অনুমোদন/বাতিল করুন</small></div>' +
+      '<button class="tu-btn gh" style="margin-bottom:10px" onclick="TU.adOut()">বের হন</button>' +
+      '<p class="tu-sec">🎓 টিউটর (' + bn(ST.adT.length) + ')</p>' + srt(ST.adT).map(function (x) { return tutorC(x, 'ad'); }).join('') +
+      '<p class="tu-sec">📌 টিউশন পোস্ট (' + bn(ST.adP.length) + ')</p>' + srt(ST.adP).map(function (x) { return jobC(x, 'ad'); }).join('');
   }
 
   function draw() {
@@ -186,7 +190,13 @@
   }
   function load() { return api('list').then(function (j) { ST.t = j.tutors; ST.p = j.posts; draw(); }).catch(function (e) { if (e.message !== 'API') console.error(e); draw(); }); }
   function loadMy() { return api('my', ST.cr).then(function (j) { ST.my = j; sv('rsh_tu_cr', ST.cr); draw(); }).catch(function (e) { ST.my = null; draw(); fail(e); }); }
-  function adLoad() { return api('admin', { p: ST.ap }).then(function (j) { ST.ad = j; draw(); }).catch(function (e) { ST.ad = null; draw(); fail(e); }); }
+  /* Admin login → tlist (backend v3 actions, username + password সহ) */
+  function adLoad() {
+    return api('login', { u: ST.au, p: ST.ap }).then(function (j) {
+      ST.ad = j;
+      return api('tlist', { u: ST.au, p: ST.ap }).then(function (k) { ST.adT = k.tutors || []; ST.adP = k.posts || []; draw(); });
+    }).catch(function (e) { ST.ad = null; draw(); fail(e); });
+  }
 
   window.TU = {
     go: function (t) { ST.tab = t; ST.q = ''; ST.msg = ''; draw(); if (t === 'dash' && !ST.my && ST.cr) loadMy(); var w = $('tuw'); if (w) w.scrollIntoView(); },
@@ -210,8 +220,12 @@
       if (!confirm(act === 'confirm' ? 'টিউটর ঠিক হয়ে গেছে? পোস্টটি ফিড থেকে সরে যাবে।' : 'নিশ্চিতভাবে মুছবেন?')) return;
       api('own', { m: ST.cr.m, pin: ST.cr.pin, act: act, t: t, id: id }).then(function () { return Promise.all([loadMy(), load()]); }).catch(fail);
     },
-    adl: function () { ST.ap = $('ap').value; adLoad(); },
-    aset: function (t, id, s) { if (s === 'delete' && !confirm('মুছে ফেলবেন?')) return; api('aset', { p: ST.ap, t: t, id: id, s: s }).then(function () { return Promise.all([adLoad(), load()]); }).catch(fail); }
+    adl: function () { ST.au = $('au').value.trim(); ST.ap = $('ap').value; adLoad(); },
+    adOut: function () { ST.ad = null; ST.ap = ''; ST.adT = []; ST.adP = []; draw(); },
+    aset: function (t, id, s) {
+      if (s === 'delete' && !confirm('মুছে ফেলবেন?')) return;
+      api('tset', { u: ST.au, p: ST.ap, t: t, id: id, s: s }).then(function () { return Promise.all([adLoad(), load()]); }).catch(fail);
+    }
   };
 
   /* ---------- Styles: professional tuition platform ---------- */
