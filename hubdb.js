@@ -1,7 +1,6 @@
 /* ============================================================
    HUBDB :: Main site Supabase layer (Apps Script replacement)
    - Single project: Student Hut Supabase (same URL/key)
-   - Data shape mapped to old system keys (t, x, c, d, u...)
    ============================================================ */
 window.HUBDB = (function () {
   var URL = window.SUPABASE_URL || 'https://dcwzxozhgysxhcptataq.supabase.co';
@@ -167,6 +166,42 @@ window.HUBDB = (function () {
     return client().from('posts').delete().eq('id', id).then(function (r) { if (r.error) throw r.error; });
   }
 
+  /* ---------- Mess / Hostel ---------- */
+  function getMess() {
+    return client().from('mess').select('*').eq('status', 'active')
+      .order('created_at', { ascending: false }).limit(300).then(function (r) {
+        if (r.error) throw r.error;
+        return r.data.map(function (x) {
+          return { id: x.id, uid: x.user_id, t: x.title, cond: x.cond || '', g: x.g || '',
+            seats: x.seats, price: x.price || '', area: x.area || '', m: x.mobile || '',
+            loc: x.loc || '', note: x.note || '', ts: x.created_at };
+        });
+      });
+  }
+  function addMess(v) {
+    return uid().then(function (id) {
+      var row = { user_id: id, title: v.t, cond: v.cond || null, g: v.g || null,
+        seats: (v.seats ? +v.seats : null), price: v.price || null, area: v.area || null,
+        mobile: v.m || null, loc: v.loc || null, note: v.note || null };
+      return client().from('mess').insert(row).then(function (r) { if (r.error) throw r.error; });
+    });
+  }
+  function myMess() {
+    return uid().then(function (id) {
+      return client().from('mess').select('*').eq('user_id', id)
+        .order('created_at', { ascending: false }).then(function (r) {
+          if (r.error) throw r.error;
+          return r.data.map(function (x) {
+            return { id: x.id, t: x.title, cond: x.cond || '', g: x.g || '', seats: x.seats,
+              price: x.price || '', area: x.area || '', m: x.mobile || '', loc: x.loc || '', note: x.note || '' };
+          });
+        });
+    });
+  }
+  function delMess(id) {
+    return client().from('mess').delete().eq('id', id).then(function (r) { if (r.error) throw r.error; });
+  }
+
   /* ---------- Auth ---------- */
   function user() { return me; }
   function profile() {
@@ -202,6 +237,7 @@ window.HUBDB = (function () {
     getRoutines: getRoutines, addRoutine: addRoutine, delRoutine: delRoutine,
     getTutors: getTutors, addTutor: addTutor, myTutors: myTutors, delTutor: delTutor,
     getPosts: getPosts, addPost: addPost, myPosts: myPosts, delPost: delPost,
+    getMess: getMess, addMess: addMess, myMess: myMess, delMess: delMess,
     user: user, profile: profile, isAdmin: isAdmin,
     signIn: signIn, signUp: signUp, session: session, signOut: signOut, today: today
   };
