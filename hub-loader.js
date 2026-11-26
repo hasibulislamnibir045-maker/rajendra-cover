@@ -1,7 +1,9 @@
 /* ===== Hub loader :: Supabase + hubdb + hub-notice auto-load =====
    index.html-er seshe <script src="hub-loader.js"></script> dilei sob cholbe.
-   hub-ui.css, hubdb.js, hub-notice.js ek e folder e thakte hobe. */
+   Double-load guard: ei script ekbar-i kaj korbe. */
 (function () {
+  if (window.__HUB_LOADED__) return;
+  window.__HUB_LOADED__ = true;
   function css(u) { var l = document.createElement('link'); l.rel = 'stylesheet'; l.href = u; document.head.appendChild(l); }
   function js(u, cb) { var s = document.createElement('script'); s.src = u; if (cb) s.onload = cb; document.head.appendChild(s); }
   function start() {
