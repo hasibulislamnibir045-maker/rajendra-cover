@@ -22,4 +22,21 @@
 <div id="cf" class="bm-m top" hidden><div class="bm-box sm" id="cb"></div></div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="js/config.js"></script><script src="js/app.js"></script><script src="js/hut.js"></script><script src="js/banner.js"></script><script src="js/cvtpl.js"></script><script src="js/cv.js"></script><script src="js/calendar.js"></script>
+<script>
+/* Calendar + CV nav button handler: app.js-er handler ke wrap kore */
+(function(){
+  var st=document.createElement('style');
+  st.textContent='.bm-nav{grid-template-columns:repeat(6,1fr)}';
+  document.head.appendChild(st);
+  var nav=document.querySelector('.bm-nav');
+  if(!nav)return;
+  var old=nav.onclick;
+  nav.onclick=function(e){
+    var b=e.target.closest('button');
+    if(b&&b.dataset.n==='cal'){if(window.hutCal)hutCal();return}
+    if(b&&b.dataset.n==='cv'){if(window.hutCV)hutCV();return}
+    if(old)old(e);
+  };
+})();
+</script>
 </body></html>
