@@ -3,11 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Tuition Hub \u2014 Rajendra Student Hub</title>
+<title>Tuition Hub — Rajendra Student Hub</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="hub-ui.css?v=3">
+<link rel="stylesheet" href="hub-ui.css?v=4">
 <style>
-:root{--bg:#04120a;--panel:rgba(5,26,15,.82);--line:rgba(61,220,132,.3);--text:#eaf7ef;--muted:#9fc4ad;--input:#082016;--gold:#3ddc84}
+:root{--bg:#04120a;--panel:rgba(5,26,15,.82);--line:rgba(61,220,132,.3);--text:#eaf7ef;--muted:#9fc4ad;--gold:#3ddc84}
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:Inter,sans-serif;color:var(--text);background:var(--bg);background-image:linear-gradient(rgba(2,14,8,.72),rgba(2,14,8,.9)),url(bg.jpg);background-size:cover;background-position:center;background-attachment:fixed;min-height:100vh}
 header{display:flex;justify-content:space-between;align-items:center;padding:10px 24px;background:rgba(2,12,7,.9);border-bottom:2px solid #1fd16a;position:sticky;top:0;z-index:9;backdrop-filter:blur(6px)}
@@ -28,6 +28,8 @@ h1{font:700 17px 'Playfair Display',serif;color:#fff}
 .stat b{display:block;font-size:24px;color:var(--gold)}
 .stat span{font-size:12px;color:var(--muted)}
 .wrap{max-width:1100px;margin:0 auto;padding:10px 18px 60px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px}
+.grid .hub-card{margin:0}
 footer{border-top:1px solid var(--line);padding:18px;text-align:center;color:var(--muted);font-size:12px}
 @media(max-width:640px){.hero h2{font-size:24px}}
 </style>
@@ -39,27 +41,34 @@ footer{border-top:1px solid var(--line);padding:18px;text-align:center;color:var
 <div><h1>Tuition Hub</h1><p>Rajendra Student Hub</p></div>
 </div>
 <div class="hbtns">
-<a class="ib" href="index.html">\u2B50 \u09B8\u09CD\u099F\u09C1\u09A1\u09C7\u09A8\u09CD\u099F \u09B9\u09BE\u09AC</a>
-<button class="ib" id="authBtn" onclick="authClick()">\uD83D\uDD11 \u09B2\u0997\u0987\u09A8</button>
+<a class="ib" href="index.html">&#11088; Student Hub</a>
+<button class="ib" id="authBtn" onclick="authClick()">&#128273; <span id="authLbl">Login</span></button>
 </div>
 </header>
 <section class="hero">
-<h2>\u09AE\u09C7\u09B0\u09BE \u09B8\u09C7\u09B0\u09BE \u099F\u09BF\u0989\u099F\u09B0 \u0996\u09C1\u0981\u099C\u09C1\u09A8\u0964 <em>\u09AF\u09C7\u0995\u09CB\u09A8\u09CB \u099C\u09BE\u09AF\u09BC\u0997\u09BE\u09AF\u09BC \u09A8\u09BE\u0964</em></h2>
-<p>\u099F\u09BF\u0989\u099F\u09B0 \u09AA\u09CD\u09B0\u09CB\u09AB\u09BE\u0987\u09B2 \u09A4\u09C8\u09B0\u09BF \u0995\u09B0\u09C1\u09A8, \u09AA\u09CD\u09B0\u09DF\u09CB\u099C\u09A8 \u09AA\u09CB\u09B8\u09CD\u099F \u0995\u09B0\u09C1\u09A8 \u2014 \u09B8\u09AC\u09BE\u0987 \u098F\u0995 \u09B8\u09C1\u09B0\u0995\u09C7\u09B0 \u09B2\u0997\u0987\u09A8\u09C7\u0964</p>
+<h2 id="heroH">Tuition Hub</h2>
+<p id="heroP"></p>
 <div class="stats">
-<div class="stat"><b id="stT">0</b><span>\u09B8\u09C7\u09B0\u09BE \u099F\u09BF\u0989\u099F\u09B0</span></div>
-<div class="stat"><b id="stP">0</b><span>\u099F\u09BF\u0989\u09B6\u09A8 \u09AA\u09CB\u09B8\u09CD\u099F</span></div>
+<div class="stat"><b id="stT">0</b><span id="stTL"></span></div>
+<div class="stat"><b id="stP">0</b><span id="stPL"></span></div>
 </div>
 </section>
-<main class="wrap" id="app"></main>
-<footer>\u00A9 Rajendra Student Hub \u00B7 Tuition Hub</footer>
+<main class="wrap" id="app"><p class="hub-empty" id="loadLbl">Loading...</p></main>
+<footer>&copy; Rajendra Student Hub &middot; Tuition Hub</footer>
 <script>
 window.SUPABASE_URL='https://dcwzxozhgysxhcptataq.supabase.co';
 window.SUPABASE_ANON_KEY='sb_publishable_i7C5FVxKNwaBPABgdFHOIQ_HKrxz5rM';
+document.getElementById('heroH').innerHTML='\u09AE\u09C7\u09B0\u09BE \u09B8\u09C7\u09B0\u09BE \u099F\u09BF\u0989\u099F\u09B0 \u0996\u09C1\u0981\u099C\u09C1\u09A8\u0964 <em>\u09AF\u09C7\u0995\u09CB\u09A8\u09CB \u099C\u09BE\u09DF\u09BC\u0997\u09BE\u09DF\u09BC \u09A8\u09BE\u0964</em>';
+document.getElementById('heroP').textContent='\u099F\u09BF\u0989\u099F\u09B0 \u09AA\u09CD\u09B0\u09CB\u09AB\u09BE\u0987\u09B2 \u09A4\u09C8\u09B0\u09BF \u0995\u09B0\u09C1\u09A8, \u09AA\u09CD\u09B0\u09DF\u09CB\u099C\u09A8 \u09AA\u09CB\u09B8\u09CD\u099F \u0995\u09B0\u09C1\u09A8 \u2014 \u09B8\u09AC\u09BE\u0987 \u098F\u0995 \u09B8\u09C1\u09B0\u0995\u09C7\u09B0 \u09B2\u0997\u0987\u09A8\u09C7\u0964';
+document.getElementById('stTL').textContent='\u09B8\u09C7\u09B0\u09BE \u099F\u09BF\u0989\u099F\u09B0';
+document.getElementById('stPL').textContent='\u099F\u09BF\u0989\u09B6\u09A8 \u09AA\u09CB\u09B8\u099F';
+document.getElementById('loadLbl').textContent='\u09B2\u09CB\u09A1 \u09B9\u099A\u09CD\u099B\u09C7\u2026';
 </script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
-<script src="hubdb.js?v=3"></script>
-<script src="hub-auth.js?v=3"></script>
-<script src="tuition-app.js?v=3"></script>
+<script src="hubdb.js?v=4"></script>
+<script src="hub-auth.js?v=4"></script>
+<script src="tuition-ui.js?v=4"></script>
+<script src="tuition-forms.js?v=4"></script>
+<script src="tuition-app.js?v=4"></script>
 </body>
 </html>
