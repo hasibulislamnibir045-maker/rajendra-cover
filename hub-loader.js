@@ -1,5 +1,5 @@
-/* ===== Hub loader :: Supabase + hubdb + hub-auth + hub-notice + hub-tuition =====
-   Load order: supabase-js -> hubdb.js -> hub-auth.js -> hub-notice.js -> hub-tuition.js
+/* ===== Hub loader :: Supabase + hubdb + hub-auth + all hub modules =====
+   Load order: supabase-js -> hubdb -> hub-auth -> hub-notice -> hub-tuition -> hub-mess -> hub-admin
    Double-load guard: ei script ekbar-i kaj korbe. */
 (function () {
   if (window.__HUB_LOADED__) return;
@@ -11,7 +11,11 @@
     var chain = function () {
       js('hubdb.js', function () {
         js('hub-auth.js', function () {
-          js('hub-notice.js', function () { js('hub-tuition.js'); });
+          js('hub-notice.js', function () {
+            js('hub-tuition.js', function () {
+              js('hub-mess.js', function () { js('hub-admin.js'); });
+            });
+          });
         });
       });
     };
