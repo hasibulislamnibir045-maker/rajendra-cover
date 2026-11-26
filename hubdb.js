@@ -19,7 +19,6 @@ window.HUBDB = (function () {
     return d.getFullYear() + '-' + z(d.getMonth() + 1) + '-' + z(d.getDate()); }
   function uid() { return client().auth.getUser().then(function (r) { return (r.data && r.data.user && r.data.user.id) || null; }); }
 
-  /* ---------------- NOTICES ---------------- */
   function getNotices() {
     return client().from('notices').select('id,title,body,category,dept,link,notice_date')
       .order('notice_date', { ascending: false }).limit(200).then(function (r) {
@@ -41,7 +40,6 @@ window.HUBDB = (function () {
     return client().from('notices').delete().eq('id', id).then(function (r) { if (r.error) throw r.error; });
   }
 
-  /* ---------------- RESOURCES ---------------- */
   function getResources(dept, yr) {
     var q = client().from('resources').select('*').order('created_at', { ascending: false }).limit(300);
     if (dept) q = q.eq('dept', dept);
@@ -63,12 +61,13 @@ window.HUBDB = (function () {
     return client().from('resources').delete().eq('id', id).then(function (r) { if (r.error) throw r.error; });
   }
 
-  /* ---------------- ROUTINES ---------------- */
   function getRoutines(dept, prog, yr) {
     return client().from('routines').select('*').order('created_at', { ascending: true }).limit(500).then(function (r) {
       if (r.error) throw r.error;
       return r.data.map(function (x) {
-        return { id: x Bengali placeholder };
+        return { id: x.id, dept: x.dept, prog: x.prog || '', yr: x.yr || '', sub: x.sub, k: x.kind,
+          d: x.date || '', rep: (x.rep == null ? '' : x.rep), st: x.st || '', en: x.en || '',
+          tch: x.tch || '', room: x.room || '' };
       }).filter(function (x) {
         if (dept && x.dept !== 'all' && x.dept !== dept) return false;
         if (prog && x.prog && x.prog !== prog) return false;
@@ -89,9 +88,21 @@ window.HUBDB = (function () {
     return client().from('routines').delete().eq('id', id).then(function (r) { if (r.error) throw r.error; });
   }
 
-  /* ---------------- auth / admin ---------------- */
   function user() { return me; }
-  Supabase placeholder
+  function profile() {
+    if (myProfile) return Promise.resolve(myProfile);
+    if (!me) return Promise.resolve(null);
+    return client().from('profiles').select('*').eq('id', me.id).maybeSingle().then(function (r) {
+      myProfile = r.data || null; return myProfile;
+    });
+  }
+  function isAdmin() { return profile().then(function (p) { return !!(p && p.is_admin); }); }
+  function signIn(email, pass) {
+    return client().auth.signInWithPassword({ email: email, password: pass }).then(function (r) {
+      if (r.error) throw r.error; me = r.data.user; return me;
+    });
+  }
+  function signOut() { return client().auth.signOut().then(function () { me = null; myProfile = null; }); }
 
   return {
     getNotices: getNotices, addNotice: addNotice, delNotice: delNotice,
