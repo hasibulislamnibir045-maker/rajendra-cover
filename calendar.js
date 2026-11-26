@@ -69,3 +69,16 @@
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', mount); else mount();
 })();
+
+/* ===== Hub boot loader: Supabase-based hub features load hoy ekhane theke ===== */
+(function () {
+  function css(u) { var l = document.createElement('link'); l.rel = 'stylesheet'; l.href = u; document.head.appendChild(l); }
+  function js(u, cb) { var s = document.createElement('script'); s.src = u; if (cb) s.onload = cb; document.head.appendChild(s); }
+  function start() {
+    css('hub/hub.css');
+    var chain = function () { js('hub/sb.js', function () { js('hub/notice.js'); }); };
+    if (typeof supabase === 'undefined') js('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js', chain);
+    else chain();
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start); else start();
+})();
