@@ -75,13 +75,20 @@
     }
   }
 
-  /* Hub tile-er jonno public interface */
-  window.HUBNOTICE = {
-    open: function () {
-      if (typeof openV === 'function') { openV('notice'); }
-      load(); checkAdmin();
-    }
-  };
-  /* existing hub view system-e notice view register (VW available thakle) */
+  /* ---- Hub integration ---- */
+  /* 1) tile hub-grid-e jog hoy (jodi HUB array thake) */
+  function addTile() {
+    if (!window.HUB || !document.getElementById('hg')) return;
+    var has = HUB.some(function (h) { return h[1] === 'notice'; });
+    if (!has) HUB.push(['📢', 'notice', 'নোটিশ', 'কলেজের সব আপডেট এক জায়গায়', 'live']);
+    document.getElementById('hg').innerHTML = HUB.map(function (h) { return '<button class="hc" onclick="openV(\'' + h[1] + '\')"><span class="ic">' + h[0] + '</span><b>' + h[2] + '</b><span>' + h[3] + '</span><br>' + (h[4] === 'live' ? '<em>চালু আছে</em>' : '<em class="soon">শীঘ্রই আসছে</em>') + '</button>'; }).join('');
+  }
+  /* 2) view register */
   if (window.VW) VW.notice = ['📢 নোটিশ', '<div id="ntw"></div>', function () { load(); checkAdmin(); }];
+
+  window.HUBNOTICE = { open: function () { if (typeof openV === 'function') openV('notice'); load(); checkAdmin(); }, refresh: load };
+
+  /* dom ready tile-er jonno: student.js HUB re-render kore, tai amra DOM ready + ek tick pore render kori */
+  var go = function () { setTimeout(addTile, 0); };
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', go); else go();
 })();
