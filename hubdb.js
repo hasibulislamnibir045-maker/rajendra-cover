@@ -19,6 +19,7 @@ window.HUBDB = (function () {
     return d.getFullYear() + '-' + z(d.getMonth() + 1) + '-' + z(d.getDate()); }
   function uid() { return client().auth.getUser().then(function (r) { return (r.data && r.data.user && r.data.user.id) || null; }); }
 
+  /* ---------- Notices ---------- */
   function getNotices() {
     return client().from('notices').select('id,title,body,category,dept,link,notice_date')
       .order('notice_date', { ascending: false }).limit(200).then(function (r) {
@@ -40,6 +41,7 @@ window.HUBDB = (function () {
     return client().from('notices').delete().eq('id', id).then(function (r) { if (r.error) throw r.error; });
   }
 
+  /* ---------- Resources ---------- */
   function getResources(dept, yr) {
     var q = client().from('resources').select('*').order('created_at', { ascending: false }).limit(300);
     if (dept) q = q.eq('dept', dept);
@@ -61,6 +63,7 @@ window.HUBDB = (function () {
     return client().from('resources').delete().eq('id', id).then(function (r) { if (r.error) throw r.error; });
   }
 
+  /* ---------- Routines ---------- */
   function getRoutines(dept, prog, yr) {
     return client().from('routines').select('*').order('created_at', { ascending: true }).limit(500).then(function (r) {
       if (r.error) throw r.error;
@@ -88,6 +91,83 @@ window.HUBDB = (function () {
     return client().from('routines').delete().eq('id', id).then(function (r) { if (r.error) throw r.error; });
   }
 
+  /* ---------- Tuition: Tutors ---------- */
+  function getTutors() {
+    return client().from('tutors').select('*').eq('status', 'active')
+      .order('created_at', { ascending: false }).limit(300).then(function (r) {
+        if (r.error) throw r.error;
+        return r.data.map(function (x) {
+          return { id: x.id, uid: x.user_id, n: x.full_name, m: x.mobile || '', g: x.gender || '',
+            ins: x.institution || '', yr: x.year || '', sub: x.subject || '', cls: x.class_level || '',
+            med: x.medium || '', area: x.area || '', mode: x.mode || '', sal: x.salary || '',
+            exp: x.experience || '', ts: x.created_at };
+        });
+      });
+  }
+  function addTutor(v) {
+    return uid().then(function (id) {
+      var row = { user_id: id, full_name: v.n, mobile: v.m || null, gender: v.g || null,
+        institution: v.ins || null, year: v.yr || null, subject: v.sub || null, class_level: v.cls || null,
+        medium: v.med || null, area: v.area || null, mode: v.mode || null, salary: v.sal || null,
+        experience: v.exp || null };
+      return client().from('tutors').insert(row).then(function (r) { if (r.error) throw r.error; });
+    });
+  }
+  function myTutors() {
+    return uid().then(function (id) {
+      return client().from('tutors').select('*').eq('user_id', id)
+        .order('created_at', { ascending: false }).then(function (r) {
+          if (r.error) throw r.error;
+          return r.data.map(function (x) {
+            return { id: x.id, n: x.full_name, m: x.mobile || '', g: x.gender || '', ins: x.institution || '',
+              yr: x.year || '', sub: x.subject || '', cls: x.class_level || '', med: x.medium || '',
+              area: x.area || '', mode: x.mode || '', sal: x.salary || '', exp: x.experience || '' };
+          });
+        });
+    });
+  }
+  function delTutor(id) {
+    return client().from('tutors').delete().eq('id', id).then(function (r) { if (r.error) throw r.error; });
+  }
+
+  /* ---------- Tuition: Posts ---------- */
+  function getPosts() {
+    return client().from('posts').select('*').eq('status', 'active')
+      .order('created_at', { ascending: false }).limit(300).then(function (r) {
+        if (r.error) throw r.error;
+        return r.data.map(function (x) {
+          return { id: x.id, uid: x.user_id, n: x.full_name, m: x.mobile || '', cls: x.class_level || '',
+            sg: x.student_gender || '', sub: x.subject || '', med: x.medium || '', area: x.area || '',
+            days: x.days || '', sal: x.salary || '', tg: x.target || '', note: x.note || '', ts: x.created_at };
+        });
+      });
+  }
+  function addPost(v) {
+    return uid().then(function (id) {
+      var row = { user_id: id, full_name: v.n, mobile: v.m || null, class_level: v.cls || null,
+        student_gender: v.sg || null, subject: v.sub || null, medium: v.med || null, area: v.area || null,
+        days: v.days || null, salary: v.sal || null, target: v.tg || null, note: v.note || null };
+      return client().from('posts').insert(row).then(function (r) { if (r.error) throw r.error; });
+    });
+  }
+  function myPosts() {
+    return uid().then(function (id) {
+      return client().from('posts').select('*').eq('user_id', id)
+        .order('created_at', { ascending: false }).then(function (r) {
+          if (r.error) throw r.error;
+          return r.data.map(function (x) {
+            return { id: x.id, n: x.full_name, m: x.mobile || '', cls: x.class_level || '', sg: x.student_gender || '',
+              sub: x.subject || '', med: x.medium || '', area: x.area || '', days: x.days || '',
+              sal: x.salary || '', tg: x.target || '', note: x.note || '' };
+          });
+        });
+    });
+  }
+  function delPost(id) {
+    return client().from('posts').delete().eq('id', id).then(function (r) { if (r.error) throw r.error; });
+  }
+
+  /* ---------- Auth ---------- */
   function user() { return me; }
   function profile() {
     if (myProfile) return Promise.resolve(myProfile);
@@ -105,7 +185,6 @@ window.HUBDB = (function () {
   function signUp(name, email, pass) {
     return client().auth.signUp({ email: email, password: pass, options: { data: { full_name: name } } }).then(function (r) {
       if (r.error) throw r.error;
-      /* Email confirmation may be ON: user may not be in session yet — that's OK */
       me = (r.data && r.data.user) || null; myProfile = null; return me;
     });
   }
@@ -121,6 +200,8 @@ window.HUBDB = (function () {
     getNotices: getNotices, addNotice: addNotice, delNotice: delNotice,
     getResources: getResources, addResource: addResource, delResource: delResource,
     getRoutines: getRoutines, addRoutine: addRoutine, delRoutine: delRoutine,
+    getTutors: getTutors, addTutor: addTutor, myTutors: myTutors, delTutor: delTutor,
+    getPosts: getPosts, addPost: addPost, myPosts: myPosts, delPost: delPost,
     user: user, profile: profile, isAdmin: isAdmin,
     signIn: signIn, signUp: signUp, session: session, signOut: signOut, today: today
   };
