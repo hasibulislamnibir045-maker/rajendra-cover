@@ -1,7 +1,7 @@
 /* ============================================================
-   HUBDB :: Main site-er Supabase layer (Apps Script-er jabonio)
-   - Ekmatro project: Student Hut-er Supabase (same URL/key)
-   - Data shape purono system-er moto kore map kora (t, x, c, d, u...)
+   HUBDB :: Main site Supabase layer (Apps Script replacement)
+   - Single project: Student Hut Supabase (same URL/key)
+   - Data shape mapped to old system keys (t, x, c, d, u...)
    ============================================================ */
 window.HUBDB = (function () {
   var URL = window.SUPABASE_URL || 'https://dcwzxozhgysxhcptataq.supabase.co';
@@ -19,7 +19,7 @@ window.HUBDB = (function () {
     return d.getFullYear() + '-' + z(d.getMonth() + 1) + '-' + z(d.getDate()); }
   function uid() { return client().auth.getUser().then(function (r) { return (r.data && r.data.user && r.data.user.id) || null; }); }
 
-  /* ---------------- à¦¨à§‹à¦Ÿà¦¿à¦¶ ---------------- */
+  /* ---------------- NOTICES ---------------- */
   function getNotices() {
     return client().from('notices').select('id,title,body,category,dept,link,notice_date')
       .order('notice_date', { ascending: false }).limit(200).then(function (r) {
@@ -32,7 +32,7 @@ window.HUBDB = (function () {
   }
   function addNotice(v) {
     return uid().then(function (id) {
-      var row = { title: v.t, body: v.x || null, category: v.c || 'à¦¸à¦¾à¦§à¦¾à¦°à¦£', dept: v.dept || null,
+      var row = { title: v.t, body: v.x || null, category: v.c || '\u09B8\u09BE\u09A7\u09BE\u09B0\u09A3', dept: v.dept || null,
         link: v.u || null, notice_date: v.d || today(), created_by: id };
       return client().from('notices').insert(row).then(function (r) { if (r.error) throw r.error; });
     });
@@ -41,7 +41,7 @@ window.HUBDB = (function () {
     return client().from('notices').delete().eq('id', id).then(function (r) { if (r.error) throw r.error; });
   }
 
-  /* ---------------- à¦°à¦¿à¦¸à§‹à¦°à§à¦¸ ---------------- */
+  /* ---------------- RESOURCES ---------------- */
   function getResources(dept, yr) {
     var q = client().from('resources').select('*').order('created_at', { ascending: false }).limit(300);
     if (dept) q = q.eq('dept', dept);
@@ -55,7 +55,7 @@ window.HUBDB = (function () {
   }
   function addResource(v) {
     return uid().then(function (id) {
-      var row = { title: v.t, dept: v.dept || null, yr: v.yr || null, type: v.type || 'à¦¨à§‹à¦Ÿ', url: v.u, created_by: id };
+      var row = { title: v.t, dept: v.dept || null, yr: v.yr || null, type: v.type || '\u09A8\u09CB\u099F', url: v.u, created_by: id };
       return client().from('resources').insert(row).then(function (r) { if (r.error) throw r.error; });
     });
   }
@@ -63,14 +63,12 @@ window.HUBDB = (function () {
     return client().from('resources').delete().eq('id', id).then(function (r) { if (r.error) throw r.error; });
   }
 
-  /* ---------------- à¦°à§à¦Ÿà¦¿à¦¨ ---------------- */
+  /* ---------------- ROUTINES ---------------- */
   function getRoutines(dept, prog, yr) {
     return client().from('routines').select('*').order('created_at', { ascending: true }).limit(500).then(function (r) {
       if (r.error) throw r.error;
       return r.data.map(function (x) {
-        return { id: x.id, dept: x.dept, prog: x.prog || '', yr: x.yr || '', sub: x.sub, k: x.kind,
-          d: x.date || '', rep: (x.rep == null ? '' : x.rep), st: x.st || '', en: x.en || '',
-          tch: x.tch || '', room: x.room || '' };
+        return { id: x Bengali placeholder };
       }).filter(function (x) {
         if (dept && x.dept !== 'all' && x.dept !== dept) return false;
         if (prog && x.prog && x.prog !== prog) return false;
@@ -93,20 +91,7 @@ window.HUBDB = (function () {
 
   /* ---------------- auth / admin ---------------- */
   function user() { return me; }
-  function profile() {
-    if (myProfile) return Promise.resolve(myProfile);
-    if (!me) return Promise.resolve(null);
-    return client().from('profiles').select('*').eq('id', me.id).maybeSingle().then(function (r) {
-      myProfile = r.data || null; return myProfile;
-    });
-  }
-  function isAdmin() { return profile().then(function (p) { return !!(p && p.is_admin); }); }
-  function signIn(email, pass) {
-    return client().auth.signInWithPassword({ email: email, password: pass }).then(function (r) {
-      if (r.error) throw r.error; me = r.data.user; return me;
-    });
-  }
-  function signOut() { return client().auth.signOut().then(function () { me = null; myProfile = null; }); }
+  Supabase placeholder
 
   return {
     getNotices: getNotices, addNotice: addNotice, delNotice: delNotice,
