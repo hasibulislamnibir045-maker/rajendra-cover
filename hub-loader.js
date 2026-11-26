@@ -1,5 +1,6 @@
-/* ===== Hub loader :: Supabase + hubdb + hub-notice auto-load =====
+/* ===== Hub loader :: Supabase + hubdb + hub-auth + hub-notice auto-load =====
    index.html-er seshe <script src="hub-loader.js"></script> dilei sob cholbe.
+   Load order: supabase-js -> hubdb.js -> hub-auth.js -> hub-notice.js
    Double-load guard: ei script ekbar-i kaj korbe. */
 (function () {
   if (window.__HUB_LOADED__) return;
@@ -8,7 +9,7 @@
   function js(u, cb) { var s = document.createElement('script'); s.src = u; if (cb) s.onload = cb; document.head.appendChild(s); }
   function start() {
     css('hub-ui.css');
-    var chain = function () { js('hubdb.js', function () { js('hub-notice.js'); }); };
+    var chain = function () { js('hubdb.js', function () { js('hub-auth.js', function () { js('hub-notice.js'); }); }); };
     if (typeof supabase === 'undefined') js('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js', chain);
     else chain();
   }
