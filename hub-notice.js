@@ -56,7 +56,7 @@
   function draw() {
     var w = document.getElementById('ntw'); if (!w) return;
     var h = '';
-    if (HUBDB.user() && admin) h += '<div class="hub-tools"><button class="hub-btn2" id="ntNew">' + (mode === 'form' ? '\u2190 \u09A4\u09BE\u09B2\u09BF\u0995\u09BE\u09AF\u09BC \u09AB\u09BF\u09B0\u09C1\u09A8' : '\uFF0B \u09A8\u09A4\u09C1\u09A8 \u09A8\u09CB\u099F\u09BF\u09B6') + '</button></div>';
+    if (HUBDB.user() && admin) h += '<div class="hub-tools"><button class="hub-btn2" id="ntNew">' + (mode === 'form' ? '\u2190 \u09A4\u09BE\u09B2\u09BF\u0995\u09BE\u09DF\u09BC \u09AB\u09BF\u09B0\u09C1\u09A8' : '\uFF0B \u09A8\u09A4\u09C1\u09A8 \u09A8\u09CB\u099F\u09BF\u09B6') + '</button></div>';
     h += mode === 'form' ? formUI() : listUI();
     w.innerHTML = h;
     var nb = document.getElementById('ntNew');
@@ -72,8 +72,8 @@
           dept: document.getElementById('nt_d').value || null,
           u: document.getElementById('nt_u').value.trim() || null,
           d: document.getElementById('nt_d2').value || null
-        }).then(function () { toast('\u2705 \u09A8\u09CB\u099F\u09BF\u09B6 \u09AA\u09CD\u09B0\u0995\u09BE\u09B6\u09BF\u09A4 \u09B9\u09AF\u09BC\u09C7\u099B\u09C7'); mode = 'list'; load(); })
-          .catch(function (er) { b.disabled = false; toast('\u09B8\u09C7\u09AD \u09B9\u09AF\u09BC\u09A8\u09BF: ' + er.message); });
+        }).then(function () { toast('\u2705 \u09A8\u09CB\u099F\u09BF\u09B6 \u09AA\u09CD\u09B0\u0995\u09BE\u09B6\u09BF\u09A4 \u09B9\u09DF\u09BC\u09C7\u099B\u09C7'); mode = 'list'; load(); })
+          .catch(function (er) { b.disabled = false; toast('\u09B8\u09C7\u09AD \u09B9\u09DF\u09BC\u09A8\u09BF: ' + er.message); });
       };
     }
   }
@@ -85,9 +85,15 @@
   function addTile() {
     if (!window.HUB || !document.getElementById('hg')) return;
     var has = HUB.some(function (h) { return h[1] === 'notice'; });
-    if (!has) HUB.push(['\uD83D\uDCE2', 'notice', '\u09A8\u09CB\u099F\u09BF\u09B6', '\u0995\u09B2\u09C7\u099C\u09C7\u09B0 \u09B8\u09AC \u0986\u09AA\u09A1\u09C7\u099F \u098F\u0995 \u099C\u09BE\u09AF\u09BC\u0997\u09BE\u09AF\u09BC', 'live']);
+    if (!has) HUB.push(['\uD83D\uDCE2', 'notice', '\u09A8\u09CB\u099F\u09BF\u09B6', '\u0995\u09B2\u09C7\u099C\u09C7\u09B0 \u09B8\u09AC \u0986\u09AA\u09A1\u09C7\u099F \u098F\u0995 \u099C\u09BE\u09DF\u09BC\u0997\u09BE\u09DF\u09BC', 'live']);
     document.getElementById('hg').innerHTML = HUB.map(function (h) { return '<button class="hc" onclick="openV(\'' + h[1] + '\')"><span class="ic">' + h[0] + '</span><b>' + h[2] + '</b><span>' + h[3] + '</span><br>' + (h[4] === 'live' ? '<em>\u099A\u09BE\u09B2\u09C1 \u0986\u099B\u09C7</em>' : '<em class="soon">\u09B6\u09C0\u0998\u09CD\u09B0\u0987 \u0986\u09B8\u099B\u09C7</em>') + '</button>'; }).join('');
   }
   var go = function () { setTimeout(addTile, 0); };
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', go); else go();
+
+  /* hub-auth sync: login/logout hole admin check abar cholbe */
+  window.hubNoticeSync = function () {
+    admin = null;
+    if (document.getElementById('ntw')) { checkAdmin(); }
+  };
 })();

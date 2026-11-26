@@ -23,3 +23,21 @@
 .hub-form input:focus,.hub-form select:focus,.hub-form textarea:focus{outline:2px solid var(--hub-g);outline-offset:2px}
 .hub-toast{position:fixed;left:50%;bottom:116px;transform:translateX(-50%);z-index:40;background:#2a1f14;color:#fff;padding:12px 18px;border-radius:12px;max-width:90vw;font-size:15px}
 @media(max-width:520px){.hub-row2{grid-template-columns:1fr}}
+
+/* ===== Auth modal (hub-auth.js) ===== */
+.hub-modal{position:fixed;inset:0;z-index:60;background:rgba(42,31,20,.55);display:flex;align-items:center;justify-content:center;padding:16px}
+.hub-modal .hub-card{width:100%;max-width:380px;margin:0;padding:20px;transform:none;animation:hubPop .18s ease-out}
+.hub-modal .hub-card:hover{transform:none;box-shadow:0 1px 6px rgba(80,50,10,.08)}
+@keyframes hubPop{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+.hub-card-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:4px}
+.hub-card-head b{font:700 18px 'Noto Serif Bengali',Inter,sans-serif;color:var(--hub-text)}
+.hub-x{border:0;background:none;font-size:16px;color:var(--hub-muted);cursor:pointer;padding:4px 8px;border-radius:8px}
+.hub-x:hover{background:var(--hub-gl);color:var(--hub-g2)}
+.hub-sub{margin:2px 0 10px;font-size:13px;color:var(--hub-muted)}
+.hub-tabs{display:flex;gap:8px;margin-bottom:6px}
+.hub-tabs button{flex:1;padding:9px 6px;border:1px solid var(--hub-line);background:#fff;color:var(--hub-text);border-radius:10px;font:600 14px inherit;cursor:pointer;font-family:inherit}
+.hub-tabs button.on{background:var(--hub-g);border-color:var(--hub-g);color:#fff}
+.hub-msg{margin:10px 0;padding:10px 12px;border-radius:10px;background:var(--hub-gl);color:var(--hub-g2);font-size:14px;line-height:1.45}
+.hub-f label{display:block;font-size:13px;color:var(--hub-muted);margin:12px 0 4px}
+.hub-f input{width:100%;padding:11px 12px;border-radius:10px;border:1px solid var(--hub-line);background:#fff;color:var(--hub-text);font:inherit;font-size:16px;box-sizing:border-box;outline:none}
+.hub-f input:focus{outline:2px solid var(--hub-g);outline-offset:2px}

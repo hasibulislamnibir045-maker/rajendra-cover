@@ -99,7 +99,20 @@ window.HUBDB = (function () {
   function isAdmin() { return profile().then(function (p) { return !!(p && p.is_admin); }); }
   function signIn(email, pass) {
     return client().auth.signInWithPassword({ email: email, password: pass }).then(function (r) {
-      if (r.error) throw r.error; me = r.data.user; return me;
+      if (r.error) throw r.error; me = r.data.user; myProfile = null; return me;
+    });
+  }
+  function signUp(name, email, pass) {
+    return client().auth.signUp({ email: email, password: pass, options: { data: { full_name: name } } }).then(function (r) {
+      if (r.error) throw r.error;
+      /* Email confirmation may be ON: user may not be in session yet — that's OK */
+      me = (r.data && r.data.user) || null; myProfile = null; return me;
+    });
+  }
+  function session() {
+    return client().auth.getSession().then(function (r) {
+      me = (r.data && r.data.session && r.data.session.user) || null;
+      return me;
     });
   }
   function signOut() { return client().auth.signOut().then(function () { me = null; myProfile = null; }); }
@@ -108,6 +121,7 @@ window.HUBDB = (function () {
     getNotices: getNotices, addNotice: addNotice, delNotice: delNotice,
     getResources: getResources, addResource: addResource, delResource: delResource,
     getRoutines: getRoutines, addRoutine: addRoutine, delRoutine: delRoutine,
-    user: user, profile: profile, isAdmin: isAdmin, signIn: signIn, signOut: signOut, today: today
+    user: user, profile: profile, isAdmin: isAdmin,
+    signIn: signIn, signUp: signUp, session: session, signOut: signOut, today: today
   };
 })();
