@@ -12,13 +12,13 @@
 .hub-link:hover{text-decoration:underline}
 .hub-empty{padding:24px;text-align:center;color:var(--hub-muted);border:1px dashed #d6c4aa;border-radius:14px;margin:12px 0;font-size:14px}
 .hub-tools{margin:4px 0 12px}
-.hub-btn{display:block;width:100%;margin-top:14px;padding:11px;min-height:44px;border:0;border-radius:10px;background:var(--hub-g);color:#fff;font-size:15px;font-weight:700;cursor:pointer}
+.hub-btn{display:block;width:100%;margin-top:14px;padding:11px;min-height:44px;border:0;border-radius:10px;background:var(--hub-g);color:#fff;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit}
 .hub-btn:disabled{opacity:.6;cursor:default}
-.hub-btn2{border:1px solid var(--hub-line);background:#fff;color:var(--hub-text);border-radius:99px;padding:8px 18px;font-size:14px;font-weight:600;cursor:pointer}
+.hub-btn2{border:1px solid var(--hub-line);background:#fff;color:var(--hub-text);border-radius:99px;padding:8px 18px;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit}
 .hub-btn2:hover{border-color:var(--hub-g);color:var(--hub-g2)}
 .hub-row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .hub-form label{display:block;font-size:13px;color:var(--hub-muted);margin:12px 0 4px}
-.hub-form input,.hub-form select,.hub-form textarea{width:100%;padding:10px 12px;border-radius:10px;border:1px solid var(--hub-line);background:#fff;font:inherit;font-size:16px;box-sizing:border-box;outline:none}
+.hub-form input,.hub-form select,.hub-form textarea{width:100%;padding:10px 12px;border-radius:10px;border:1px solid var(--hub-line);background:#fff;color:var(--hub-text);font:inherit;font-size:16px;box-sizing:border-box;outline:none}
 .hub-form input:focus,.hub-form select:focus,.hub-form textarea:focus{outline:2px solid var(--hub-g);outline-offset:2px}
-.tg{position:fixed;left:50%;bottom:116px;transform:translateX(-50%);z-index:40;background:#2a1f14;color:#fff;padding:12px 18px;border-radius:12px;max-width:90vw;font-size:15px}
+.hub-toast{position:fixed;left:50%;bottom:116px;transform:translateX(-50%);z-index:40;background:#2a1f14;color:#fff;padding:12px 18px;border-radius:12px;max-width:90vw;font-size:15px}
 @media(max-width:520px){.hub-row2{grid-template-columns:1fr}}
