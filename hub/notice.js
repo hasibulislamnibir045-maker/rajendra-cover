@@ -1,12 +1,13 @@
-/* ===== Hub Notices module: Supabase + Hut-style UI ===== */
+/* ===== Hub Notices: Supabase + Hut-style UI ===== */
 /* Table: notices (id, created_at, title, cat, dept, link, body, created_by) */
 (function () {
-  var items = [], busy = false, msg = '', mode = 'list', form = { t: '', c: '', d: '', u: '', x: '' };
+  var MBN = ['জানুয়ারি','ফেব্রুয়ারি','মার্চ','এপ্রিল','মে','জুন','জুলাই','আগস্ট','সেপ্টেম্বর','অক্টোবর','নভেম্বর','ডিসেম্বর'];
+  var items = [], busy = false, msg = '', mode = 'list';
   var CATS = ['সাধারণ', 'পরীক্ষা', 'ভর্তি', 'ছুটি', 'ফলাফল', 'জরুরি'];
   var DEPTS = ['', 'English', 'Bangla', 'History', 'Islamic History and Culture', 'Islamic Studies', 'Philosophy', 'Political Science', 'Economics', 'Sociology', 'Social Work', 'Psychology', 'Geography and Environment', 'Management', 'Accounting', 'Marketing', 'Finance and Banking', 'Physics', 'Chemistry', 'Mathematics', 'Botany', 'Zoology', 'Statistics'];
 
   function load() {
-    busy = true; draw();
+    busy = true; msg = ''; draw();
     return SB.c().from('notices').select('*').order('created_at', { ascending: false }).then(function (r) {
       if (r.error) { msg = 'নোটিশ লোড হয়নি: ' + r.error.message; items = []; }
       else items = r.data || [];
@@ -16,7 +17,8 @@
 
   function card(n) {
     var esc = SB.esc, bn = SB.bn;
-    var d = new Date(n.created_at), ds = bn(d.getDate() + ' ' + MBN[d.getMonth()] + ', ' + d.getFullYear());
+    var d = n.created_at ? new Date(n.created_at) : new Date();
+    var ds = bn(d.getDate() + ' ' + MBN[d.getMonth()] + ', ' + d.getFullYear());
     return '<article class="hub-card">' +
       '<div class="hub-card-top"><span class="hub-chip ' + (n.cat === 'জরুরি' ? 'red' : '') + '">' + esc(n.cat || 'সাধারণ') + '</span>' +
       (n.dept ? '<span class="hub-chip">' + esc(n.dept) + '</span>' : '') +
@@ -44,13 +46,22 @@
       '<button class="hub-btn">প্রকাশ করুন</button></form>';
   }
 
+  function isAdmin() { var p = SB.ld('rsh_admin_cache', null); return !!(p && p.is_admin); }
+  function checkAdmin() {
+    var u = SB.user(); if (!u) return;
+    SB.c().from('profiles').select('is_admin').eq('id', u.id).maybeSingle().then(function (r) {
+      if (!r.error && r.data) SB.sv('rsh_admin_cache', r.data);
+    });
+  }
+
   function draw() {
     var w = document.getElementById('ntw'); if (!w) return;
-    var esc = SB.esc;
     var h = '';
     if (SB.user() && isAdmin()) h += '<div class="hub-tools"><button class="hub-btn2" id="ntNew">' + (mode === 'form' ? '← তালিকায় ফিরুন' : '＋ নতুন নোটিশ') + '</button></div>';
     h += mode === 'form' ? formUI() : listUI();
     w.innerHTML = h;
+    var nb = document.getElementById('ntNew');
+    if (nb) nb.onclick = function () { mode = mode === 'form' ? 'list' : 'form'; draw(); };
     if (mode === 'form') {
       var f = document.getElementById('ntcForm');
       f.onsubmit = function (e) {
@@ -61,35 +72,16 @@
           SB.toast('নোটিশ প্রকাশিত হয়েছে'); mode = 'list'; load();
         });
       };
-      document.getElementById('ntNew').onclick = function () { mode = mode === 'form' ? 'list' : 'form'; draw(); };
-    } else if (SB.user() && isAdmin()) {
-      document.getElementById('ntNew').onclick = function () { mode = 'form'; draw(); };
     }
   }
 
-  /* admin = profiles.is_admin flag (marketplace-er ek Supabase project e) */
-  function isAdmin() {
-    var p = SB.ld('rsh_admin_cache', null);
-    return !!(p && p.is_admin);
-  }
-  function checkAdmin() {
-    var u = SB.user(); if (!u) return;
-    SB.c().from('profiles').select('is_admin').eq('id', u.id).maybeSingle().then(function (r) {
-      if (!r.error && r.data) SB.sv('rsh_admin_cache', r.data);
-    });
-  }
-
-  /* Hub tile-er jonno interface */
+  /* Hub tile-er jonno public interface */
   window.HUBNOTICE = {
     open: function () {
-      openV('notice');
-      load();
-      checkAdmin();
+      if (typeof openV === 'function') { openV('notice'); }
+      load(); checkAdmin();
     }
   };
-
-  /* Hub integration: existing hub view system-e notun view */
-  if (window.VW) {
-    VW.notice = ['📢 নোটিশ', '<div id="ntw"></div>', function () { load(); checkAdmin(); }];
-  }
+  /* existing hub view system-e notice view register (VW available thakle) */
+  if (window.VW) VW.notice = ['📢 নোটিশ', '<div id="ntw"></div>', function () { load(); checkAdmin(); }];
 })();
