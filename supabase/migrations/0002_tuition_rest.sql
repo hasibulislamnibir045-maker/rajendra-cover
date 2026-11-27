@@ -80,7 +80,7 @@ create table if not exists public.platform_stats (
 );
 
 -- -------------------------------------------------------------
--- Helper: admin check (adjust to your hub's role column)
+-- Helper: admin check (matches hubdb.js — profiles.is_admin boolean)
 -- -------------------------------------------------------------
 create or replace function public.is_admin()
 returns boolean
@@ -91,7 +91,7 @@ set search_path = public
 as $$
   select exists (
     select 1 from public.profiles p
-    where p.id = auth.uid() and p.role = 'admin'
+    where p.id = auth.uid() and p.is_admin is true
   );
 $$;
 
