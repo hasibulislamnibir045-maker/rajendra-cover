@@ -1,6 +1,5 @@
 /* ===== HUB-SHOP :: Home page tiles (all features, one login) =====
-   HUB tile format: [icon, key, name, desc, 'live'|'soon']  (5 items!)
-   tuition + shop tile click -> full page (tuition.html / marketplace/) */
+   tuition -> tuition.html, mess -> mess.html, shop -> marketplace/, admin -> modal */
 (function () {
   if (!window.HUB || !document.getElementById('hg')) return;
   var T = {
@@ -23,5 +22,6 @@
     if (!oc) return;
     if (/'shop'/.test(oc)) { e.preventDefault(); e.stopPropagation(); location.href = 'marketplace/'; }
     else if (/'tuition'/.test(oc)) { e.preventDefault(); e.stopPropagation(); location.href = 'tuition.html'; }
+    else if (/'mess'/.test(oc)) { e.preventDefault(); e.stopPropagation(); location.href = 'mess.html'; }
   }, true);
 })();
