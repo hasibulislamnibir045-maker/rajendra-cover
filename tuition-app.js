@@ -58,7 +58,7 @@
     if (dd < 30) return bn(dd) + ' দিন আগে';
     return d.toLocaleDateString('bn-BD');
   }
-  function postID(id) { return id ? '#TH-' + String(id).slice(0, 8).toUpperCase() : ''; }
+  function postID(id) { return id ? 'TH-' + String(id).slice(0, 8).toUpperCase() : ''; }
 
   /* ---------- admin check / data helpers ---------- */
   function isAdminP() {
@@ -287,9 +287,9 @@
         btn.disabled = false; btn.textContent = 'রেজিস্টার করুন';
         if (String(e2.message || '').indexOf('লগইন') >= 0) {
           $('tutorAuthGate')?.classList.remove('tn-hidden');
-          showResult($('tutorResult'), 'রেজিস্টার করতে আগে লগইন করুন।', 'warn');
+          showResult($('tutorResult'), 'রেজিস্ট্রেশন করতে আগে লগইন করুন।', 'warn');
         } else {
-          showResult($('tutorResult'), 'রেজিস্টার করা যায়নি: ' + (e2.message || 'অজানা ত্রুটি'), 'danger');
+          showResult($('tutorResult'), 'রেজিস্ট্রেশন করা যায়নি: ' + (e2.message || 'অজানা ত্রুটি'), 'danger');
         }
       });
     });
@@ -381,7 +381,7 @@
   });
 
   /* =========================================================
-     PREMIUM CARD RENDERERS (Lucide-style inline SVG icons)
+     PREMIUM CARD RENDERERS (Lucide icons, reference layout)
      ========================================================= */
   var ICONS = {
     cap: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>',
@@ -391,7 +391,20 @@
     home: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/></svg>',
     clock: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>',
     users: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>',
-    bookmark: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>'
+    heart: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>',
+    check: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round"><path d="m5 13 4 4 10-10"/></svg>',
+    arrow: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>',
+    /* study illustration (per reference: ruler + stacked books) */
+    illus: '<svg viewBox="0 0 120 110" fill="none" xmlns="http://www.w3.org/2000/svg">' +
+      '<circle cx="60" cy="55" r="52" fill="#EFF4FF"/>' +
+      '<path d="M22 78 44 20l14 5-22 58z" fill="#F59E0B" stroke="#D97706" stroke-width="1.5"/>' +
+      '<path d="M38 25l3 1-3 8 3 1" stroke="#B45309" stroke-width="1.2"/>' +
+      '<path d="M40 82h44a4 4 0 0 0 4-4V62a4 4 0 0 0-4-4H40a4 4 0 0 0-4 4v16a4 4 0 0 0 4 4z" fill="#D1A054" stroke="#B4803C" stroke-width="1.5"/>' +
+      '<path d="M36 64h52v3H36z" fill="#EFE3C8"/>' +
+      '<path d="M52 56l38 12a4 4 0 0 0 5-2.6l3.6-11.4a4 4 0 0 0-2.5-5L58 38a4 4 0 0 0-5 2.6l-3.6 11.4a4 4 0 0 0 2.6 5z" fill="#0F766E" stroke="#115E59" stroke-width="1.5"/>' +
+      '<path d="M56 47l34 11" stroke="#134E4A" stroke-width="1.4"/>' +
+      '<path d="M58 44l34 11" stroke="#134E4A" stroke-width="1.4"/>' +
+    '</svg>'
   };
 
   function infoRow(icon, label, value) {
@@ -400,38 +413,49 @@
 
   function postCardHTML(p, extra) {
     extra = extra || {};
+    var hasSalary = p.salary === 0 || p.salary;
     return '<article class="tn-card tn-card--post">' +
+      /* layer 1: strip — pills + heart */
       '<div class="tn-card__strip">' +
-        '<div class="tn-flex tn-flex--wrap" style="gap:6px">' +
-          '<span class="tn-badge tn-badge--cat">' + esc(p.category || 'টিউশন') + '</span>' +
+        '<div class="tn-card__pills">' +
+          (p.verifiedOnly
+            ? '<span class="tn-badge tn-badge--verified"><span class="tn-badge__ic">' + ICONS.check + '</span>ভেরিফায়েড</span>'
+            : '') +
+          (p.classLevel ? '<span class="tn-badge tn-badge--cls">' + esc(p.classLevel) + '</span>' : '') +
           (extra.isNew ? '<span class="tn-badge tn-badge--new">নতুন</span>' : '') +
-          (p.verifiedOnly ? '<span class="tn-badge tn-badge--verified">✓ শুধু ভেরিফায়েড</span>' : '') +
+          (!p.verifiedOnly && p.category ? '<span class="tn-badge tn-badge--cat">' + esc(p.category) + '</span>' : '') +
         '</div>' +
-        '<button class="tn-card__bookmark" type="button" data-tn-bookmark="' + esc(p.id) + '" aria-label="সেভ করুন">' + ICONS.bookmark + '</button>' +
+        '<button class="tn-card__bookmark" type="button" data-tn-bookmark="' + esc(p.id) + '" aria-label="প্রিয় হিসেবে সেভ করুন">' + ICONS.heart + '</button>' +
       '</div>' +
-      '<h3 class="tn-card__title">' + esc(p.title) + '</h3>' +
-      '<div class="tn-card__info">' +
-        (p.classLevel ? infoRow(ICONS.cap, 'ক্লাস', p.classLevel) : '') +
-        (p.medium ? infoRow(ICONS.book, 'মাধ্যম', p.medium) : '') +
-        (p.area ? infoRow(ICONS.pin, 'এলাকা', p.area) : '') +
-        (p.days ? infoRow(ICONS.cal, 'সপ্তাহে', p.days) : '') +
+      /* layer 2: body — illustration + title + rows */
+      '<div class="tn-card__body">' +
+        '<div class="tn-illus">' + ICONS.illus + '</div>' +
+        '<div class="tn-card__main">' +
+          '<h3 class="tn-card__title">' + esc(p.title) + '</h3>' +
+          '<div class="tn-card__rows" data-tn-rows>' +
+            (p.classLevel ? infoRow(ICONS.cap, 'ক্লাস', p.classLevel) : '') +
+            (p.medium ? infoRow(ICONS.book, 'মাধ্যম', p.medium) : '') +
+            (p.subjects ? infoRow(ICONS.book, 'বিষয়', String(p.subjects).split(/[,،]/)[0].trim()) : '') +
+            (p.days ? infoRow(ICONS.cal, 'সপ্তাহে', p.days + ' দিন') : '') +
+            (p.area ? infoRow(ICONS.pin, 'লোকেশন', p.area) : '') +
+          '</div>' +
+        '</div>' +
       '</div>' +
-      (p.subjects ? '<div class="tn-card__chips">' +
-        p.subjects.split(/[,،]/).map(function (s) { return s.trim(); }).filter(Boolean).slice(0, 4)
-          .map(function (s) { return '<span class="tn-chip">' + esc(s) + '</span>'; }).join('') + '</div>' : '') +
-      (p.description ? '<p class="tn-card__desc">' + esc(String(p.description).slice(0, 130)) + '</p>' : '') +
-      '<div class="tn-card__foot">' +
+      /* layer 3: salary band */
+      '<div class="tn-card__band">' +
         '<div class="tn-card__salary">' +
-          '<b>' + ((p.salary === 0 || p.salary) ? '৳' + bn(p.salary) : 'আলোচনাসাপেক্ষ') + '</b>' +
-          '<small>' + ((p.salary === 0 || p.salary) ? 'প্রতি মাসে' : 'বেতন নির্ধারণ হবে') + '</small>' +
+          (hasSalary
+            ? '<b>৳ ' + bn(p.salary) + '</b><span>/ মাস</span>'
+            : '<b>আলোচনাসাপেক্ষ</b>') +
         '</div>' +
         '<div class="tn-card__actions">' +
-          '<button class="tn-btn tn-btn--primary tn-btn--sm" data-tn-apply="' + esc(p.id) + '" type="button">আবেদন করুন</button>' +
+          '<button class="tn-btn-apply" data-tn-apply="' + esc(p.id) + '" type="button">আবেদন করুন ' + ICONS.arrow + '</button>' +
         '</div>' +
       '</div>' +
+      /* layer 4: meta strip */
       '<div class="tn-card__meta">' +
         '<span>' + ICONS.clock + timeAgo(p.createdAt) + '</span>' +
-        '<span>' + ICONS.users + bn(extra.applicants || 0) + ' জন আবেদন</span>' +
+        '<span>' + ICONS.users + bn(extra.applicants || 0) + ' জন আবেদন করছেন</span>' +
         '<span>' + postID(p.id) + '</span>' +
       '</div>' +
     '</article>';
@@ -470,16 +494,16 @@
         var meta = card.querySelector('.tn-card__meta');
         if (meta && counts && counts[pid] !== undefined) {
           var cntEl = meta.children[1];
-          if (cntEl) cntEl.innerHTML = ICONS.users + bn(counts[pid]) + ' জন আবেদন';
+          if (cntEl) cntEl.innerHTML = ICONS.users + bn(counts[pid]) + ' জন আবেদন করছেন';
         }
         /* address (public) */
         if (row && row.address) {
-          var info = card.querySelector('.tn-card__info');
-          if (info && !card.querySelector('.tn-card__addr')) {
+          var rows = card.querySelector('[data-tn-rows]');
+          if (rows && !card.querySelector('.tn-card__addr')) {
             var addr = document.createElement('div');
             addr.className = 'tn-inforow tn-inforow--wide tn-card__addr';
             addr.innerHTML = ICONS.home + '<b>ঠিকানা: ' + esc(row.address) + '</b>';
-            info.appendChild(addr);
+            rows.appendChild(addr);
           }
         }
         /* admin contact button */
