@@ -34,4 +34,18 @@ var MS_APP={};
     return '<div class="hub-card"><h4>'+esc(x.t)+'</h4><p>'+esc([x.cond,x.area,x.seats?x.seats+' \u09B8\u09BF\u099F':''].filter(Boolean).join(' \u00B7 '))+'</p>'+
       '<div class="hub-tools"><button class="hub-btn2" onclick="MS_DEL(\''+x.id+'\')">\uD83D\uDDD1\uFE0F \u09AE\u09C1\u099B\u09C1\u09A8</button></div></div>';
   };
+  MS_APP.form=function(){
+    return '<div class="hub-form" style="max-width:640px;margin:0 auto;background:#fff;border:1px solid #eadfce;border-radius:18px;padding:22px">'+
+    '<form id="msF" onsubmit="MS_SAVE(event)">'+
+    '<label>\u09AE\u09C7\u09B8 / \u09B9\u09CB\u09B8\u09CD\u099F\u09C7\u09B2\u09C7\u09B0 \u09A8\u09BE\u09AE *</label><input id="ms_t" required>'+
+    '<div class="hub-row2"><div><label>\u09A7\u09B0\u09A8</label><select id="ms_cond"><option>\u09AE\u09C7\u09B8</option><option>\u09B9\u09CB\u09B8\u09CD\u099F\u09C7\u09B2</option><option>\u09B8\u09BE\u09AC\u09B2\u09C7\u099F</option><option>\u09AB\u09CD\u09B2\u09CD\u09AF\u09BE\u099F</option></select></div>'+
+    '<div><label>\u0995\u09BE\u09B0 \u099C\u09A8\u09CD\u09AF</label><select id="ms_g"><option>\u099B\u09C7\u09B2\u09C7</option><option>\u09AE\u09C7\u09DF\u09C7</option><option>\u09AF\u09C7 \u0995\u09C7\u0989</option></select></div></div>'+
+    '<div class="hub-row2"><div><label>\u0996\u09BE\u09B2\u09BF \u09B8\u09BF\u099F</label><input id="ms_seats" type="number" min="1"></div>'+
+    '<div><label>\u09AD\u09BE\u09A1\u09BC\u09BE (\u09B8\u09BF\u099F \u09AA\u09CD\u09B0\u09A4\u09BF)</label><input id="ms_price"></div></div>'+
+    '<label>\u098F\u09B2\u09BE\u0995\u09BE *</label><input id="ms_area" required>'+
+    '<div class="hub-row2"><div><label>\u09AE\u09CB\u09AC\u09BE\u0987\u09B2 *</label><input id="ms_m" type="tel" maxlength="11" required></div>'+
+    '<div><label>\u09AE\u09CD\u09AF\u09BE\u09AA \u09B2\u09BF\u0999\u09CD\u0997</label><input id="ms_loc" type="url" placeholder="https://maps.app.goo.gl/..."></div></div>'+
+    '<label>\u09AC\u09BF\u09B8\u09CD\u09A4\u09BE\u09B0\u09BF\u09A4</label><textarea id="ms_note"></textarea>'+
+    '<button type="submit" class="hub-btn">\u2705 \u09AA\u09CB\u09B8\u099F \u0995\u09B0\u09C1\u09A8</button></form></div>';
+  };
 })();
