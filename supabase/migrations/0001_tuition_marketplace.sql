@@ -4,6 +4,23 @@
 -- ============================================================================
 
 -- -------------------------------------------------------------
+-- 0) is_admin helper FIRST (used by RLS policies below)
+--    matches hubdb.js: profiles.is_admin boolean
+-- -------------------------------------------------------------
+create or replace function public.is_admin()
+returns boolean
+language sql
+stable
+security definer
+set search_path = public
+as $$
+  select exists (
+    select 1 from public.profiles p
+    where p.id = auth.uid() and p.is_admin is true
+  );
+$$;
+
+-- -------------------------------------------------------------
 -- 1) TUTOR PROFILES
 -- -------------------------------------------------------------
 create table if not exists public.tutor_profiles (
@@ -60,7 +77,7 @@ create index if not exists idx_tuition_posts_salary
   on public.tuition_posts (salary);
 
 -- -------------------------------------------------------------
--- 3) updated_at helper
+-- 3) updated_at helper + triggers
 -- -------------------------------------------------------------
 create or replace function public.touch_updated_at()
 returns trigger
@@ -83,7 +100,7 @@ create trigger trg_touch_tuition_post
   for each row execute function public.touch_updated_at();
 
 -- -------------------------------------------------------------
--- 4) RLS on core tables (enabled here; policies in migration 2)
+-- 4) RLS on core tables
 -- -------------------------------------------------------------
 alter table public.tutor_profiles enable row level security;
 alter table public.tuition_posts   enable row level security;
@@ -94,8 +111,7 @@ create policy "tutor own profile" on public.tutor_profiles
   using (user_id = auth.uid())
   with check (user_id = auth.uid());
 
--- public read of approved posts (no address/contact in this projection
--- because clients only select safe columns; RLS blocks rows, not columns)
+-- public read of approved posts
 create policy "approved posts public read" on public.tuition_posts
   for select using (status = 'approved');
 
@@ -110,21 +126,3 @@ create policy "owner all own posts" on public.tuition_posts
   for all to authenticated
   using (created_by = auth.uid())
   with check (created_by = auth.uid());
-
--- -------------------------------------------------------------
--- 5) is_admin helper (matches hubdb.js: profiles.is_admin boolean)
---    NOTE: defined AFTER first use above via forward reference in SQL is
---    not allowed, so it is created here and used by later migrations.
--- -------------------------------------------------------------
-create or replace function public.is_admin()
-returns boolean
-language sql
-stable
-security definer
-set search_path = public
-as $$
-  select exists (
-    select 1 from public.profiles p
-    where p.id = auth.uid() and p.is_admin is true
-  );
-$$;
