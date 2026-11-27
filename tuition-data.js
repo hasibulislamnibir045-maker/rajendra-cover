@@ -1,59 +1,53 @@
 /* =============================================================
    tuition-data.js — Tuition Hub Supabase data layer
-   Reuses unified auth from hubdb.js. Never exposes
-   address / phone / verification docs publicly.
+   Own Supabase client (same project as hubdb.js).
+   Never exposes address / phone / verification docs publicly.
    ============================================================= */
 (function () {
   var H = window.HUBDB;
   if (!H) { console.error('tuition-data: hubdb.js load hoy ni'); return; }
 
+  var SUPA_URL = window.SUPABASE_URL || 'https://dcwzxozhgysxhcptataq.supabase.co';
+  var SUPA_KEY = window.SUPABASE_ANON_KEY || 'sb_publishable_i7C5FVxKNwaBPABgdFHOIQ_HKrxz5rM';
+  var _sb = null;
   function db() {
-    if (H._client) return H._client();
-    if (H._db) return H._db();
-    throw new Error('hubdb client not found');
+    return Promise.resolve().then(function () {
+      if (_sb) return _sb;
+      if (typeof supabase === 'undefined') throw new Error('Supabase library load hoy ni');
+      _sb = supabase.createClient(SUPA_URL, SUPA_KEY);
+      return _sb;
+    });
   }
   function err(r) { if (r.error) throw r.error; return r.data; }
 
-  /* ---------- mappers ---------- */
   function mapPost(x) {
     return {
-      id: x.id,
-      title: x.title || '',
-      category: x.category || '',
-      classLevel: x.class_level || '',
-      subjects: x.subjects || '',
-      medium: x.medium || '',
-      area: x.area || '',
-      days: x.days || '',
-      salary: x.salary,
-      verifiedOnly: !!x.verified_only,
-      description: x.description || '',
-      status: x.status || 'pending',
-      createdAt: x.created_at,
-      createdBy: x.created_by
+      id: x.id, title: x.title || '', category: x.category || '',
+      classLevel: x.class_level || '', subjects: x.subjects || '',
+      medium: x.medium || '', area: x.area || '', days: x.days || '',
+      salary: x.salary, verifiedOnly: !!x.verified_only,
+      description: x.description || '', status: x.status || 'pending',
+      createdAt: x.created_at, createdBy: x.created_by
     };
   }
   function mapTutor(x) {
     return {
-      id: x.id,
-      fullName: x.full_name || '',
-      institution: x.institution || '',
-      experience: x.experience || 0,
-      subjects: x.subjects || '',
-      areas: x.areas || '',
-      bio: x.bio || '',
-      featured: !!x.featured,
-      suspended: !!x.suspended,
+      id: x.id, fullName: x.full_name || '', institution: x.institution || '',
+      experience: x.experience || 0, subjects: x.subjects || '',
+      areas: x.areas || '', bio: x.bio || '',
+      featured: !!x.featured, suspended: !!x.suspended,
       verificationStatus: x.verification_status || 'pending'
     };
   }
 
-  /* ---------- homepage ---------- */
   function init() {
-    renderHeaderActions();
-    loadHome();
-    document.addEventListener('tn:viewchange', function (e) { if (e.detail.view === 'home') loadHome(); });
+    try {
+      renderHeaderActions();
+      loadHome();
+      document.addEventListener('tn:viewchange', function (e) { if (e.detail.view === 'home') loadHome(); });
+    } catch (e) { console.error('tuition-data init:', e); }
   }
+
   function loadHome() {
     getStats().then(renderStats).catch(function () { renderStats({ posts: 0, verifiedTutors: 0, activeTuition: 0, matches: 0 }); });
     Promise.all([getLatestPosts(6), getFeaturedTutors(4)])
@@ -96,7 +90,6 @@
       '<div class="tn-stat"><div class="tn-stat__num">' + s.matches + '</div><div class="tn-stat__label">সফল ম্যাচিং</div></div>';
   }
 
-  /* ---------- posts ---------- */
   function getLatestPosts(n) {
     return db().then(function (d) {
       return d.from('tuition_posts')
@@ -126,7 +119,6 @@
     });
   }
 
-  /* ---------- tutors ---------- */
   function getFeaturedTutors(n) {
     return db().then(function (d) {
       return d.from('tutor_profiles')
@@ -158,7 +150,6 @@
     });
   }
 
-  /* ---------- card rendering (shared by app + dash) ---------- */
   function esc(s) {
     return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
       return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
@@ -167,7 +158,6 @@
   function salaryText(sal) {
     return sal ? '৳' + sal + '/মাস' : 'আলোচনাসাপেক্ষ';
   }
-
   function subjectChips(subjects) {
     if (!subjects) return '';
     return subjects.split(/[,،]/).map(function (s) { return s.trim(); })
@@ -237,7 +227,6 @@
     }).join('');
   }
 
-  /* ---------- notifications ---------- */
   function getNotifications(limit) {
     return H.session().then(function (me) {
       if (!me) return [];
@@ -260,7 +249,6 @@
     });
   }
 
-  /* ---------- header actions (bell + profile menu) ---------- */
   function renderHeaderActions() {
     var wrap = document.getElementById('tnHeaderActions');
     if (!wrap) return Promise.resolve();
@@ -333,7 +321,6 @@
     });
   }
 
-  /* ---------- flows ---------- */
   function applyToPost(postId) {
     return H.session().then(function (me) {
       if (!me) throw new Error('আবেদন করতে আগে লগইন করুন');
@@ -393,7 +380,6 @@
     });
   }
 
-  /* ---------- export ---------- */
   window.TuitionData = {
     init: init,
     _db: db,
