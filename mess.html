@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mess &amp; Hostel — Rajendra Student Hub</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Noto+Serif+Bengali:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="hub-ui.css?v=5">
+<link rel="stylesheet" href="page-ui.css?v=5">
+</head>
+<body>
+<header>
+<div class="brand">
+<div class="lg"><img src="logo.png" alt="" onerror="this.style.display='none'"></div>
+<div><h1>Mess &amp; Hostel</h1><p>Rajendra Student Hub</p></div>
+</div>
+<div class="hbtns">
+<a class="ib" href="index.html">&#11088; Student Hub</a>
+<button class="ib" id="authBtn" onclick="authClick()">&#128273; <span id="authLbl">Login</span></button>
+</div>
+</header>
+<section class="hero">
+<h2 id="heroH">Mess &amp; Hostel</h2>
+<p id="heroP"></p>
+<div class="stats"><div class="stat"><b id="stM">0</b><span id="stML"></span></div></div>
+</section>
+<main class="wrap" id="app"><p class="hub-empty" id="loadLbl">Loading...</p></main>
+<footer>&copy; Rajendra Student Hub &middot; Mess &amp; Hostel</footer>
+<script>
+window.SUPABASE_URL='https://dcwzxozhgysxhcptataq.supabase.co';
+window.SUPABASE_ANON_KEY='sb_publishable_i7C5FVxKNwaBPABgdFHOIQ_HKrxz5rM';
+</script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+<script src="hubdb.js?v=5"></script>
+<script src="hub-auth.js?v=5"></script>
+<script src="mess-ui.js?v=5"></script>
+<script src="mess-app.js?v=5"></script>
+</body>
+</html>
