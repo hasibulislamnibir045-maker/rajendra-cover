@@ -1,19 +1,27 @@
 /* ===== Tuition Hub UI kit (cards, helpers) ===== */
 var TU_APP={};
 (function(){
-  function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
+  function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c]})}
   function bn(n){return String(n).replace(/\d/g,function(d){return'\u09E6\u09E7\u09E8\u09E9\u09EA\u09EB\u09EC\u09ED\u09EE\u09EF'[+d]})}
   TU_APP.esc=esc;TU_APP.bn=bn;
   TU_APP.toast=function(m){var t=document.createElement('div');t.className='hub-toast';t.textContent=m;document.body.appendChild(t);setTimeout(function(){t.remove()},3200)};
   TU_APP.v=function(id){var e=document.getElementById(id);return e?String(e.value).trim():''};
+  TU_APP.meCard=function(u,p){
+    var nm=String((u&&u.user_metadata&&u.user_metadata.full_name)||((u&&u.email)||''));
+    return '<div class="hub-card tme" style="display:flex;align-items:center;gap:14px">'+
+    '<div class="me-av">'+esc(nm.charAt(0).toUpperCase())+'</div>'+
+    '<div><h4 style="margin:0">'+esc(nm)+'</h4>'+
+    '<p style="font-size:13px">'+esc((u&&u.email)||'')+(p&&p.dept?' \u00B7 '+esc(p.dept):'')+'</p>'+
+    '<small style="color:var(--muted,#a6a9cf);font-size:12px">\u0986\u09AA\u09A8\u09BE\u09B0 \u09AA\u09CD\u09B0\u09CB\u09AB\u09BE\u0987\u09B2 \u0993 \u09AA\u09CB\u09B8\u09CD\u099F \u098F\u0987 \u099F\u09CD\u09AF\u09BE\u09AC \u09A5\u09C7\u0995\u09C7 \u09AA\u09B0\u09BF\u099A\u09BE\u09B2\u09A8\u09BE \u0995\u09B0\u09C1\u09A8</small></div></div>';
+  };
   TU_APP.contact=function(m){
     if(!m)return'';
     return '<div class="hub-tools" style="margin-top:12px">'+
-      '<a class="hub-btn2" style="text-decoration:none" href="tel:'+esc(m)+'">\uD83D\uDCDE \u0995\u09B2</a>'+
-      '<a class="hub-btn2" style="text-decoration:none" target="_blank" rel="noopener" href="https://wa.me/88'+esc(String(m).replace(/^0/,''))+'">\uD83D\uDCAC WhatsApp</a></div>';
+      '<a class="hub-btn2" href="tel:'+esc(m)+'">\uD83D\uDCDE \u0995\u09B2</a>'+
+      '<a class="hub-btn2" target="_blank" rel="noopener" href="https://wa.me/88'+esc(String(m).replace(/^0/,''))+'">\uD83D\uDCAC WhatsApp</a></div>';
   };
   TU_APP.tCard=function(x){
-    return '<div class="hub-card"><div class="hub-card-top"><span class="hub-chip">'+esc(x.ins||'\u099F\u09BF\u0989\u099F\u09B0')+'</span><span class="hub-chip">'+esc(x.cls||'')+'</span></div>'+
+    return '<div class="hub-card"><div class="hub-card-top"><span class="hub-chip">'+esc(x.ins||'\u09AE\u09C7\u09A7\u09BE\u09AC\u09C0')+'</span><span class="hub-chip">'+esc(x.cls||'')+'</span></div>'+
       '<h4>'+esc(x.n)+'</h4><p>'+
       (x.sub?'\uD83D\uDCDD '+esc(x.sub)+'<br>':'')+
       (x.area?'\uD83D\uDCCD '+esc(x.area)+'<br>':'')+
