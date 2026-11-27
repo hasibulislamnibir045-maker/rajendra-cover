@@ -1,0 +1,300 @@
+-- =============================================================
+-- 0002_tuition_rest.sql
+-- Tuition Marketplace: flow tables, RLS, notifications, storage
+-- Depends on: 0001_tuition_marketplace.sql
+-- =============================================================
+
+-- -------------------------------------------------------------
+-- 1) APPLICATIONS — tutor applies to a tuition post
+-- -------------------------------------------------------------
+create table if not exists public.tuition_applications (
+  id              uuid primary key default gen_random_uuid(),
+  tuition_post_id uuid not null references public.tuition_posts(id) on delete cascade,
+  tutor_profile_id uuid not null references public.tutor_profiles(id) on delete cascade,
+  message         text,
+  proposed_rate   numeric(10,2),
+  status          text not null default 'pending'
+                  check (status in ('pending','shortlisted','accepted','rejected','withdrawn')),
+  created_at      timestamptz not null default now(),
+  updated_at      timestamptz not null default now()
+);
+
+-- duplicate-prevention: one application per tutor per post
+create unique index if not exists uq_tuition_application_once
+  on public.tuition_applications (tuition_post_id, tutor_profile_id);
+
+create index if not exists idx_applications_post
+  on public.tuition_applications (tuition_post_id, status);
+
+-- -------------------------------------------------------------
+-- 2) SAVED POSTS — students/tutors bookmark posts
+-- -------------------------------------------------------------
+create table if not exists public.saved_tuition_posts (
+  id              uuid primary key default gen_random_uuid(),
+  user_id         uuid not null references auth.users(id) on delete cascade,
+  tuition_post_id uuid not null references public.tuition_posts(id) on delete cascade,
+  created_at      timestamptz not null default now(),
+  unique (user_id, tuition_post_id)
+);
+
+-- -------------------------------------------------------------
+-- 3) NOTIFICATIONS
+-- -------------------------------------------------------------
+create table if not exists public.tuition_notifications (
+  id         uuid primary key default gen_random_uuid(),
+  user_id    uuid not null references auth.users(id) on delete cascade,
+  title      text not null,
+  body       text,
+  type       text not null default 'general'
+             check (type in ('application','application_status','verification','post_moderation','report','general')),
+  link       text,
+  is_read    boolean not null default false,
+  created_at timestamptz not null default now()
+);
+
+create index if not exists idx_notifications_user_unread
+  on public.tuition_notifications (user_id, is_read, created_at desc);
+
+-- -------------------------------------------------------------
+-- 4) REPORTS — flag posts / tutors
+-- -------------------------------------------------------------
+create table if not exists public.tuition_reports (
+  id          uuid primary key default gen_random_uuid(),
+  reporter_id  uuid not null references auth.users(id) on delete cascade,
+  target_type text not null check (target_type in ('post','tutor','application')),
+  target_id   uuid not null,
+  reason      text not null,
+  details     text,
+  status      text not null default 'open'
+              check (status in ('open','resolved','dismissed')),
+  created_at  timestamptz not null default now()
+);
+
+-- -------------------------------------------------------------
+-- 5) PLATFORM STATS (singleton key/value)
+-- -------------------------------------------------------------
+create table if not exists public.platform_stats (
+  key        text primary key,
+  value      jsonb not null default '{}'::jsonb,
+  updated_at timestamptz not null default now()
+);
+
+-- -------------------------------------------------------------
+-- Helper: admin check (adjust to your hub's role column)
+-- -------------------------------------------------------------
+create or replace function public.is_admin()
+returns boolean
+language sql
+stable
+security definer
+set search_path = public
+as $$
+  select exists (
+    select 1 from public.profiles p
+    where p.id = auth.uid() and p.role = 'admin'
+  );
+$$;
+
+-- -------------------------------------------------------------
+-- 6) ROW LEVEL SECURITY
+-- -------------------------------------------------------------
+alter table public.tuition_applications  enable row level security;
+alter table public.saved_tuition_posts   enable row level security;
+alter table public.tuition_notifications  enable row level security;
+alter table public.tuition_reports        enable row level security;
+alter table public.platform_stats        enable row level security;
+
+-- Applications
+create policy "tutor can apply" on public.tuition_applications
+  for insert to authenticated
+  with check (
+    tutor_profile_id in (
+      select id from public.tutor_profiles where user_id = auth.uid()
+    )
+  );
+
+create policy "tutor sees own applications" on public.tuition_applications
+  for select to authenticated
+  using (tutor_profile_id in (
+    select id from public.tutor_profiles where user_id = auth.uid()
+  ));
+
+create policy "post owner sees applications" on public.tuition_applications
+  for select to authenticated
+  using (exists (
+    select 1 from public.tuition_posts tp
+    where tp.id = tuition_post_id and tp.created_by = auth.uid()
+  ));
+
+create policy "post owner manages applications" on public.tuition_applications
+  for update to authenticated
+  using (exists (
+    select 1 from public.tuition_posts tp
+    where tp.id = tuition_post_id and tp.created_by = auth.uid()
+  ));
+
+create policy "tutor can withdraw own application" on public.tuition_applications
+  for update to authenticated
+  using (tutor_profile_id in (
+    select id from public.tutor_profiles where user_id = auth.uid()
+  ));
+
+create policy "admin full access applications" on public.tuition_applications
+  for all to authenticated
+  using (public.is_admin())
+  with check (public.is_admin());
+
+-- Saved posts
+create policy "own saved posts" on public.saved_tuition_posts
+  for all to authenticated
+  using (user_id = auth.uid())
+  with check (user_id = auth.uid());
+
+-- Notifications
+create policy "own notifications" on public.tuition_notifications
+  for select to authenticated
+  using (user_id = auth.uid());
+
+create policy "mark own notifications read" on public.tuition_notifications
+  for update to authenticated
+  using (user_id = auth.uid())
+  with check (user_id = auth.uid());
+
+-- Reports
+create policy "anyone can report" on public.tuition_reports
+  for insert to authenticated
+  with check (reporter_id = auth.uid());
+
+create policy "reporter sees own reports" on public.tuition_reports
+  for select to authenticated
+  using (reporter_id = auth.uid());
+
+create policy "admin manages reports" on public.tuition_reports
+  for all to authenticated
+  using (public.is_admin())
+  with check (public.is_admin());
+
+-- Stats: public read, admin write
+create policy "stats public read" on public.platform_stats
+  for select using (true);
+
+create policy "stats admin write" on public.platform_stats
+  for all to authenticated
+  using (public.is_admin())
+  with check (public.is_admin());
+
+-- -------------------------------------------------------------
+-- 7) NOTIFICATION TRIGGERS
+-- -------------------------------------------------------------
+-- a) new application → notify the post owner
+create or replace function public.notify_post_owner()
+returns trigger
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  owner uuid;
+  post_title text;
+begin
+  select created_by, title into owner, post_title
+  from public.tuition_posts where id = new.tuition_post_id;
+
+if owner is not null then
+    insert into public.tuition_notifications (user_id, title, body, type, link)
+    values (
+      owner,
+      'New tuition application',
+      coalesce('You received a new application for "' || post_title || '".', 'You received a new application.'),
+      'application',
+      'tuition-dashboard.html'
+    );
+  end if;
+  return new;
+end;
+$$;
+
+drop trigger if exists trg_notify_post_owner on public.tuition_applications;
+create trigger trg_notify_post_owner
+  after insert on public.tuition_applications
+  for each row execute function public.notify_post_owner();
+
+-- b) application status change → notify the tutor
+create or replace function public.notify_tutor_status()
+returns trigger
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  tutor_user uuid;
+begin
+  if new.status is distinct from old.status and new.status <> 'pending' then
+    select user_id into tutor_user
+    from public.tutor_profiles where id = new.tutor_profile_id;
+
+if tutor_user is not null then
+      insert into public.tuition_notifications (user_id, title, body, type, link)
+      values (
+        tutor_user,
+        'Application ' || new.status,
+        'Your application status changed to: ' || new.status || '.',
+        'application_status',
+        'tuition-dashboard.html'
+      );
+    end if;
+  end if;
+  return new;
+end;
+$$;
+
+drop trigger if exists trg_notify_tutor_status on public.tuition_applications;
+create trigger trg_notify_tutor_status
+  after update on public.tuition_applications
+  for each row execute function public.notify_tutor_status();
+
+-- keep updated_at fresh
+create or replace function public.touch_updated_at()
+returns trigger
+language plpgsql
+as $$
+begin
+  new.updated_at := now();
+  return new;
+end;
+$$;
+
+drop trigger if exists trg_touch_application on public.tuition_applications;
+create trigger trg_touch_application
+  before update on public.tuition_applications
+  for each row execute function public.touch_updated_at();
+
+-- -------------------------------------------------------------
+-- 8) PRIVATE STORAGE BUCKET for tutor verification docs
+-- -------------------------------------------------------------
+insert into storage.buckets (id, name, public)
+values ('tuition-docs', 'tuition-docs', false)
+on conflict (id) do nothing;
+
+-- tutor uploads into own folder: tuition-docs/<user_id>/...
+create policy "tutor uploads own docs"
+on storage.objects for insert to authenticated
+with check (
+  bucket_id = 'tuition-docs'
+  and (storage.foldername(name))[1] = auth.uid()::text
+);
+
+create policy "tutor reads own docs"
+on storage.objects for select to authenticated
+using (
+  bucket_id = 'tuition-docs'
+  and (storage.foldername(name))[1] = auth.uid()::text
+);
+
+-- admins can read all verification docs (no public access)
+create policy "admin reads all docs"
+on storage.objects for select to authenticated
+using (
+  bucket_id = 'tuition-docs'
+  and public.is_admin()
+);
