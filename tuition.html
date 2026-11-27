@@ -2,13 +2,15 @@
 <html lang="bn">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>Tuition Hub — রাজেন্দ্র কলেজ, ফরিদপুর</title>
-  <meta name="description" content="Tuition Hub — ভেরিফায়েড টিউটর খুঁজুন, টিউশন পোস্ট করুন।" />
+  <meta name="description" content="Tuition Hub — যাচাইকৃত টিউটর খুঁজুন, টিউশন পোস্ট করুন। শিক্ষার্থী, অভিভাবক ও শিক্ষকদের নির্ভরযোগ্য প্ল্যাটফর্ম।" />
+  <meta name="theme-color" content="#2563eb" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@400;600;700;800&family=Hind+Siliguri:wght@400;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="tuition.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Noto+Sans+Bengali:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="icon" href="logo.png" />
+  <link rel="stylesheet" href="tuition.css?v=4" />
 </head>
 <body>
 
@@ -21,9 +23,9 @@
       <button class="tn-nav-toggle" id="tnNavToggle" aria-label="মেনু">☰</button>
       <nav class="tn-nav" id="tnNav">
         <a href="#home" data-view="home" class="is-active">হোম</a>
-        <a href="#finder" data-view="finder">খুঁজুন</a>
-        <a href="#tutors" data-view="tutors">টিউটর</a>
-        <a href="#post" data-view="post">পোস্ট</a>
+        <a href="#finder" data-view="finder">টিউশন খুঁজুন</a>
+        <a href="#tutors" data-view="tutors">ভেরিফায়েড টিউটর</a>
+        <a href="#post" data-view="post">টিউশন পোস্ট</a>
         <a href="#become-tutor" data-view="become-tutor">টিউটর হন</a>
         <a href="#dashboard" data-view="dashboard">ড্যাশবোর্ড</a>
       </nav>
@@ -32,20 +34,46 @@
   </header>
 
   <main>
-    <!-- VIEW: HOME -->
+    <!-- ============ VIEW: HOME ============ -->
     <section class="tn-view is-active" id="view-home">
       <div class="tn-hero">
         <div class="tn-container">
           <div class="tn-hero__inner">
-            <h1 class="tn-hero__title">ভেরিফায়েড টিউটর, মিনিটেই</h1>
+            <h1 class="tn-hero__title">সঠিক টিউশন খুঁজুন, গড়ুন সুন্দর ভবিষ্যৎ</h1>
+            <p class="tn-hero__sub">শিক্ষার্থী, অভিভাবক ও দক্ষ শিক্ষকদের জন্য একটি নির্ভরযোগ্য প্ল্যাটফর্ম।</p>
             <div class="tn-hero__cta">
-              <a class="tn-btn tn-btn--primary" href="#post">পোস্ট করুন</a>
-              <a class="tn-btn tn-btn--outline" href="#finder">খুঁজুন</a>
+              <a class="tn-btn tn-btn--primary" href="#post">টিউশন পোস্ট করুন</a>
+              <a class="tn-btn tn-btn--outline" href="#finder">টিউশন খুঁজুন</a>
             </div>
             <form class="tn-search" id="tnHeroSearch">
-              <input type="search" id="tnHeroSearchInput" placeholder="বিষয় বা এলাকা…" aria-label="টিউশন খুঁজুন" />
-              <button type="submit" class="tn-btn tn-btn--primary">🔍</button>
+              <input type="search" id="tnHeroSearchInput" placeholder="কোন বিষয়ের টিউশন খুঁজছেন?" aria-label="টিউশন খুঁজুন" />
+              <button type="submit" class="tn-btn tn-btn--primary" aria-label="খুঁজুন">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.35-4.35"/></svg>
+              </button>
             </form>
+            <div class="tn-search-filter-pills">
+              <label class="tn-search-pill">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
+                <select id="hFilterClass" aria-label="ক্লাস">
+                  <option value="">সব ক্লাস</option>
+                  <option>Class 6-10</option><option>HSC</option><option>Honours</option><option>Degree</option><option>Masters</option>
+                </select>
+              </label>
+              <label class="tn-search-pill">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/></svg>
+                <select id="hFilterSubject" aria-label="বিষয়">
+                  <option value="">সব বিষয়</option>
+                  <option>গণিত</option><option>পদার্থবিজ্ঞান</option><option>রসায়ন</option><option>জীববিজ্ঞান</option><option>ইংরেজি</option><option>বাংলা</option><option>ICT</option>
+                </select>
+              </label>
+              <label class="tn-search-pill">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+                <select id="hFilterLocation" aria-label="এলাকা">
+                  <option value="">সব এলাকা</option>
+                  <option>ফরিদপুর সদর</option><option>জহুরনগর</option><option>কানাইপুর</option><option>আলফানগর</option><option>মোস্তফাপুর</option>
+                </select>
+              </label>
+            </div>
           </div>
         </div>
       </div>
@@ -59,13 +87,14 @@
         </div>
       </div>
 
+      <!-- সাম্প্রতিক টিউশন -->
       <section class="tn-section tn-container">
         <div class="tn-section__head">
           <div>
-            <h2 class="tn-section__title">সাম্প্রতিক পোস্ট</h2>
-            <p class="tn-section__sub">নতুন টিউশনগুলো</p>
+            <h2 class="tn-section__title"><span class="tn-title-ic"><svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.4 7.2H22l-6 4.6 2.3 7.2-6.3-4.6L5.7 21l2.3-7.2L2 9.2h7.6z"/></svg></span> সাম্প্রতিক টিউশন পোস্ট</h2>
+            <p class="tn-section__sub">নতুন যাচাইকৃত টিউশনগুলো</p>
           </div>
-          <a class="tn-btn tn-btn--ghost tn-btn--sm" href="#finder">সব →</a>
+          <a class="tn-btn tn-btn--ghost tn-btn--sm" href="#finder">সব দেখুন →</a>
         </div>
         <div class="tn-grid tn-grid--posts" id="tnLatestPosts">
           <div class="tn-skel"><div class="tn-skel__bar tn-skel__bar--title"></div><div class="tn-skel__bar"></div><div class="tn-skel__bar tn-skel__bar--md"></div><div class="tn-skel__bar tn-skel__bar--sm"></div></div>
@@ -74,13 +103,14 @@
         </div>
       </section>
 
+      <!-- ফিচার্ড টিউটর -->
       <section class="tn-section tn-container">
         <div class="tn-section__head">
           <div>
-            <h2 class="tn-section__title">⭐ ভেরিফায়েড টিউটর</h2>
-            <p class="tn-section__sub">আইডি যাচাই করা টিউটররা</p>
+            <h2 class="tn-section__title"><span class="tn-title-ic"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg></span> ফিচার্ড ভেরিফায়েড টিউটর</h2>
+            <p class="tn-section__sub">অ্যাডমিন-যাচাইকৃত শিক্ষকদের তালিকা</p>
           </div>
-          <a class="tn-btn tn-btn--ghost tn-btn--sm" href="#tutors">সব →</a>
+          <a class="tn-btn tn-btn--ghost tn-btn--sm" href="#tutors">সব দেখুন →</a>
         </div>
         <div class="tn-grid tn-grid--tutors" id="tnFeaturedTutors">
           <div class="tn-skel"><div class="tn-skel__row"><div class="tn-skel__bar tn-skel__avatar"></div><div style="flex:1"><div class="tn-skel__bar tn-skel__bar--sm"></div><div class="tn-skel__bar tn-skel__bar--sm"></div></div></div><div class="tn-skel__bar"></div></div>
@@ -90,24 +120,100 @@
         </div>
       </section>
 
+      <!-- কেন Tuition Hub -->
       <section class="tn-section tn-container">
-        <div class="tn-form-card tn-text-center" style="background: var(--tn-gradient-soft);">
-          <h2 style="color: var(--tn-primary);">পড়ান? টিউটর হন</h2>
-          <p class="tn-text-soft">আইডি ভেরিফাই করে ভেরিফায়েড ব্যাজ নিন।</p>
-          <div class="tn-mt-2">
-            <a class="tn-btn tn-btn--primary" href="#become-tutor">রেজিস্টার করুন</a>
+        <div class="tn-section__head">
+          <div>
+            <h2 class="tn-section__title"><span class="tn-title-ic"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></span> কেন Tuition Hub?</h2>
           </div>
+        </div>
+        <div class="tn-why">
+          <div class="tn-why__card">
+            <div class="tn-why__ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/></svg></div>
+            <h4>যাচাইকৃত টিউটর</h4>
+            <p>প্রত্যেক টিউটরের ডকুমেন্ট অ্যাডমিন যাচাই করে তারপর ভেরিফায়েড ব্যাজ দেওয়া হয়।</p>
+          </div>
+          <div class="tn-why__card">
+            <div class="tn-why__ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/></svg></div>
+            <h4>দ্রুত খোঁজ</h4>
+            <p>বিষয়, ক্লাস ও এলাকা অনুযায়ী সঠিক টিউশন কয়েক সেকেন্ডেই খুঁজে পাবেন।</p>
+          </div>
+          <div class="tn-why__card">
+            <div class="tn-why__ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="m22 5-10 6L2 5"/></svg></div>
+            <h4>নিরাপদ আবেদন</h4>
+            <p>মোবাইল নম্বর সবসময় প্রাইভেট থাকে — শুধু অ্যাডমিন দেখতে পারে।</p>
+          </div>
+          <div class="tn-why__card">
+            <div class="tn-why__ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s-8-4.5-8-11a8 8 0 0 1 16 0c0 6.5-8 11-8 11z"/><path d="M12 7a5 5 0 1 0 0 10 5 5 0 0 0 0-10z"/><path d="m12 9 1 2 2 .2-1.5 1.4.4 2L12 13.6 10.1 15l.4-2L9 11.2l2-.2z"/></svg></div>
+            <h4>সবার জন্য শিক্ষা</h4>
+            <p>রাজেন্দ্র কলেজের শিক্ষার্থীদের নিজস্ব, বিশ্বস্ত টিউশন মার্কেটপ্লেস।</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- কীভাবে কাজ করে -->
+      <section class="tn-section tn-container">
+        <div class="tn-section__head">
+          <div>
+            <h2 class="tn-section__title"><span class="tn-title-ic"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l2.5 2.5"/></svg></span> কীভাবে কাজ করে?</h2>
+          </div>
+        </div>
+        <div class="tn-how">
+          <div class="tn-how__step"><div class="tn-how__num">১</div><h4>রেজিস্ট্রেশন</h4><p>লগইন করুন — শিক্ষার্থী বা টিউটর, দুই ভূমিকাতেই একই অ্যাকাউন্ট।</p></div>
+          <div class="tn-how__step"><div class="tn-how__num">২</div><h4>টিউশন খুঁজুন / পোস্ট করুন</h4><p>ফিল্টার দিয়ে টিউশন খুঁজুন, বা প্রয়োজনে নিজের টিউশন পোস্ট করুন।</p></div>
+          <div class="tn-how__step"><div class="tn-how__num">৩</div><h4>আবেদন করুন / গ্রহণ করুন</h4><p>পোস্টে আবেদন পাঠান বা প্রাপ্ত আবেদন শর্টলিস্ট করে গ্রহণ করুন।</p></div>
+          <div class="tn-how__step"><div class="tn-how__num">৪</div><h4>যুক্ত হয়ে পড়া শুরু</h4><p>অ্যাডমিন-নির্দেশিত যোগাযোগে টিউশন শুরু করুন।</p></div>
+        </div>
+      </section>
+
+      <!-- FAQ -->
+      <section class="tn-section tn-container">
+        <div class="tn-section__head">
+          <div>
+            <h2 class="tn-section__title"><span class="tn-title-ic"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg></span> সাধারণ জিজ্ঞাসা</h2>
+          </div>
+        </div>
+        <div class="tn-faq">
+          <div class="tn-faq__item">
+            <button class="tn-faq__q" type="button">পোস্ট করার পর কত সময়ে অনুমোদন হয়? <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg></button>
+            <div class="tn-faq__a">অ্যাডমিন সাধারণত কয়েক ঘণ্টার মধ্যে পোস্ট যাচাই করে অনুমোদন দেন। অনুমোদনের আগে পোস্ট পাবলিকভাবে দেখা যায় না।</div>
+          </div>
+          <div class="tn-faq__item">
+            <button class="tn-faq__q" type="button">আমার মোবাইল নম্বর কে দেখতে পায়? <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg></button>
+            <div class="tn-faq__a">আপনার মোবাইল নম্বর সম্পূর্ণ প্রাইভেট থাকে — শুধুমাত্র অ্যাডমিন দেখতে পারেন। পাবলিক পোস্টে কেবল ঠিকানা দেখা যায়।</div>
+          </div>
+          <div class="tn-faq__item">
+            <button class="tn-faq__q" type="button">টিউটর ভেরিফিকেশন কীভাবে হয়? <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg></button>
+            <div class="tn-faq__a">টিউটর হিসেবে রেজিস্ট্রেশনের সময় পরিচয়পত্র/শিক্ষাগত ডকুমেন্ট আপলোড করতে হয়। অ্যাডমিন যাচাই করে ভেরিফায়েড ✓ ব্যাজ দিলে নীল টিক বসে।</div>
+          </div>
+          <div class="tn-faq__item">
+            <button class="tn-faq__q" type="button">একই টিউশনে দুইবার আবেদন করা যায়? <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg></button>
+            <div class="tn-faq__a">না — একটি টিউশনে একজন টিউটর একবারই আবেদন করতে পারেন। সিস্টেম ডুপ্লিকেট আবেদন আটকে দেয়।</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- CTA -->
+      <section class="tn-section tn-container">
+        <div class="tn-cta-banner">
+          <div>
+            <h3>আজই শুরু করুন Tuition Hub-এর সাথে!</h3>
+            <p>টিউশন পোস্ট করুন অথবা টিউটর হিসেবে যুক্ত হন — সম্পূর্ণ ফ্রি।</p>
+          </div>
+          <a class="tn-cta-banner__btn" href="#post" aria-label="শুরু করুন">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+          </a>
         </div>
       </section>
     </section>
 
-    <!-- VIEW: FINDER -->
+    <!-- ============ VIEW: FINDER ============ -->
     <section class="tn-view" id="view-finder">
       <div class="tn-container tn-section">
         <div class="tn-section__head">
           <div>
             <h2 class="tn-section__title">টিউশন খুঁজুন</h2>
-            <p class="tn-section__sub">ফিল্টার দিয়ে বের করুন</p>
+            <p class="tn-section__sub">ফিল্টার দিয়ে আপনার পছন্দের টিউশন বের করুন</p>
           </div>
         </div>
         <div class="tn-finder">
@@ -117,17 +223,17 @@
               <label for="fCategory">ক্যাটাগরি</label>
               <select class="tn-select" id="fCategory">
                 <option value="">সব</option>
-                <option>স্কুল লেভেল</option>
-                <option>কলেজ লেভেল</option>
-                <option>বিশ্ববিদ্যালয় ভর্তি</option>
-                <option>ভার্সিটি কোর্স</option>
-                <option>কারিগরি / স্কিল</option>
-                <option>কুরআন / দ্বীনি</option>
+                <option>বাসায় টিউশন</option>
+                <option>অনলাইন টিউশন</option>
+                <option>কোচিং সেন্টারে পড়ানোর জন্য</option>
+                <option>গৃহ শিক্ষক / অভিভাবকের</option>
+                <option>বিশেষ যত্ন / দুর্বল শিক্ষার্থীর</option>
+                <option>কম্পিউটার / প্রোগ্রামিং</option>
               </select>
             </div>
             <div class="tn-field">
               <label for="fClass">ক্লাস</label>
-              <input class="tn-input" id="fClass" placeholder="যেমন: নবম, HSC" />
+              <input class="tn-input" id="fClass" placeholder="যেমন: HSC" />
             </div>
             <div class="tn-field">
               <label for="fSubject">বিষয়</label>
@@ -138,10 +244,10 @@
               <input class="tn-input" id="fSalary" type="number" min="0" placeholder="3000" />
             </div>
             <div class="tn-field">
-              <label class="tn-check"><input type="checkbox" id="fVerifiedOnly" /> শুধু ভেরিফায়েড</label>
+              <label class="tn-check"><input type="checkbox" id="fVerifiedOnly" /> শুধু ভেরিফায়েড টিউটর চাই</label>
             </div>
             <div class="tn-field">
-              <button class="tn-btn tn-btn--primary tn-btn--block" id="fApply" type="button">প্রয়োগ</button>
+              <button class="tn-btn tn-btn--primary tn-btn--block" id="fApply" type="button">প্রয়োগ করুন</button>
             </div>
             <div class="tn-field">
               <button class="tn-btn tn-btn--ghost tn-btn--block" id="fReset" type="button">রিসেট</button>
@@ -152,9 +258,9 @@
               <span class="tn-toolbar__count" id="fCount">লোড হচ্ছে…</span>
               <div class="tn-toolbar__right">
                 <select class="tn-select" id="fSort" style="width:auto">
-                  <option value="newest">নতুন আগে</option>
-                  <option value="salary-high">বেতন ↓</option>
-                  <option value="salary-low">বেতন ↑</option>
+                  <option value="newest">সর্বশেষ আগে</option>
+                  <option value="salary-high">বেতন বেশি আগে</option>
+                  <option value="salary-low">বেতন কম আগে</option>
                 </select>
               </div>
             </div>
@@ -164,26 +270,26 @@
               <div class="tn-skel"><div class="tn-skel__bar tn-skel__bar--title"></div><div class="tn-skel__bar"></div><div class="tn-skel__bar tn-skel__bar--md"></div></div>
             </div>
             <div class="tn-loadmore tn-hidden" id="fLoadMoreWrap">
-              <button class="tn-btn tn-btn--ghost" id="fLoadMore" type="button">আরও</button>
+              <button class="tn-btn tn-btn--ghost" id="fLoadMore" type="button">আরও দেখুন</button>
             </div>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- VIEW: TUTORS -->
+    <!-- ============ VIEW: TUTORS ============ -->
     <section class="tn-view" id="view-tutors">
       <div class="tn-container tn-section">
         <div class="tn-section__head">
           <div>
-            <h2 class="tn-section__title">ভেরিফায়েড টিউটর</h2>
-            <p class="tn-section__sub">আইডি যাচাই করা টিউটরদের ডিরেক্টরি</p>
+            <h2 class="tn-section__title">ভেরিফায়েড টিউটর ডিরেক্টরি</h2>
+            <p class="tn-section__sub">অ্যাডমিন-যাচাইকৃত শিক্ষকদের তালিকা</p>
           </div>
         </div>
         <div class="tn-toolbar">
           <span class="tn-toolbar__count" id="tCount">লোড হচ্ছে…</span>
           <div class="tn-toolbar__right">
-            <input class="tn-input" id="tSearch" placeholder="নাম বা বিষয়…" style="width:auto" />
+            <input class="tn-input" id="tSearch" placeholder="নাম / বিষয় দিয়ে খুঁজুন…" style="width:auto;min-width:180px" />
           </div>
         </div>
         <div class="tn-grid tn-grid--tutors" id="tResults">
@@ -193,84 +299,84 @@
           <div class="tn-skel"><div class="tn-skel__row"><div class="tn-skel__bar tn-skel__avatar"></div><div style="flex:1"><div class="tn-skel__bar tn-skel__bar--sm"></div><div class="tn-skel__bar tn-skel__bar--sm"></div></div></div><div class="tn-skel__bar"></div></div>
         </div>
         <div class="tn-loadmore tn-hidden" id="tLoadMoreWrap">
-          <button class="tn-btn tn-btn--ghost" id="tLoadMore" type="button">আরও</button>
+          <button class="tn-btn tn-btn--ghost" id="tLoadMore" type="button">আরও দেখুন</button>
         </div>
       </div>
     </section>
 
-    <!-- VIEW: POST -->
+    <!-- ============ VIEW: POST ============ -->
     <section class="tn-view" id="view-post">
       <div class="tn-container tn-section">
         <form class="tn-form-card tn-form-card--wide" id="postForm" novalidate>
           <h2 class="tn-form__title">টিউশন পোস্ট করুন</h2>
-          <p class="tn-form__sub">ঠিকানা ও ফোন প্রাইভেট থাকবে।</p>
+          <p class="tn-form__sub">পোস্ট অ্যাডমিন অনুমোদনের পর সবার কাছে দেখা যাবে</p>
           <div id="postAuthGate" class="tn-notice tn-notice--warn tn-mb-2 tn-hidden">
-            পোস্ট করতে আগে <a href="index.html">লগইন</a> করুন।
+            পোস্ট করতে আগে <a href="index.html">লগইন করুন</a> অথবা রেজিস্ট্রেশন করুন
           </div>
           <div class="tn-form-grid">
             <div class="tn-field tn-field--full">
-              <label for="pTitle">শিরোনাম *</label>
-              <input class="tn-input" id="pTitle" placeholder="যেমন: নবম শ্রেণির গৃহশিক্ষক প্রয়োজন" />
-              <div class="tn-error-text">শিরোনাম দিন (কমপক্ষে ১০ অক্ষর)।</div>
+              <label for="pTitle">টিউশনের শিরোনাম *</label>
+              <input class="tn-input" id="pTitle" placeholder="যেমন: বাসায় গিয়ে গণিত পড়ানোর জন্য শিক্ষক প্রয়োজন (HSC ১ম বর্ষের শিক্ষার্থীর জন্য)" />
+              <div class="tn-error-text">অন্তত ১০ অক্ষরের শিরোনাম দিন (৫-৬ শব্দে লিখুন)।</div>
             </div>
             <div class="tn-field">
               <label for="pCategory">ক্যাটাগরি *</label>
               <select class="tn-select" id="pCategory">
-                <option value="">নির্বাচন করুন</option>
-                <option>স্কুল লেভেল</option>
-                <option>কলেজ লেভেল</option>
-                <option>বিশ্ববিদ্যালয় ভর্তি</option>
-                <option>ভার্সিটি কোর্স</option>
-                <option>কারিগরি / স্কিল</option>
-                <option>কুরআন / দ্বীনি</option>
+                <option value="">একটি বেছে নিন</option>
+                <option>বাসায় টিউশন</option>
+                <option>অনলাইন টিউশন</option>
+                <option>কোচিং সেন্টারে পড়ানোর জন্য</option>
+                <option>গৃহ শিক্ষক / অভিভাবকের</option>
+                <option>বিশেষ যত্ন / দুর্বল শিক্ষার্থীর</option>
+                <option>কম্পিউটার / প্রোগ্রামিং</option>
               </select>
-              <div class="tn-error-text">ক্যাটাগরি নির্বাচন করুন।</div>
+              <div class="tn-error-text">ক্যাটাগরি বেছে নিন</div>
             </div>
             <div class="tn-field">
-              <label for="pClass">ক্লাস / লেভেল</label>
-              <input class="tn-input" id="pClass" placeholder="যেমন: নবম, HSC ১ম বর্ষ" />
+              <label for="pClass">ক্লাস / স্তর</label>
+              <input class="tn-input" id="pClass" placeholder="যেমন: HSC" />
             </div>
             <div class="tn-field">
-              <label for="pSubjects">বিষয় *</label>
-              <input class="tn-input" id="pSubjects" placeholder="যেমন: গণিত, ইংরেজি" />
-              <div class="tn-error-text">অন্তত একটি বিষয় লিখুন।</div>
+              <label for="pSubjects">বিষয়সমূহ *</label>
+              <input class="tn-input" id="pSubjects" placeholder="যেমন: গণিত, পদার্থবিজ্ঞান" />
+              <div class="tn-error-text">অন্তত একটি বিষয় লিখুন</div>
             </div>
             <div class="tn-field">
-              <label for="pDays">সপ্তাহে কতদিন</label>
+              <label for="pDays">সপ্তাহে কয়দিন</label>
               <select class="tn-select" id="pDays">
                 <option>১ দিন</option><option>২ দিন</option><option>৩ দিন</option>
                 <option>৪ দিন</option><option>৫ দিন</option><option>৬ দিন</option>
               </select>
             </div>
             <div class="tn-field">
-              <label for="pSalary">মাসিক বেতন (৳) *</label>
+              <label for="pSalary">বেতন (৳) *</label>
               <input class="tn-input" id="pSalary" type="number" min="0" placeholder="4000" />
-              <div class="tn-error-text">সঠিক বেতন লিখুন (০ এর বেশি)।</div>
+              <div class="tn-error-text">বৈধ বেতন দিন (০-এর বেশি)</div>
             </div>
             <div class="tn-field">
               <label for="pMedium">মাধ্যম</label>
               <select class="tn-select" id="pMedium">
-                <option>বাংলা মাধ্যম</option><option>ইংরেজি মাধ্যম</option><option>ইংলিশ ভার্সন</option>
+                <option>বাংলা মাধ্যম</option><option>ইংরেজি মাধ্যম</option><option>দুটোই</option>
               </select>
             </div>
             <div class="tn-field">
               <label for="pArea">এলাকা</label>
-              <input class="tn-input" id="pArea" placeholder="যেমন: ফরিদপুর সদর" />
+              <input class="tn-input" id="pArea" placeholder="যেমন: ফরিদপুর সদর, জহুরনগর" />
             </div>
             <div class="tn-field tn-field--full">
-              <label for="pDescription">বিবরণ</label>
-              <textarea class="tn-textarea" id="pDescription" placeholder="শিক্ষার্থীর প্রয়োজন, সময় ইত্যাদি…"></textarea>
+              <label for="pDescription">বিস্তারিত</label>
+              <textarea class="tn-textarea" id="pDescription" placeholder="শিক্ষার্থীর প্রয়োজন, সময়সূচি, বিশেষ শর্ত ইত্যাদি…"></textarea>
             </div>
             <div class="tn-field tn-field--full">
-              <label for="pAddress">ঠিকানা (প্রাইভেট) 🔒</label>
-              <input class="tn-input" id="pAddress" placeholder="পাবলিক হবে না" />
+              <label for="pAddress">ঠিকানা (পোস্টে পাবলিক দেখাবে)</label>
+              <input class="tn-input" id="pAddress" placeholder="রাস্তা/মহল্লা লিখুন — যেমন: জহুরনগর, রাজেন্দ্র কলেজ সংলগ্ন" />
             </div>
             <div class="tn-field tn-field--full">
-              <label for="pContact">ফোন (প্রাইভেট) 🔒</label>
-              <input class="tn-input" id="pContact" placeholder="০১XXXXXXXXX" />
+              <label for="pContact">মোবাইল (প্রাইভেট — শুধু অ্যাডমিন দেখবে)</label>
+              <input class="tn-input" id="pContact" placeholder="01XXXXXXXXX" />
             </div>
             <div class="tn-field tn-field--full">
-              <label class="tn-check"><input type="checkbox" id="pVerifiedOnly" /> শুধু ভেরিফায়েড টিউটর আবেদন করতে পারবে</label>
+              <label class="tn-check"><input type="checkbox" id="pVerifiedOnly" /> শুধুমাত্র ভেরিফায়েড টিউটরদের আবেদন করতে দিন</label>
             </div>
           </div>
           <div class="tn-mt-2">
@@ -281,66 +387,65 @@
       </div>
     </section>
 
-    <!-- VIEW: BECOME TUTOR -->
+    <!-- ============ VIEW: BECOME TUTOR ============ -->
     <section class="tn-view" id="view-become-tutor">
       <div class="tn-container tn-section">
         <form class="tn-form-card tn-form-card--wide" id="tutorForm" novalidate>
-          <h2 class="tn-form__title">টিউটর হিসেবে রেজিস্টার করুন</h2>
-          <p class="tn-form__sub">যেকোনো কলেজ/বিশ্ববিদ্যালয়ের শিক্ষার্থী পারবেন। আইডি যাচাই করলে ✓ ব্যাজ।</p>
+          <h2 class="tn-form__title">টিউটর হিসেবে রেজিস্ট্রেশন</h2>
+          <p class="tn-form__sub">আপনার তথ্য যাচাই করে ভেরিফায়েড ✓ ব্যাজ দেওয়া হবে</p>
           <div id="tutorAuthGate" class="tn-notice tn-notice--warn tn-mb-2 tn-hidden">
-            রেজিস্টার করতে আগে <a href="index.html">লগইন</a> করুন।
+            রেজিস্ট্রেশন করতে আগে <a href="index.html">লগইন করুন</a> অথবা রেজিস্ট্রেশন করুন
           </div>
           <div class="tn-form-grid">
             <div class="tn-field">
-              <label for="tuName">পূর্ণ নাম *</label>
-              <input class="tn-input" id="tuName" placeholder="আপনার নাম" />
-              <div class="tn-error-text">নাম লিখুন।</div>
+              <label for="tuName">আপনার নাম *</label>
+              <input class="tn-input" id="tuName" placeholder="যেমন: মোঃ হাসিবুল ইসলাম" />
+              <div class="tn-error-text">নাম লিখুন</div>
             </div>
             <div class="tn-field">
-              <label for="tuPhone">ফোন *</label>
-              <input class="tn-input" id="tuPhone" placeholder="০১XXXXXXXXX" />
-              <div class="tn-error-text">সঠিক ফোন নম্বর দিন।</div>
+              <label for="tuPhone">মোবাইল *</label>
+              <input class="tn-input" id="tuPhone" placeholder="01XXXXXXXXX" />
+              <div class="tn-error-text">সঠিক মোবাইল নম্বর দিন</div>
             </div>
             <div class="tn-field">
-              <label for="tuInstitution">শিক্ষাপ্রতিষ্ঠান *</label>
+              <label for="tuInstitution">শিক্ষাগত প্রতিষ্ঠান *</label>
               <input class="tn-input" id="tuInstitution" list="institutionList" placeholder="যেমন: রাজেন্দ্র কলেজ, ফরিদপুর" />
               <datalist id="institutionList">
                 <option value="রাজেন্দ্র কলেজ, ফরিদপুর"></option>
-                <option value="গোপালগঞ্জ বিশ্ববিদ্যালয়"></option>
-                <option value="ঢাকা বিশ্ববিদ্যালয়"></option>
+                <option value="ফরিদপুর মেডিকেল কলেজ"></option>
+                <option value="সরকারি রাজেন্দ্র কলেজ (অনার্স)"></option>
+                <option value="ফরিদপুর পলিটেকনিক ইনস্টিটিউট"></option>
                 <option value="জাহাঙ্গীরনগর বিশ্ববিদ্যালয়"></option>
-                <option value="বাংলাদেশ কৃষি বিশ্ববিদ্যালয়"></option>
-                <option value="খুলনা বিশ্ববিদ্যালয়"></option>
-                <option value="রাজশাহী বিশ্ববিদ্যালয়"></option>
+                <option value="ঢাকা বিশ্ববিদ্যালয়"></option>
               </datalist>
-              <div class="tn-error-text">শিক্ষাপ্রতিষ্ঠানের নাম লিখুন।</div>
+              <div class="tn-error-text">প্রতিষ্ঠানের নাম লিখুন</div>
             </div>
             <div class="tn-field">
               <label for="tuExperience">অভিজ্ঞতা (বছর)</label>
               <input class="tn-input" id="tuExperience" type="number" min="0" placeholder="2" />
             </div>
             <div class="tn-field tn-field--full">
-              <label for="tuSubjects">বিষয় *</label>
-              <input class="tn-input" id="tuSubjects" placeholder="যেমন: গণিত, HSC পদার্থ" />
-              <div class="tn-error-text">অন্তত একটি বিষয় লিখুন।</div>
+              <label for="tuSubjects">বিষয়সমূহ *</label>
+              <input class="tn-input" id="tuSubjects" placeholder="যেমন: গণিত, উচ্চতর গণিত, HSC পদার্থবিজ্ঞান" />
+              <div class="tn-error-text">অন্তত একটি বিষয় লিখুন</div>
             </div>
             <div class="tn-field tn-field--full">
               <label for="tuAreas">পছন্দের এলাকা</label>
-              <input class="tn-input" id="tuAreas" placeholder="যেমন: ফরিদপুর সদর" />
+              <input class="tn-input" id="tuAreas" placeholder="যেমন: ফরিদপুর সদর, জহুরনগর" />
             </div>
             <div class="tn-field tn-field--full">
               <label for="tuBio">নিজের সম্পর্কে</label>
-              <textarea class="tn-textarea" id="tuBio" placeholder="শিক্ষা, অভিজ্ঞতা…"></textarea>
+              <textarea class="tn-textarea" id="tuBio" placeholder="পড়ানোর ধরন, সাফল্য ইত্যাদি…"></textarea>
             </div>
             <div class="tn-field tn-field--full">
-              <label>ভেরিফিকেশন ডকুমেন্ট 🔒</label>
+              <label>ভেরিফিকেশন ডকুমেন্ট (PDF/JPG/PNG, ৫MB) *</label>
               <div class="tn-upload" id="tuUpload">
                 <span class="tn-upload__icon">📎</span>
-                <span>ফাইল বাছুন (PDF/JPG/PNG, ৫MB)</span>
+                <span>ছবিতে ক্লিক করে ডকুমেন্ট আপলোড করুন</span>
                 <div class="tn-upload__file" id="tuFileName"></div>
               </div>
               <input type="file" id="tuFile" accept=".pdf,.jpg,.jpeg,.png" class="tn-sr-only" />
-              <div class="tn-error-text">ডকুমেন্ট আপলোড করুন।</div>
+              <div class="tn-error-text">ভেরিফিকেশনের জন্য একটি ডকুমেন্ট আপলোড করুন</div>
             </div>
           </div>
           <div class="tn-mt-2">
@@ -351,25 +456,24 @@
       </div>
     </section>
 
-    <!-- VIEW: DASHBOARD -->
+    <!-- ============ VIEW: DASHBOARD ============ -->
     <section class="tn-view" id="view-dashboard">
       <div class="tn-container tn-section">
-        <div id="tnDashRoot">
-          <div class="tn-empty">
-            <div class="tn-empty__icon">📊</div>
-            <div class="tn-empty__title">ড্যাশবোর্ড</div>
-            <p>লোড হচ্ছে…</p>
-          </div>
-        </div>
+        <div id="tnDashRoot"></div>
       </div>
     </section>
   </main>
 
   <footer class="tn-footer">
     <div class="tn-container">
-      <div class="tn-footer__bottom" style="border:none; padding-top:0;">
-        © <span id="tnYear"></span> Tuition Hub · রাজেন্দ্র কলেজ, ফরিদপুর ·
-        <a href="index.html">মূল সাইট</a>
+      <div class="tn-footer__bottom">
+        <span>© <span id="tnYear"></span> Tuition Hub — রাজেন্দ্র কলেজ, ফরিদপুর</span>
+        <div class="tn-footer__links">
+          <a href="#home">হোম</a><span class="tn-footer__sep">|</span>
+          <a href="#post">পোস্ট</a><span class="tn-footer__sep">|</span>
+          <a href="#dashboard">ড্যাশবোর্ড</a><span class="tn-footer__sep">|</span>
+          <a href="index.html">সাইটে ফিরুন</a>
+        </div>
       </div>
     </div>
   </footer>
@@ -384,6 +488,10 @@
       document.getElementById('tnYear').textContent = new Date().getFullYear();
       document.getElementById('tnNavToggle')?.addEventListener('click', () => {
         document.getElementById('tnNav').classList.toggle('is-open');
+      });
+      /* FAQ accordion */
+      document.querySelectorAll('.tn-faq__q').forEach(q => {
+        q.addEventListener('click', () => q.closest('.tn-faq__item').classList.toggle('is-open'));
       });
       const VIEWS = ['home','finder','tutors','post','become-tutor','dashboard'];
       function showView(name) {
@@ -402,6 +510,10 @@
       document.getElementById('tnHeroSearch')?.addEventListener('submit', (e) => {
         e.preventDefault();
         window.tnFinderSeedQuery = document.getElementById('tnHeroSearchInput').value.trim();
+        const cls = document.getElementById('hFilterClass')?.value || '';
+        const sub = document.getElementById('hFilterSubject')?.value || '';
+        const loc = document.getElementById('hFilterLocation')?.value || '';
+        window.tnHeroFilters = { classLevel: cls, subject: sub, q: loc ? window.tnFinderSeedQuery : window.tnFinderSeedQuery, area: loc };
         location.hash = '#finder';
       });
       if (window.TuitionData) window.TuitionData.init();
