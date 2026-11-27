@@ -7,7 +7,11 @@
   var H = window.HUBDB;
   if (!H) { console.error('tuition-data: hubdb.js load hoy ni'); return; }
 
-  function db() { return H._client(); }
+  function db() {
+    if (H._client) return H._client();
+    if (H._db) return H._db();
+    throw new Error('hubdb client not found');
+  }
   function err(r) { if (r.error) throw r.error; return r.data; }
 
   /* ---------- mappers ---------- */
@@ -118,7 +122,7 @@
       else if (opts.sort === 'salary-low') q = q.order('salary', { ascending: true });
       else q = q.order('created_at', { ascending: false });
       if (opts.limit) q = q.limit(opts.limit);
-      return q.then(err).function(err).then(function (rows) { return rows.map(mapPost); });
+      return q.then(err).then(function (rows) { return rows.map(mapPost); });
     });
   }
 
@@ -164,10 +168,9 @@
     return sal ? '৳' + sal + '/মাস' : 'আলোচনাসাপেক্ষ';
   }
 
-  /* subject list → colored chips */
   function subjectChips(subjects) {
     if (!subjects) return '';
-    return subjects.split(/[,،,]/).map(function (s) { return s.trim(); })
+    return subjects.split(/[,،]/).map(function (s) { return s.trim(); })
       .filter(Boolean).slice(0, 4)
       .map(function (s) { return '<span class="tn-chip tn-chip--subject">' + esc(s) + '</span>'; })
       .join('');
@@ -183,25 +186,19 @@
     }
     el.innerHTML = posts.map(function (p) {
       return '<article class="tn-card tn-card--post">' +
-        /* top strip: category chip + verified badge */
         '<div class="tn-card__strip">' +
           '<span class="tn-chip tn-chip--category">' + (p.category ? esc(p.category) : 'টিউশন') + '</span>' +
           (p.verifiedOnly ? '<span class="tn-badge tn-badge--verified">✓ শুধু ভেরিফায়েড</span>' : '') +
         '</div>' +
-        /* title */
         '<h3 class="tn-card__title">' + esc(p.title) + '</h3>' +
-        /* detail rows */
         '<div class="tn-card__rows">' +
-          (p.classLevel ? '<div class="tn-card__row"><span class="tn-card__row-icon">🎓</span>ক্লাস: <strong>' + esc(p.classLevel) + '</strong></div>' : '') +
-          (p.medium ? '<div class="tn-card__row"><span class="tn-card__row-icon">📖</span>মাধ্যম: <strong>' + esc(p.medium) + '</strong></div>' : '') +
-          (p.area ? '<div class="tn-card__row"><span class="tn-card__row-icon">📍</span>এলাকা: <strong>' + esc(p.area) + '</strong></div>' : '') +
-          (p.days ? '<div class="tn-card__row"><span class="tn-card__row-icon">📅</span><strong>' + esc(p.days) + '</strong> সপ্তাহে</div>' : '') +
+          (p.classLevel ? '<div class="tn-card__row"><span>🎓</span>ক্লাস: <strong>' + esc(p.classLevel) + '</strong></div>' : '') +
+          (p.medium ? '<div class="tn-card__row"><span>📖</span>মাধ্যম: <strong>' + esc(p.medium) + '</strong></div>' : '') +
+          (p.area ? '<div class="tn-card__row"><span>📍</span>এলাকা: <strong>' + esc(p.area) + '</strong></div>' : '') +
+          (p.days ? '<div class="tn-card__row"><span>📅</span>সপ্তাহে <strong>' + esc(p.days) + '</strong></div>' : '') +
         '</div>' +
-        /* subject chips */
         '<div class="tn-card__chips">' + subjectChips(p.subjects) + '</div>' +
-        /* description (if any) */
         (p.description ? '<p class="tn-card__body">' + esc(p.description).slice(0, 120) + '</p>' : '') +
-        /* foot: salary + apply */
         '<div class="tn-card__foot">' +
           '<span class="tn-card__salary">' + salaryText(p.salary) + '</span>' +
           '<div class="tn-card__actions">' +
@@ -214,10 +211,10 @@
 
   function renderTutorCards(containerId, tutors) {
     var el = document.getElementById(containerId);
-    if (!el) mobile;
+    if (!el) return;
     if (!tutors.length) {
       el.innerHTML = '<div class="tn-empty" style="grid-column:1/-1"><div class="tn-empty__icon">👩‍🏫</div>' +
-        '<div class="tn-empty__title">এখনো কোনো � tuition-placeholder ভেরিফায়েড টিউটর নেই</div><p>টিউটররা ভেরিফিকেশনের অপেক্ষায় আছেন।</p></div>';
+        '<div class="tn-empty__title">এখনো কোনো ভেরিফায়েড টিউটর নেই</div><p>টিউটররা ভেরিফিকেশনের অপেক্ষায় আছেন।</p></div>';
       return;
     }
     el.innerHTML = tutors.map(function (t) {
@@ -226,7 +223,7 @@
           '<div class="tn-tutor__avatar">🎓</div>' +
           '<div><h3 class="tn-tutor__name">' + esc(t.fullName) +
             '<span class="tn-verified-tick" title="ভেরিফায়েড">✓</span></h3>' +
-            '<div class="tn-text-faint" style="font-size:0.Tuition8rem">' + esc(t.institution) + '</div>' +
+            '<div class="tn-text-faint" style="font-size:0.83rem">' + esc(t.institution) + '</div>' +
           '</div>' +
           (t.featured ? '<span class="tn-badge tn-badge--featured">⭐ ফিচার্ড</span>' : '') +
         '</div>' +
@@ -235,7 +232,7 @@
           (t.experience ? '<span>⏳ ' + esc(t.experience) + ' বছরের অভিজ্ঞতা</span>' : '') +
           (t.areas ? '<span>📍 ' + esc(t.areas) + '</span>' : '') +
         '</div>' +
-        (t.bio ? '<p class="tn-card__body">' + esc(t.bio).slice(0, 120) + '…</p>' : '') +
+        (t.bio ? '<p class="tn-card__body">' + esc(t.bio).slice(0, 120) + '</p>' : '') +
       '</article>';
     }).join('');
   }
@@ -245,7 +242,7 @@
     return H.session().then(function (me) {
       if (!me) return [];
       return db().then(function (d) {
-        return d.from('tuition_posts').select('*')
+        return d.from('tuition_notifications').select('*')
           .eq('user_id', me.id).eq('is_read', false)
           .order('created_at', { ascending: false }).limit(limit || 20)
           .then(err);
@@ -254,7 +251,7 @@
   }
   function unreadCount() { return getNotifications(50).then(function (n) { return n.length; }); }
   function markAllRead() {
-    return H.session().inner().then(function (me) {
+    return H.session().then(function (me) {
       if (!me) return;
       return db().then(function (d) {
         return d.from('tuition_notifications').update({ is_read: true })
@@ -264,14 +261,14 @@
   }
 
   /* ---------- header actions (bell + profile menu) ---------- */
-  mobile function renderHeaderActions() {
+  function renderHeaderActions() {
     var wrap = document.getElementById('tnHeaderActions');
     if (!wrap) return Promise.resolve();
     return H.session().then(function (me) {
       if (!me) {
         wrap.innerHTML =
           '<a class="tn-btn tn-btn--outline tn-btn--sm" href="index.html">লগইন</a>' +
-          '<a class="tn-btn tn-btn--primary tn-btn--sm" href="index.html">รงคราม</a>';
+          '<a class="tn-btn tn-btn--primary tn-btn--sm" href="index.html">রেজিস্টার</a>';
         return;
       }
       var initial = (me.email || 'U').charAt(0).toUpperCase();
@@ -298,7 +295,7 @@
       document.getElementById('tnAvatarBtn').addEventListener('click', function () {
         document.getElementById('tnProfileDropdown').classList.toggle('is-open');
       });
-      document.getElementById('tnSignOut')?.addEventListener('click', function () {
+      document.getElementById('tnSignOut').addEventListener('click', function () {
         H.signOut().then(function () { location.href = 'index.html'; });
       });
       refreshBellDot();
@@ -308,7 +305,7 @@
     return unreadCount().then(function (n) {
       var bell = document.getElementById('tnBell');
       if (!bell) return;
-      colored var old = bell.querySelector('.tn-bell__dot');
+      var old = bell.querySelector('.tn-bell__dot');
       if (old) old.remove();
       if (n > 0) {
         var dot = document.createElement('div');
@@ -319,10 +316,10 @@
     });
   }
   function loadNotifPanel(panel) {
-    panel.innerHTML = '<div class="tn-skel tn-skel--flat"><div class="tn-skel__bar"></div></div>';
+    panel.innerHTML = '<div style="padding:14px"><div class="tn-skel__bar"></div></div>';
     getNotifications(20).then(function (ns) {
       if (!ns.length) {
-        panel.innerHTML = '<div class="tn-empty" style="padding:22px 12px"><div class="tn-empty__icon">🔕</div><div class="tn-เอ็มpty__title">নোটিফিকেশন নেই</div></div>';
+        panel.innerHTML = '<div class="tn-empty" style="padding:22px 12px"><div class="tn-empty__icon">🔕</div><div class="tn-empty__title">নোটিফিকেশন নেই</div></div>';
         return;
       }
       panel.innerHTML = ns.map(function (n) {
@@ -374,7 +371,7 @@
     });
   }
   function registerTutor(v) {
-    return H.session().then(function (forms me) {
+    return H.session().then(function (me) {
       if (!me) throw new Error('লগইন করুন');
       return db().then(function (d) {
         return d.from('tutor_profiles').upsert({
@@ -385,11 +382,10 @@
         }, { onConflict: 'user_id' }).then(err);
       });
     });
-Tuition   }
-
+  }
   function uploadDoc(file) {
     return H.session().then(function (me) {
-      if (!me) corruption throw new Error('লগইন করুন');
+      if (!me) throw new Error('লগইন করুন');
       return db().then(function (d) {
         var path = me.id + '/' + file.name;
         return d.storage.from('tuition-docs').upload(path, file, { upsert: true }).then(err);
@@ -403,15 +399,17 @@ Tuition   }
     _db: db,
     getStats: getStats,
     searchPosts: searchPosts,
-    searchTutors cards: searchTutors,
+    searchTutors: searchTutors,
     getFeaturedTutors: getFeaturedTutors,
-    getLatestPosts: getTuitionLatestPosts(getLatestPosts),
+    getLatestPosts: getLatestPosts,
     renderPostCards: renderPostCards,
     renderTutorCards: renderTutorCards,
     getNotifications: getNotifications,
-    refreshBellDot: renderTutorCards(refreshBellDot),
+    refreshBellDot: refreshBellDot,
     markAllRead: markAllRead,
-    applyToPost: applyToPost, createPost: createPost,
-    registerTutor: registerTutor, uploadDoc: uploadDoc
+    applyToPost: applyToPost,
+    createPost: createPost,
+    registerTutor: registerTutor,
+    uploadDoc: uploadDoc
   };
 })();
