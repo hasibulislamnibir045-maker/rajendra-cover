@@ -1,48 +1,492 @@
 <!DOCTYPE html>
 <html lang="bn">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Tuition Hub — Rajendra Student Hub</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Baloo+Da+2:wght@500;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="hub-ui.css?v=6">
-<link rel="stylesheet" href="page-ui.css?v=6">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>টিউশন মার্কেটপ্লেস — Verified Tutors & Tuition Posts</title>
+  <meta name="description" content="ভেরিফায়েড টিউটর খুঁজুন, টিউশন পোস্ট করুন — সব এক জায়গায়।" />
+
+  <!-- Bengali fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@400;600;700;800&family=Hind+Siliguri:wght@400;600;700&display=swap" rel="stylesheet" />
+
+  <!-- Design system -->
+  <link rel="stylesheet" href="tuition.css" />
 </head>
 <body>
-<header>
-<div class="brand">
-<div class="lg"><img src="logo.png" alt="" onerror="this.style.display='none'"></div>
-<div><h1>Tuition Hub</h1><p>Rajendra Student Hub</p></div>
-</div>
-<div class="hbtns">
-<a class="ib" href="index.html">&#127968; Student Hub</a>
-<button class="ib" id="authBtn" onclick="authClick()">&#128100; <span id="authLbl">Login</span></button>
-</div>
-</header>
-<section class="hero">
-<h2 id="heroH">Tuition Hub</h2>
-<p id="heroP"></p>
-<div class="stats">
-<div class="stat"><b id="stT">0</b><span id="stTL"></span></div>
-<div class="stat"><b id="stP">0</b><span id="stPL"></span></div>
-</div>
-</section>
-<main class="wrap" id="app"><p class="hub-empty" id="loadLbl">Loading...</p></main>
-<footer>&copy; Rajendra Student Hub &middot; Tuition Hub</footer>
-<script>
-window.SUPABASE_URL='https://dcwzxozhgysxhcptataq.supabase.co';
-window.SUPABASE_ANON_KEY='sb_publishable_i7C5FVxKNwaBPABgdFHOIQ_HKrxz5rM';
-document.getElementById('heroH').innerHTML='\u09A8\u09BF\u099C\u09C7\u09B0 \u09AA\u09A1\u09BC\u09BE \u09B8\u09BE\u099C\u09BE\u09A8 \u09A8\u09BF\u099C\u09C7\u09B0 \u09A8\u09BF\u09DF\u09AE\u09C7\u0964 <em>\u0995\u09CD\u09AF\u09BE\u09AE\u09CD\u09AA\u09BE\u09B8\u09C7\u09B0 \u09AE\u09C7\u09A7\u09BE\u09AC\u09C0 \u0993 \u09B8\u09BF\u099F\u09C7\u09B0 \u09AD\u09BE\u09A1\u09BC\u09BE\u09B0 \u09A0\u09BF\u0995\u09BE\u09A8\u09BE \u2014 \u098F\u0995 \u099C\u09BE\u09DF\u09BC\u0997\u09BE\u09A4\u09C7\u0964</em>';
-document.getElementById('heroP').textContent='\u09AF\u09C7 \u099F\u09BF\u0989\u099F\u09B0 \u0986\u09AA\u09A8\u09BE\u09B0 \u09AC\u09BF\u09B7\u09AF\u09BC \u09B8\u09AE\u099D\u09C7, \u09AF\u09C7 \u09AA\u09CB\u09B8\u09CD\u099F \u0986\u09AA\u09A8\u09BE\u09B0 \u09AA\u09CD\u09B0\u09DF\u09CB\u099C\u09A8 \u09AA\u09C2\u09B0\u09A3 \u0995\u09B0\u09C7 \u2014 \u098F\u0995 \u09B2\u0997\u0987\u09A8\u09C7\u0987 \u09B8\u09AC \u09A4\u09BE\u09B2\u09BF\u0995\u09BE\u09A6\u09BE\u09B0 \u0993 \u09AA\u09CD\u09B0\u0995\u09BE\u09B6\u0995\u09C7\u09B0 \u09B9\u09BE\u09A4\u09C7\u0964';
-document.getElementById('stTL').textContent='\u09AE\u09C7\u09A7\u09BE\u09AC\u09C0 \u09B6\u09BF\u0995\u09CD\u09B7\u0995';
-document.getElementById('stPL').textContent='\u099C\u09B0\u09C1\u09B0\u09BF \u09AA\u09CD\u09B0\u09DF\u09CB\u099C\u09A8';
-document.getElementById('loadLbl').textContent='\u09A4\u09BE\u09B2\u09BF\u0995\u09BE \u0986\u09A8\u099B\u09C7\u2026';
-</script>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
-<script src="hubdb.js?v=6"></script>
-<script src="hub-auth.js?v=6"></script>
-<script src="tuition-ui.js?v=6"></script>
-<script src="tuition-forms.js?v=6"></script>
-<script src="tuition-app.js?v=6"></script>
+
+  <!-- ============ HEADER / NAV (SPA hash-routed) ============ -->
+  <header class="tn-header">
+    <div class="tn-container tn-header__inner">
+      <a class="tn-logo" href="#home">
+        <span class="tn-logo__mark">টি</span>
+        <span>টিউশন মার্কেটপ্লেস</span>
+      </a>
+
+      <button class="tn-nav-toggle" id="tnNavToggle" aria-label="মেনু">☰</button>
+
+      <nav class="tn-nav" id="tnNav">
+        <a href="#home" data-view="home" class="is-active">হোম</a>
+        <a href="#finder" data-view="finder">টিউশন খুঁজুন</a>
+        <a href="#tutors" data-view="tutors">ভেরিফায়েড টিউটর</a>
+        <a href="#post" data-view="post">টিউশন পোস্ট করুন</a>
+        <a href="#become-tutor" data-view="become-tutor">টিউটর হন</a>
+        <a href="#dashboard" data-view="dashboard">ড্যাশবোর্ড</a>
+      </nav>
+
+      <div class="tn-header__actions" id="tnHeaderActions">
+        <!-- tuition-data.js fills bell + profile menu after auth check -->
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <!-- ============ VIEW: HOME ============ -->
+    <section class="tn-view is-active" id="view-home">
+
+      <div class="tn-hero">
+        <div class="tn-container">
+          <div class="tn-hero__inner">
+            <h1 class="tn-hero__title">বিশ্বস্ত টিউটর খুঁজুন <em>মিনিটেই</em></h1>
+            <p class="tn-hero__sub">
+              ভেরিফায়েড টিউটর আর অনলাইনে টিউশন পোস্ট — দুটোই এক জায়গায়।
+              সব টিউটর আইডি যাচাই করা হয়, তাই নিশ্চিন্তে বেছে নিন।
+            </p>
+            <div class="tn-hero__cta">
+              <a class="tn-btn tn-btn--primary" href="#post">টিউশন পোস্ট করুন</a>
+              <a class="tn-btn tn-btn--outline" href="#finder">টিউশন খুঁজুন</a>
+            </div>
+
+            <form class="tn-search" id="tnHeroSearch">
+              <input type="search" id="tnHeroSearchInput" placeholder="বিষয়, এলাকা বা ক্লাস লিখে খুঁজুন…" aria-label="টিউশন খুঁজুন" />
+              <button type="submit" class="tn-btn tn-btn--primary">🔍 খুঁজুন</button>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <!-- Real DB stats -->
+      <div class="tn-container">
+        <div class="tn-stats" id="tnStats">
+          <div class="tn-stat"><div class="tn-stat__num tn-skel__bar tn-skel__bar--sm" style="margin:0 auto 6px"></div><div class="tn-stat__label">&nbsp;</div></div>
+          <div class="tn-stat"><div class="tn-stat__num tn-skel__bar tn-skel__bar--sm" style="margin:0 auto 6px"></div><div class="tn-stat__label">&nbsp;</div></div>
+          <div class="tn-stat"><div class="tn-stat__num tn-skel__bar tn-skel__bar--sm" style="margin:0 auto 6px"></div><div class="tn-stat__label">&nbsp;</div></div>
+          <div class="tn-stat"><div class="tn-stat__num tn-skel__bar tn-skel__bar--sm" style="margin:0 auto 6px"></div><div class="tn-stat__label">&nbsp;</div></div>
+        </div>
+      </div>
+
+      <!-- Latest posts -->
+      <section class="tn-section tn-container">
+        <div class="tn-section__head">
+          <div>
+            <h2 class="tn-section__title">সাম্প্রতিক টিউশন পোস্ট</h2>
+            <p class="tn-section__sub">নতুন পোস্টগুলো — পছন্দ হলে সরাসরি আবেদন করুন</p>
+          </div>
+          <a class="tn-btn tn-btn--ghost tn-btn--sm" href="#finder">সব দেখুন →</a>
+        </div>
+        <div class="tn-grid tn-grid--posts" id="tnLatestPosts">
+          <div class="tn-skel"><div class="tn-skel__bar tn-skel__bar--title"></div><div class="tn-skel__bar"></div><div class="tn-skel__bar tn-skel__bar--md"></div><div class="tn-skel__bar tn-skel__bar--sm"></div></div>
+          <div class="tn-skel"><div class="tn-skel__bar tn-skel__bar--title"></div><div class="tn-skel__bar"></div><div class="tn-skel__bar tn-skel__bar--md"></div><div class="tn-skel__bar tn-skel__bar--sm"></div></div>
+          <div class="tn-skel"><div class="tn-skel__bar tn-skel__bar--title"></div><div class="tn-skel__bar"></div><div class="tn-skel__bar tn-skel__bar--md"></div><div class="tn-skel__bar tn-skel__bar--sm"></div></div>
+        </div>
+      </section>
+
+      <!-- Featured verified tutors -->
+      <section class="tn-section tn-container">
+        <div class="tn-section__head">
+          <div>
+            <h2 class="tn-section__title">⭐ ফিচার্ড ভেরিফায়েড টিউটর</h2>
+            <p class="tn-section__sub">আইডি যাচাই করা, অভিজ্ঞ টিউটররা</p>
+          </div>
+          <a class="tn-btn tn-btn--ghost tn-btn--sm" href="#tutors">সব টিউটর →</a>
+        </div>
+        <div class="tn-grid tn-grid--tutors" id="tnFeaturedTutors">
+          <div class="tn-skel"><div class="tn-skel__row"><div class="tn-skel__bar tn-skel__avatar"></div><div style="flex:1"><div class="tn-skel__bar tn-skel__bar--sm"></div><div class="tn-skel__bar tn-skel__bar--sm"></div></div></div><div class="tn-skel__bar"></div></div>
+          <div class="tn-skel"><div class="tn-skel__row"><div class="tn-skel__bar tn-skel__avatar"></div><div style="flex:1"><div class="tn-skel__bar tn-skel__bar--sm"></div><div class="tn-skel__bar tn-skel__bar--sm"></div></div></div><div class="tn-skel__bar"></div></div>
+          <div class="tn-skel"><div class="tn-skel__row"><div class="tn-skel__bar tn-skel__avatar"></div><div style="flex:1"><div class="tn-skel__bar tn-skel__bar--sm"></div><div class="tn-skel__bar tn-skel__bar--sm"></div></div></div><div class="tn-skel__bar"></div></div>
+          <div class="tn-skel"><div class="tn-skel__row"><div class="tn-skel__bar tn-skel__avatar"></div><div style="flex:1"><div class="tn-skel__bar tn-skel__bar--sm"></div><div class="tn-skel__bar tn-skel__bar--sm"></div></div></div><div class="tn-skel__bar"></div></div>
+        </div>
+      </section>
+
+      <!-- How it works -->
+      <section class="tn-section tn-container">
+        <div class="tn-section__head">
+          <div>
+            <h2 class="tn-section__title">কীভাবে কাজ করে</h2>
+            <p class="tn-section__sub">মাত্র ৩ ধাপে শুরু</p>
+          </div>
+        </div>
+        <div class="tn-steps">
+          <div class="tn-step">
+            <div class="tn-step__num">১</div>
+            <h3 class="tn-step__title">টিউশন পোস্ট করুন</h3>
+            <p class="tn-step__text">বিষয়, ক্লাস, বেতন আর সময় লিখে বিনামূল্যে পোস্ট দিন। ঠিকানা/ফোন প্রাইভেট থাকে।</p>
+          </div>
+          <div class="tn-step">
+            <div class="tn-step__num">২</div>
+            <h3 class="tn-step__title">আবেদন পান</h3>
+            <p class="tn-step__text">ভেরিফায়েড টিউটররা আবেদন করবে — প্রতি আবেদনের নোটিফিকেশন পাবেন।</p>
+          </div>
+          <div class="tn-step">
+            <div class="tn-step__num">৩</div>
+            <h3 class="tn-step__title">বেছে নিন</h3>
+            <p class="tn-step__text">শর্টলিস্ট করুন, মেসেজ দেখুন, তারপর সেরা টিউটরকে অ্যাকসেপ্ট করুন।</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Become a tutor CTA -->
+      <section class="tn-section tn-container">
+        <div class="tn-form-card tn-text-center" style="background: var(--tn-gradient-soft);">
+          <h2 style="color: var(--tn-primary);">আপনি কি পড়ান? টিউটর হন</h2>
+          <p class="tn-text-soft tn-mt-1">
+            আইডি ভেরিফাই করে ভেরিফায়েড ব্যাজ নিন — আপনার প্রোফাইল হাজারো শিক্ষার্থীর কাছে পৌঁছাবে।
+          </p>
+          <div class="tn-mt-2">
+            <a class="tn-btn tn-btn--primary" href="#become-tutor">টিউটর হিসেবে রেজিস্টার করুন</a>
+          </div>
+        </div>
+      </section>
+    </section>
+
+    <!-- ============ VIEW: FINDER (Tuition Finder) ============ -->
+    <section class="tn-view" id="view-finder">
+      <div class="tn-container tn-section">
+        <div class="tn-section__head">
+          <div>
+            <h2 class="tn-section__title">টিউশন খুঁজুন</h2>
+            <p class="tn-section__sub">ফিল্টার দিয়ে আপনার পছন্দের টিউশন বের করুন</p>
+          </div>
+        </div>
+        <div class="tn-finder">
+          <aside class="tn-filters">
+            <h3 class="tn-filters__title">ফিল্টার</h3>
+            <div class="tn-field">
+              <label for="fCategory">ক্যাটাগরি</label>
+              <select class="tn-select" id="fCategory">
+                <option value="">সব ক্যাটাগরি</option>
+                <option>স্কুল লেভেল</option>
+                <option>কলেজ লেভেল</option>
+                <option>বিশ্ববিদ্যালয় ভর্তি</option>
+                <option>ভার্সিটি কোর্স</option>
+                <option>কারিগরি / স্কিল</option>
+                <option>কুরআন / দ্বীনি</option>
+              </select>
+            </div>
+            <div class="tn-field">
+              <label for="fClass">ক্লাস</label>
+              <input class="tn-input" id="fClass" placeholder="যেমন: নবম, একাদশ, HSC" />
+            </div>
+            <div class="tn-field">
+              <label for="fSubject">বিষয়</label>
+              <input class="tn-input" id="fSubject" placeholder="যেমন: গণিত, পদার্থবিজ্ঞান" />
+            </div>
+            <div class="tn-field">
+              <label for="fSalary">সর্বনিম্ন বেতন (৳)</label>
+              <input class="tn-input" id="fSalary" type="number" min="0" placeholder="যেমন: 3000" />
+            </div>
+            <div class="tn-field">
+              <label class="tn-check"><input type="checkbox" id="fVerifiedOnly" /> শুধু ভেরিফায়েড টিউটর আবেদন করতে পারবে</label>
+            </div>
+            <div class="tn-field">
+              <button class="tn-btn tn-btn--primary tn-btn--block" id="fApply" type="button">ফিল্টার প্রয়োগ করুন</button>
+            </div>
+            <div class="tn-field">
+              <button class="tn-btn tn-btn--ghost tn-btn--block" id="fReset" type="button">রিসেট</button>
+            </div>
+          </aside>
+          <div>
+            <div class="tn-toolbar">
+              <span class="tn-toolbar__count" id="fCount">লোড হচ্ছে…</span>
+              <div class="tn-toolbar__right">
+                <select class="tn-select" id="fSort" style="width:auto">
+                  <option value="newest">নতুন আগে</option>
+                  <option value="salary-high">বেতন: বেশি আগে</option>
+                  <option value="salary-low">বেতন: কম আগে</option>
+                </select>
+              </div>
+            </div>
+            <div class="tn-grid tn-grid--posts" id="fResults">
+              <div class="tn-skel"><div class="tn-skel__bar tn-skel__bar--title"></div><div class="tn-skel__bar"></div><div class="tn-skel__bar tn-skel__bar--md"></div></div>
+              <div class="tn-skel"><div class="tn-skel__bar tn-skel__bar--title"></div><div class="tn-skel__bar"></div><div class="tn-skel__bar tn-skel__bar--md"></div></div>
+              <div class="tn-skel"><div class="tn-skel__bar tn-skel__bar--title"></div><div class="tn-skel__bar"></div><div class="tn-skel__bar tn-skel__bar--md"></div></div>
+            </div>
+            <div class="tn-loadmore tn-hidden" id="fLoadMoreWrap">
+              <button class="tn-btn tn-btn--ghost" id="fLoadMore" type="button">আরও দেখুন</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ VIEW: TUTORS (Verified directory) ============ -->
+    <section class="tn-view" id="view-tutors">
+      <div class="tn-container tn-section">
+        <div class="tn-section__head">
+          <div>
+            <h2 class="tn-section__title">ভেরিফায়েড টিউটর</h2>
+            <p class="tn-section__sub">আইডি যাচাই করা টিউটরদের ডিরেক্টরি</p>
+          </div>
+        </div>
+        <div class="tn-toolbar">
+          <span class="tn-toolbar__count" id="tCount">লোড হচ্ছে…</span>
+          <div class="tn-toolbar__right">
+            <input class="tn-input" id="tSearch" placeholder="নাম বা বিষয় দিয়ে খুঁজুন…" style="width:auto" />
+          </div>
+        </div>
+        <div class="tn-grid tn-grid--tutors" id="tResults">
+          <div class="tn-skel"><div class="tn-skel__row"><div class="tn-skel__bar tn-skel__avatar"></div><div style="flex:1"><div class="tn-skel__bar tn-skel__bar--sm"></div><div class="tn-skel__bar tn-skel__bar--sm"></div></div></div><div class="tn-skel__bar"></div></div>
+          <div class="tn-skel"><div class="tn-skel__row"><div class="tn-skel__bar tn-skel__avatar"></div><div style="flex:1"><div class="tn-skel__bar tn-skel__bar--sm"></div><div class="tn-skel__bar tn-skel__bar--sm"></div></div></div><div class="tn-skel__bar"></div></div>
+          <div class="tn-skel"><div class="tn-skel__row"><div class="tn-skel__bar tn-skel__avatar"></div><div style="flex:1"><div class="tn-skel__bar tn-skel__bar--sm"></div><div class="tn-skel__bar tn-skel__bar--sm"></div></div></div><div class="tn-skel__bar"></div></div>
+          <div class="tn-skel"><div class="tn-skel__row"><div class="tn-skel__bar tn-skel__avatar"></div><div style="flex:1"><div class="tn-skel__bar tn-skel__bar--sm"></div><div class="tn-skel__bar tn-skel__bar--sm"></div></div></div><div class="tn-skel__bar"></div></div>
+        </div>
+        <div class="tn-loadmore tn-hidden" id="tLoadMoreWrap">
+          <button class="tn-btn tn-btn--ghost" id="tLoadMore" type="button">আরও দেখুন</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ VIEW: POST (Post a tuition) ============ -->
+    <section class="tn-view" id="view-post">
+      <div class="tn-container tn-section">
+        <form class="tn-form-card tn-form-card--wide" id="postForm" novalidate>
+          <h2 class="tn-form__title">টিউশন পোস্ট করুন</h2>
+          <p class="tn-form__sub">পোস্ট করলে ভেরিফায়েড টিউটররা আবেদন করবে। ঠিকানা ও ফোন কখনোই পাবলিক হবে না — শুধু অ্যাকসেপ্ট করা টিউটর দেখবে।</p>
+
+          <div id="postAuthGate" class="tn-notice tn-notice--warn tn-mb-2 tn-hidden">
+            পোস্ট করতে আগে <a href="index.html">লগইন</a> করুন।
+          </div>
+
+          <div class="tn-form-grid">
+            <div class="tn-field tn-field--full">
+              <label for="pTitle">শিরোনাম *</label>
+              <input class="tn-input" id="pTitle" placeholder="যেমন: নবম শ্রেণির জন্য গৃহশিক্ষক প্রয়োজন" />
+              <div class="tn-error-text">শিরোনাম দিন (কমপক্ষে ১০ অক্ষর)।</div>
+            </div>
+            <div class="tn-field">
+              <label for="pCategory">ক্যাটাগরি *</label>
+              <select class="tn-select" id="pCategory">
+                <option value="">নির্বাচন করুন</option>
+                <option>স্কুল লেভেল</option>
+                <option>কলেজ লেভেল</option>
+                <option>বিশ্ববিদ্যালয় ভর্তি</option>
+                <option>ভার্সিটি কোর্স</option>
+                <option>কারিগরি / স্কিল</option>
+                <option>কুরআন / দ্বীনি</option>
+              </select>
+              <div class="tn-error-text">ক্যাটাগরি নির্বাচন করুন।</div>
+            </div>
+            <div class="tn-field">
+              <label for="pClass">ক্লাস / লেভেল</label>
+              <input class="tn-input" id="pClass" placeholder="যেমন: নবম, HSC ১ম বর্ষ" />
+            </div>
+            <div class="tn-field">
+              <label for="pSubjects">বিষয় *</label>
+              <input class="tn-input" id="pSubjects" placeholder="যেমন: গণিত, বিজ্ঞান, ইংরেজি" />
+              <div class="tn-error-text">অন্তত একটি বিষয় লিখুন।</div>
+            </div>
+            <div class="tn-field">
+              <label for="pDays">সপ্তাহে কতদিন</label>
+              <select class="tn-select" id="pDays">
+                <option>১ দিন</option><option>২ দিন</option><option>৩ দিন</option>
+                <option>৪ দিন</option><option>৫ দিন</option><option>৬ দিন</option>
+              </select>
+            </div>
+            <div class="tn-field">
+              <label for="pSalary">মাসিক বেতন (৳) *</label>
+              <input class="tn-input" id="pSalary" type="number" min="0" placeholder="যেমন: 4000" />
+              <div class="tn-error-text">সঠিক বেতন লিখুন (০ এর বেশি)।</div>
+            </div>
+            <div class="tn-field">
+              <label for="pMedium">মাধ্যম</label>
+              <select class="tn-select" id="pMedium">
+                <option>বাংলা মাধ্যম</option><option>ইংরেজি মাধ্যম</option><option>ইংলিশ ভার্সন</option>
+              </select>
+            </div>
+            <div class="tn-field tn-field--full">
+              <label for="pDescription">বিবরণ</label>
+              <textarea class="tn-textarea" id="pDescription" placeholder="শিক্ষার্থীর প্রয়োজন, সময়, বিশেষ চাহিদা ইত্যাদি লিখুন…"></textarea>
+            </div>
+            <div class="tn-field tn-field--full">
+              <label for="pAddress">ঠিকানা (প্রাইভেট) 🔒</label>
+              <input class="tn-input" id="pAddress" placeholder="এলাকা, থানা — পাবলিক হবে না" />
+            </div>
+            <div class="tn-field tn-field--full">
+              <label for="pContact">ফোন (প্রাইভেট) 🔒</label>
+              <input class="tn-input" id="pContact" placeholder="০১XXXXXXXXX — পাবলিক হবে না" />
+            </div>
+            <div class="tn-field tn-field--full">
+              <label class="tn-check"><input type="checkbox" id="pVerifiedOnly" /> শুধু ভেরিফায়েড টিউটর আবেদন করতে পারবে</label>
+            </div>
+          </div>
+
+          <div class="tn-mt-2">
+            <button class="tn-btn tn-btn--primary tn-btn--block" type="submit" id="postSubmit">পোস্ট করুন</button>
+          </div>
+          <div id="postResult" class="tn-mt-2"></div>
+        </form>
+      </div>
+    </section>
+
+    <!-- ============ VIEW: BECOME TUTOR ============ -->
+    <section class="tn-view" id="view-become-tutor">
+      <div class="tn-container tn-section">
+        <form class="tn-form-card tn-form-card--wide" id="tutorForm" novalidate>
+          <h2 class="tn-form__title">টিউটর হিসেবে রেজিস্টার করুন</h2>
+          <p class="tn-form__sub">প্রোফাইল তৈরি করে আইডি আপলোড করুন — অ্যাডমিন যাচাই করলে ভেরিফায়েড ✓ ব্যাজ পাবেন।</p>
+
+          <div id="tutorAuthGate" class="tn-notice tn-notice--warn tn-mb-2 tn-hidden">
+            রেজিস্টার করতে আগে <a href="index.html">লগইন</a> করুন।
+          </div>
+
+          <div class="tn-form-grid">
+            <div class="tn-field">
+              <label for="tuName">পূর্ণ নাম *</label>
+              <input class="tn-input" id="tuName" placeholder="আপনার নাম" />
+              <div class="tn-error-text">নাম লিখুন।</div>
+            </div>
+            <div class="tn-field">
+              <label for="tuPhone">ফোন *</label>
+              <input class="tn-input" id="tuPhone" placeholder="০১XXXXXXXXX" />
+              <div class="tn-error-text">সঠিক ফোন নম্বর দিন।</div>
+            </div>
+            <div class="tn-field">
+              <label for="tuInstitution">শিক্ষাপ্রতিষ্ঠান *</label>
+              <input class="tn-input" id="tuInstitution" placeholder="যেমন: ঢাকা বিশ্ববিদ্যালয়" />
+              <div class="tn-error-text">শিক্ষাপ্রতিষ্ঠানের নাম লিখুন।</div>
+            </div>
+            <div class="tn-field">
+              <label for="tuExperience">অভিজ্ঞতা (বছর)</label>
+              <input class="tn-input" id="tuExperience" type="number" min="0" placeholder="যেমন: 2" />
+            </div>
+            <div class="tn-field tn-field--full">
+              <label for="tuSubjects">বিষয় *</label>
+              <input class="tn-input" id="tuSubjects" placeholder="যেমন: গণিত, পদার্থবিজ্ঞান, HSC পদার্থ" />
+              <div class="tn-error-text">অন্তত একটি বিষয় লিখুন।</div>
+            </div>
+            <div class="tn-field tn-field--full">
+              <label for="tuAreas">পছন্দের এলাকা</label>
+              <input class="tn-input" id="tuAreas" placeholder="যেমন: মিরপুর, উত্তরা" />
+            </div>
+            <div class="tn-field tn-field--full">
+              <label for="tuBio">নিজের সম্পর্কে</label>
+              <textarea class="tn-textarea" id="tuBio" placeholder="শিক্ষা, অভিজ্ঞতা, পড়ানোর ধরন ইত্যাদি…"></textarea>
+            </div>
+            <div class="tn-field tn-field--full">
+              <label>ভেরিফিকেশন ডকুমেন্ট (আইডি কার্ড/ছাত্রত্ব সনদ) 🔒</label>
+              <div class="tn-upload" id="tuUpload">
+                <span class="tn-upload__icon">📎</span>
+                <span>ক্লিক করে ফাইল বাছুন (PDF/JPG/PNG, সর্বোচ্চ ৫MB)</span>
+                <div class="tn-upload__file" id="tuFileName"></div>
+              </div>
+              <input type="file" id="tuFile" accept=".pdf,.jpg,.jpeg,.png" class="tn-sr-only" />
+              <div class="tn-error-text">ডকুমেন্ট আপলোড করুন (প্রাইভেট থাকবে)।</div>
+            </div>
+          </div>
+
+          <div class="tn-mt-2">
+            <button class="tn-btn tn-btn--primary tn-btn--block" type="submit" id="tutorSubmit">রেজিস্টার করুন</button>
+          </div>
+          <div id="tutorResult" class="tn-mt-2"></div>
+        </form>
+      </div>
+    </section>
+
+    <!-- ============ VIEW: DASHBOARD (TuitionData + tuition-dash.js render) ============ -->
+    <section class="tn-view" id="view-dashboard">
+      <div class="tn-container tn-section">
+        <div id="tnDashRoot">
+          <div class="tn-empty">
+            <div class="tn-empty__icon">📊</div>
+            <div class="tn-empty__title">ড্যাশবোর্ড</div>
+            <p>লোড হচ্ছে…</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ============ FOOTER ============ -->
+  <footer class="tn-footer">
+    <div class="tn-container">
+      <div class="tn-footer__grid">
+        <div>
+          <a class="tn-logo" href="#home" style="margin-bottom:12px; display:inline-flex;">
+            <span class="tn-logo__mark">টি</span><span>টিউশন মার্কেটপ্লেস</span>
+          </a>
+          <p class="tn-footer__about">
+            বিশ্বস্ত টিউশন মার্কেটপ্লেস — ভেরিফায়েড টিউটর আর শিক্ষার্থীদের সরাসরি সংযোগ।
+          </p>
+        </div>
+        <div>
+          <h4>মার্কেটপ্লেস</h4>
+          <a href="#finder">টিউশন খুঁজুন</a>
+          <a href="#tutors">ভেরিফায়েড টিউটর</a>
+          <a href="#post">টিউশন পোস্ট করুন</a>
+          <a href="#become-tutor">টিউটর হন</a>
+        </div>
+        <div>
+          <h4>অ্যাকাউন্ট</h4>
+          <a href="#dashboard">ড্যাশবোর্ড</a>
+          <a href="index.html">মূল সাইটে ফিরুন</a>
+        </div>
+        <div>
+          <h4>নিয়ম ও নীতি</h4>
+          <a href="#">ব্যবহারের শর্ত</a>
+          <a href="#">গোপনীয়তা নীতি</a>
+          <a href="#">রিপোর্ট করুন</a>
+        </div>
+      </div>
+      <div class="tn-footer__bottom">
+        © <span id="tnYear"></span> টিউশন মার্কেটপ্লেস · সর্বস্বত্ব সংরক্ষিত
+      </div>
+    </div>
+  </footer>
+
+  <!-- ============ SCRIPTS (root paths, unified auth first) ============ -->
+  <script src="hubdb.js"></script>
+  <script src="tuition-data.js"></script>
+  <script src="tuition-app.js"></script>
+  <script src="tuition-dash.js"></script>
+  <script>
+    // SPA bootstrap
+    document.addEventListener('DOMContentLoaded', () => {
+      document.getElementById('tnYear').textContent = new Date().getFullYear();
+
+      // Mobile nav toggle
+      document.getElementById('tnNavToggle')?.addEventListener('click', () => {
+        document.getElementById('tnNav').classList.toggle('is-open');
+      });
+
+      // Hash-based view routing
+      const VIEWS = ['home','finder','tutors','post','become-tutor','dashboard'];
+      function showView(name) {
+        if (!VIEWS.includes(name)) name = 'home';
+        document.querySelectorAll('.tn-view').forEach(v => v.classList.remove('is-active'));
+        document.getElementById('view-' + name)?.classList.add('is-active');
+        document.querySelectorAll('#tnNav a').forEach(a =>
+          a.classList.toggle('is-active', a.dataset.view === name));
+        document.getElementById('tnNav').classList.remove('is-open');
+        window.scrollTo({ top: 0 });
+        // notify app layer so each view can lazy-load its data
+        window.dispatchEvent(new CustomEvent('tn:viewchange', { detail: { view: name } }));
+      }
+      window.showTuitionView = showView;
+      window.addEventListener('hashchange', () => showView(location.hash.replace('#','') || 'home'));
+      showView(location.hash.replace('#','') || 'home');
+
+      // Hero search → finder view with query
+      document.getElementById('tnHeroSearch')?.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const q = document.getElementById('tnHeroSearchInput').value.trim();
+        window.tnFinderSeedQuery = q;
+        location.hash = '#finder';
+      });
+
+      // Boot the data layer
+      if (window.TuitionData) window.TuitionData.init();
+    });
+  </script>
 </body>
 </html>
