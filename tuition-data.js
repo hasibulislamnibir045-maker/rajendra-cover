@@ -1,69 +1,70 @@
 /* =============================================================
-   tuition-data.js — Tuition Marketplace Supabase data layer
-   Reuses hubdb.js unified client/session (window.HUBDB).
-   Never exposes private fields (address, phone, doc URLs).
+   tuition-data.js — Tuition Hub Supabase data layer
+   Reuses unified auth from hubdb.js. Never exposes
+   address / phone / verification docs publicly.
    ============================================================= */
-window.TuitionData = (function () {
+(function () {
   var H = window.HUBDB;
-  if (!H) { console.error('tuition-data: hubdb.js load hoy ni'); return {}; }
+  if (!H) { console.error('tuition-data: hubdb.js load hoy ni'); return; }
 
-  /* Private fields that must NEVER leak to public listings */
-  var PRIVATE_FIELDS = ['address', 'contact_phone', 'phone', 'document_url', 'docs', 'mobile', 'document_path'];
-
-  /* Own client on the SAME Supabase project (hubdb.js does not export
-     its client). Keep URL/KEY in sync with hubdb.js. */
-  var _sb = null;
   function db() {
-    if (_sb) return Promise.resolve(_sb);
-    if (typeof supabase === 'undefined') return Promise.reject(new Error('Supabase library load hoy ni'));
-    _sb = supabase.createClient(
-      window.SUPABASE_URL || 'https://dcwzxozhgysxhcptataq.supabase.co',
-      window.SUPABASE_ANON_KEY || 'sb_publishable_i7C5FVxKNwaBPABgdFHOIQ_HKrxz5rM'
-    );
-    return Promise.resolve(_sb);
+    if (H._client) return H._client();
+    if (H._db) return H._db();
+    throw new Error('hubdb client not found');
   }
+  function err(r) { if (r.error) throw r.error; return r.data; }
 
-  /* ---------- helpers ---------- */
-  function stripPrivate(row) {
-    var clean = {};
-    for (var k in row) {
-      if (PRIVATE_FIELDS.indexOf(k) === -1) clean[k] = row[k];
-    }
-    return clean;
-  }
+  /* ---------- mappers ---------- */
   function mapPost(x) {
     return {
-      id: x.id, title: x.title, category: x.category || '', classLevel: x.class_level || '',
-      subjects: x.subjects || '', medium: x.medium || '', area: x.area || '',
-      days: x.days || '', salary: x.salary || null, verifiedOnly: !!x.verified_only,
-      description: x.description || '', status: x.status || 'pending',
-      createdAt: x.created_at, createdBy: x.created_by
+      id: x.id,
+      title: x.title || '',
+      category: x.category || '',
+      classLevel: x.class_level || '',
+      subjects: x.subjects || '',
+      medium: x.medium || '',
+      area: x.area || '',
+      days: x.days || '',
+      salary: x.salary,
+      verifiedOnly: !!x.verified_only,
+      description: x.description || '',
+      status: x.status || 'pending',
+      createdAt: x.created_at,
+      createdBy: x.created_by
     };
   }
   function mapTutor(x) {
     return {
-      id: x.id, fullName: x.full_name || '', institution: x.institution || '',
-      experience: x.experience || 0, subjects: x.subjects || '',
-      verification: x.verification_status || 'pending', featured: !!x.featured,
-      bio: x.bio || '', areas: x.areas || '', suspended: !!x.suspended,
-      createdAt: x.created_at
+      id: x.id,
+      fullName: x.full_name || '',
+      institution: x.institution || '',
+      experience: x.experience || 0,
+      subjects: x.subjects || '',
+      areas: x.areas || '',
+      bio: x.bio || '',
+      featured: !!x.featured,
+      suspended: !!x.suspended,
+      verificationStatus: x.verification_status || 'pending'
     };
   }
-  function err(r) { if (r.error) throw r.error; return r.data; }
 
   /* ---------- homepage ---------- */
-  function renderHomepage() {
-    return Promise.all([getStats(), getLatestPosts(6), getFeaturedTutors(4)])
+  function init() {
+    renderHeaderActions();
+    loadHome();
+    document.addEventListener('tn:viewchange', function (e) { if (e.detail.view === 'home') loadHome(); });
+  }
+  function loadHome() {
+    getStats().then(renderStats).catch(function () { renderStats({ posts: 0, verifiedTutors: 0, activeTuition: 0, matches: 0 }); });
+    Promise.all([getLatestPosts(6), getFeaturedTutors(4)])
       .then(function (res) {
-        renderStats(res[0]);
-        renderPostCards('tnLatestPosts', res[1]);
-        renderTutorCards('tnFeaturedTutors', res[2]);
+        renderPostCards('tnLatestPosts', res[0]);
+        renderTutorCards('tnFeaturedTutors', res[1]);
       })
       .catch(function (e) {
         console.error('tuition-data homepage:', e);
-        var el = document.getElementById('tnStats');
-        if (el) el.innerHTML =
-          '<div class="tn-stat" style="grid-column:1/-1"><div class="tn-stat__num">—</div><div class="tn-stat__label">স্ট্যাট লোড হয়নি</div></div>';
+        var el = document.getElementById('tnLatestPosts');
+        if (el) el.innerHTML = '<div class="tn-empty" style="grid-column:1/-1"><div class="tn-empty__icon">⚠️</div><div class="tn-empty__title">লোড করা যায়নি</div><p>' + esc(e.message || '') + '</p></div>';
       });
   }
 
@@ -166,6 +167,15 @@ window.TuitionData = (function () {
   function salaryText(sal) {
     return sal ? '৳' + sal + '/মাস' : 'আলোচনাসাপেক্ষ';
   }
+
+  function subjectChips(subjects) {
+    if (!subjects) return '';
+    return subjects.split(/[,،]/).map(function (s) { return s.trim(); })
+      .filter(Boolean).slice(0, 4)
+      .map(function (s) { return '<span class="tn-chip tn-chip--subject">' + esc(s) + '</span>'; })
+      .join('');
+  }
+
   function renderPostCards(containerId, posts) {
     var el = document.getElementById(containerId);
     if (!el) return;
@@ -175,18 +185,20 @@ window.TuitionData = (function () {
       return;
     }
     el.innerHTML = posts.map(function (p) {
-      return '<article class="tn-card">' +
-        '<div class="tn-card__top">' +
-          '<h3 class="tn-card__title">' + esc(p.title) + '</h3>' +
-          (p.verifiedOnly ? '<span class="tn-badge tn-badge--verified">✓ ভেরিফায়েড টিউটর</span>' : '') +
+      return '<article class="tn-card tn-card--post">' +
+        '<div class="tn-card__strip">' +
+          '<span class="tn-chip tn-chip--category">' + (p.category ? esc(p.category) : 'টিউশন') + '</span>' +
+          (p.verifiedOnly ? '<span class="tn-badge tn-badge--verified">✓ শুধু ভেরিফায়েড</span>' : '') +
         '</div>' +
-        '<div class="tn-card__meta">' +
-          (p.category ? '<span>🏷 ' + esc(p.category) + '</span>' : '') +
-          (p.classLevel ? '<span>🎓 ' + esc(p.classLevel) + '</span>' : '') +
-          (p.subjects ? '<span>📚 ' + esc(p.subjects) + '</span>' : '') +
-          (p.area ? '<span>📍 ' + esc(p.area) + '</span>' : '') +
+        '<h3 class="tn-card__title">' + esc(p.title) + '</h3>' +
+        '<div class="tn-card__rows">' +
+          (p.classLevel ? '<div class="tn-card__row"><span>🎓</span>ক্লাস: <strong>' + esc(p.classLevel) + '</strong></div>' : '') +
+          (p.medium ? '<div class="tn-card__row"><span>📖</span>মাধ্যম: <strong>' + esc(p.medium) + '</strong></div>' : '') +
+          (p.area ? '<div class="tn-card__row"><span>📍</span>এলাকা: <strong>' + esc(p.area) + '</strong></div>' : '') +
+          (p.days ? '<div class="tn-card__row"><span>📅</span>সপ্তাহে <strong>' + esc(p.days) + '</strong></div>' : '') +
         '</div>' +
-        '<p class="tn-card__body">' + esc(p.description).slice(0, 140) + '</p>' +
+        '<div class="tn-card__chips">' + subjectChips(p.subjects) + '</div>' +
+        (p.description ? '<p class="tn-card__body">' + esc(p.description).slice(0, 120) + '</p>' : '') +
         '<div class="tn-card__foot">' +
           '<span class="tn-card__salary">' + salaryText(p.salary) + '</span>' +
           '<div class="tn-card__actions">' +
@@ -196,6 +208,7 @@ window.TuitionData = (function () {
       '</article>';
     }).join('');
   }
+
   function renderTutorCards(containerId, tutors) {
     var el = document.getElementById(containerId);
     if (!el) return;
@@ -205,7 +218,7 @@ window.TuitionData = (function () {
       return;
     }
     el.innerHTML = tutors.map(function (t) {
-      return '<article class="tn-card">' +
+      return '<article class="tn-card tn-card--tutor">' +
         '<div class="tn-tutor__head">' +
           '<div class="tn-tutor__avatar">🎓</div>' +
           '<div><h3 class="tn-tutor__name">' + esc(t.fullName) +
@@ -214,8 +227,8 @@ window.TuitionData = (function () {
           '</div>' +
           (t.featured ? '<span class="tn-badge tn-badge--featured">⭐ ফিচার্ড</span>' : '') +
         '</div>' +
+        '<div class="tn-card__chips">' + subjectChips(t.subjects) + '</div>' +
         '<div class="tn-card__meta">' +
-          (t.subjects ? '<span>📚 ' + esc(t.subjects) + '</span>' : '') +
           (t.experience ? '<span>⏳ ' + esc(t.experience) + ' বছরের অভিজ্ঞতা</span>' : '') +
           (t.areas ? '<span>📍 ' + esc(t.areas) + '</span>' : '') +
         '</div>' +
@@ -236,9 +249,7 @@ window.TuitionData = (function () {
       });
     });
   }
-  function unreadCount() {
-    return getNotifications(50).then(function (n) { return n.length; });
-  }
+  function unreadCount() { return getNotifications(50).then(function (n) { return n.length; }); }
   function markAllRead() {
     return H.session().then(function (me) {
       if (!me) return;
@@ -284,7 +295,7 @@ window.TuitionData = (function () {
       document.getElementById('tnAvatarBtn').addEventListener('click', function () {
         document.getElementById('tnProfileDropdown').classList.toggle('is-open');
       });
-      document.getElementById('tnSignOut')?.addEventListener('click', function () {
+      document.getElementById('tnSignOut').addEventListener('click', function () {
         H.signOut().then(function () { location.href = 'index.html'; });
       });
       refreshBellDot();
@@ -305,48 +316,39 @@ window.TuitionData = (function () {
     });
   }
   function loadNotifPanel(panel) {
-    panel.innerHTML = '<div style="padding:14px;text-align:center;color:var(--tn-text-faint)">লোড হচ্ছে…</div>';
-    return getNotifications(20).then(function (list) {
-      if (!list.length) {
-        panel.innerHTML = '<div style="padding:24px;text-align:center;color:var(--tn-text-soft)">কোনো নতুন নোটিফিকেশন নেই</div>';
+    panel.innerHTML = '<div style="padding:14px"><div class="tn-skel__bar"></div></div>';
+    getNotifications(20).then(function (ns) {
+      if (!ns.length) {
+        panel.innerHTML = '<div class="tn-empty" style="padding:22px 12px"><div class="tn-empty__icon">🔕</div><div class="tn-empty__title">নোটিফিকেশন নেই</div></div>';
         return;
       }
-      panel.innerHTML = list.map(function (n) {
+      panel.innerHTML = ns.map(function (n) {
         return '<div class="tn-notif is-unread">' +
-          '<div style="flex:1">' +
-            '<div class="tn-notif__title">' + esc(n.title) + '</div>' +
-            '<div class="tn-notif__body">' + esc(n.body || '') + '</div>' +
-            '<div class="tn-notif__time">' + new Date(n.created_at).toLocaleString('bn-BD') + '</div>' +
-          '</div>' +
+          '<div><div class="tn-notif__title">' + esc(n.title) + '</div>' +
+          '<div class="tn-notif__body">' + esc(n.body).slice(0, 80) + '</div>' +
+          '<div class="tn-notif__time">' + new Date(n.created_at).toLocaleString('bn-BD') + '</div></div>' +
         '</div>';
-      }).join('') +
-      '<div style="padding:8px"><button class="tn-btn tn-btn--ghost tn-btn--sm tn-btn--block" id="tnMarkAllRead">সব পড়া হয়েছে</button></div>';
-      document.getElementById('tnMarkAllRead')?.addEventListener('click', function () {
-        markAllRead().then(function () { panel.classList.remove('is-open'); refreshBellDot(); });
-      });
+      }).join('');
+      markAllRead().then(refreshBellDot);
     });
   }
 
-  /* ---------- applications ---------- */
-  function applyToPost(postId, message, proposedRate) {
+  /* ---------- flows ---------- */
+  function applyToPost(postId) {
     return H.session().then(function (me) {
-      if (!me) throw new Error('আবেদন করতে লগইন করুন');
+      if (!me) throw new Error('আবেদন করতে আগে লগইন করুন');
       return db().then(function (d) {
-        return d.from('tutor_profiles').select('id,verification_status,suspended')
-          .eq('user_id', me.id).maybeSingle().then(err).then(function (tp) {
-            if (!tp) throw new Error('আগে টিউটর হিসেবে রেজিস্টার করুন');
-            if (tp.suspended) throw new Error('আপনার টিউটর প্রোফাইল স্থগিত আছে');
-            if (tp.verification_status !== 'verified')
-              throw new Error('শুধু ভেরিফায়েড টিউটররা আবেদন করতে পারেন');
-            return d.from('tuition_applications').select('id')
-              .eq('tuition_post_id', postId).eq('tutor_profile_id', tp.id).maybeSingle().then(err)
+        return d.from('tutor_profiles').select('id').eq('user_id', me.id).maybeSingle().then(err)
+          .then(function (tp) {
+            if (!tp) throw new Error('আবেদন করতে আগে টিউটর হিসেবে রেজিস্টার করুন (#become-tutor)');
+            return d.from('tuition_applications').select('id').eq('tutor_profile_id', tp.id).eq('tuition_post_id', postId).maybeSingle().then(err)
               .then(function (existing) {
-                if (existing) throw new Error('আপনি ইতিমধ্যে এই পোস্টে আবেদন করেছেন');
+                if (existing) throw new Error('আপনি এই পোস্টে ইতিমধ্যে আবেদন করেছেন');
                 return d.from('tuition_applications').insert({
                   tuition_post_id: postId,
                   tutor_profile_id: tp.id,
-                  message: message || null,
-                  proposed_rate: proposedRate ? +proposedRate : null,
+                  message: '',
+                  proposed_rate: null,
                   status: 'pending'
                 }).then(err);
               });
@@ -354,117 +356,60 @@ window.TuitionData = (function () {
       });
     });
   }
-
-  /* ---------- tutor registration ---------- */
-  function registerTutor(data) {
+  function createPost(v) {
     return H.session().then(function (me) {
-      if (!me) throw new Error('রেজিস্টার করতে লগইন করুন');
+      if (!me) throw new Error('লগইন করুন');
       return db().then(function (d) {
-        return d.from('tutor_profiles').select('id')
-          .eq('user_id', me.id).maybeSingle().then(err).then(function (existing) {
-            var row = {
-              user_id: me.id, full_name: data.fullName, phone: data.phone || null,
-              institution: data.institution || null, experience: data.experience ? +data.experience : 0,
-              subjects: data.subjects || null, areas: data.areas || null, bio: data.bio || null,
-              verification_status: 'pending'
-            };
-            if (existing) {
-              return d.from('tutor_profiles').update(row).eq('id', existing.id).then(err);
-            }
-            return d.from('tutor_profiles').insert(row).then(err);
-          });
+        return d.from('tuition_posts').insert({
+          title: v.title, category: v.category, class_level: v.classLevel,
+          subjects: v.subjects, medium: v.medium, area: v.area,
+          days: v.days, salary: v.salary, verified_only: v.verifiedOnly,
+          description: v.description, address: v.address, contact: v.contact,
+          status: 'pending', created_by: me.id
+        }).then(err);
+      });
+    });
+  }
+  function registerTutor(v) {
+    return H.session().then(function (me) {
+      if (!me) throw new Error('লগইন করুন');
+      return db().then(function (d) {
+        return d.from('tutor_profiles').upsert({
+          user_id: me.id, full_name: v.fullName, phone: v.phone,
+          institution: v.institution, experience: v.experience ? +v.experience : 0,
+          subjects: v.subjects, areas: v.areas, bio: v.bio,
+          verification_status: 'pending', suspended: false, featured: false
+        }, { onConflict: 'user_id' }).then(err);
       });
     });
   }
   function uploadDoc(file) {
     return H.session().then(function (me) {
-      if (!me) throw new Error('ডকুমেন্ট আপলোড করতে লগইন করুন');
+      if (!me) throw new Error('লগইন করুন');
       return db().then(function (d) {
-        var path = me.id + '/' + Date.now() + '-' + file.name.replace(/[^\w.\-]/g, '_');
-        return d.storage.from('tuition-docs').upload(path, file, {
-          upsert: false, contentType: file.type
-        }).then(function (r) {
-          if (r.error) throw r.error;
-          return d.from('tutor_profiles').update({ document_path: r.data.path })
-            .eq('user_id', me.id).then(err);
-        });
+        var path = me.id + '/' + file.name;
+        return d.storage.from('tuition-docs').upload(path, file, { upsert: true }).then(err);
       });
     });
   }
 
-  /* ---------- post tuition ---------- */
-  function createPost(data) {
-    return H.session().then(function (me) {
-      if (!me) throw new Error('পোস্ট করতে লগইন করুন');
-      return db().then(function (d) {
-        var row = {
-          created_by: me.id, title: data.title, category: data.category,
-          class_level: data.classLevel || null, subjects: data.subjects,
-          medium: data.medium || null, area: data.area || null,
-          days: data.days || null, salary: data.salary ? +data.salary : null,
-          verified_only: !!data.verifiedOnly, description: data.description || null,
-          address: data.address || null, contact_phone: data.contact || null,
-          status: 'pending'
-        };
-        return d.from('tuition_posts').insert(row).then(err);
-      });
-    });
-  }
-
-  /* ---------- reports ---------- */
-  function reportTarget(targetType, targetId, reason, details) {
-    return H.session().then(function (me) {
-      if (!me) throw new Error('রিপোর্ট করতে লগইন করুন');
-      return db().then(function (d) {
-        return d.from('tuition_reports').insert({
-          reporter_id: me.id, target_type: targetType, target_id: targetId,
-          reason: reason, details: details || null, status: 'open'
-        }).then(err);
-      });
-    });
-  }
-
-  /* ---------- saved posts ---------- */
-  function toggleSavePost(postId) {
-    return H.session().then(function (me) {
-      if (!me) throw new Error('সেভ করতে লগইন করুন');
-      return db().then(function (d) {
-        return d.from('saved_tuition_posts').select('id')
-          .eq('user_id', me.id).eq('tuition_post_id', postId).maybeSingle().then(err)
-          .then(function (row) {
-            if (row) return d.from('saved_tuition_posts').delete().eq('id', row.id).then(err);
-            return d.from('saved_tuition_posts').insert({ user_id: me.id, tuition_post_id: postId }).then(err);
-          });
-      });
-    });
-  }
-
-  /* ---------- init ---------- */
-  function init() {
-    return renderHeaderActions().then(renderHomepage);
-  }
-
-  return {
+  /* ---------- export ---------- */
+  window.TuitionData = {
     init: init,
-    renderHomepage: renderHomepage,
+    _db: db,
     getStats: getStats,
-    getLatestPosts: getLatestPosts,
-    getFeaturedTutors: getFeaturedTutors,
     searchPosts: searchPosts,
     searchTutors: searchTutors,
+    getFeaturedTutors: getFeaturedTutors,
+    getLatestPosts: getLatestPosts,
     renderPostCards: renderPostCards,
     renderTutorCards: renderTutorCards,
     getNotifications: getNotifications,
-    unreadCount: unreadCount,
-    markAllRead: markAllRead,
     refreshBellDot: refreshBellDot,
+    markAllRead: markAllRead,
     applyToPost: applyToPost,
-    registerTutor: registerTutor,
-    uploadDoc: uploadDoc,
     createPost: createPost,
-    reportTarget: reportTarget,
-    toggleSavePost: toggleSavePost,
-    stripPrivate: stripPrivate,
-    _db: db
+    registerTutor: registerTutor,
+    uploadDoc: uploadDoc
   };
 })();
