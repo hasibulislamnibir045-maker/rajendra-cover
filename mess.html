@@ -4,9 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Mess &amp; Hostel — Rajendra Student Hub</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Noto+Serif+Bengali:wght@400;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="hub-ui.css?v=5">
-<link rel="stylesheet" href="page-ui.css?v=5">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Baloo+Da+2:wght@500;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="hub-ui.css?v=6">
+<link rel="stylesheet" href="page-ui.css?v=6">
 </head>
 <body>
 <header>
@@ -15,8 +15,8 @@
 <div><h1>Mess &amp; Hostel</h1><p>Rajendra Student Hub</p></div>
 </div>
 <div class="hbtns">
-<a class="ib" href="index.html">&#11088; Student Hub</a>
-<button class="ib" id="authBtn" onclick="authClick()">&#128273; <span id="authLbl">Login</span></button>
+<a class="ib" href="index.html">&#127968; Student Hub</a>
+<button class="ib" id="authBtn" onclick="authClick()">&#128100; <span id="authLbl">Login</span></button>
 </div>
 </header>
 <section class="hero">
@@ -29,11 +29,15 @@
 <script>
 window.SUPABASE_URL='https://dcwzxozhgysxhcptataq.supabase.co';
 window.SUPABASE_ANON_KEY='sb_publishable_i7C5FVxKNwaBPABgdFHOIQ_HKrxz5rM';
+document.getElementById('heroH').innerHTML='\u09B8\u09BF\u099F \u09B9\u09B2\u09CB \u09AA\u09A1\u09BC\u09BE \u09AC\u09BE\u09B8\u09CD\u09A4\u09AC\u09BE\u0993 \u0995\u09CD\u09B2\u09C7\u099C\u09C7\u09B0 \u0997\u09A8\u09CD\u09A7\u09C7\u0964 <em>\u09AC\u09C7\u09B6 \u09AC\u09CD\u09AF\u09BE\u099A\u09BE\u09B0 \u09A4\u09BE\u09B2\u09BF\u0995\u09BE \u0996\u09C1\u0981\u099C\u09C7 \u09A8\u09BF\u09A8\u0964</em>';
+document.getElementById('heroP').textContent='\u09AE\u09C7\u09B8, \u09B9\u09CB\u09B8\u09CD\u099F\u09C7\u09B2 \u09AC\u09BE \u09AB\u09CD\u09B2\u09CD\u09AF\u09BE\u099F\u09C7\u09B0 \u09AC\u09BF\u09B2\u09BE\u09B8\u09BF \u09A6\u09BF\u09A8 \u2014 \u09B8\u09AC\u09BE\u0987 \u098F\u0995 \u09B2\u0997\u0987\u09A8\u09C7\u0987 \u09AA\u09CB\u09B8\u09CD\u099F \u0993 \u09A0\u09BF\u0995\u09BE\u09A8\u09BE\u0964';
+document.getElementById('stML').textContent='\u09AC\u09BF\u09B2\u09BE\u09B8\u09BF \u09A6\u09BF\u09A8';
+document.getElementById('loadLbl').textContent='\u09A4\u09BE\u09B2\u09BF\u0995\u09BE \u0986\u09A8\u099B\u09C7\u2026';
 </script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
-<script src="hubdb.js?v=5"></script>
-<script src="hub-auth.js?v=5"></script>
-<script src="mess-ui.js?v=5"></script>
-<script src="mess-app.js?v=5"></script>
+<script src="hubdb.js?v=6"></script>
+<script src="hub-auth.js?v=6"></script>
+<script src="mess-ui.js?v=6"></script>
+<script src="mess-app.js?v=6"></script>
 </body>
 </html>
