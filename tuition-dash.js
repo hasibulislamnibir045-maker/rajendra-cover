@@ -1,9 +1,9 @@
 /* =============================================================
-   tuition-dash.js — Tuition Marketplace dashboards
+   tuition-dash.js — Tuition Marketplace dashboards (Rajendra College)
    - Student: my posts + received applications (shortlist/accept/reject)
    - Tutor: my applications + verification status
    - Admin: KPIs, verification queue, post moderation, reports,
-     featured toggles, suspensions, stats charts
+     featured toggles, suspensions
    Depends on: hubdb.js, tuition-data.js
    ============================================================= */
 (function () {
@@ -26,8 +26,16 @@
     requestAnimationFrame(function () { t.classList.add('is-visible'); });
     setTimeout(function () { t.classList.remove('is-visible'); setTimeout(function () { t.remove(); }, 300); }, 3200);
   }
+  /* সবসময় ব্যবহারকারীকে জানাও — লোডিং-এ চিরকাল আটকে থাকবে না */
+  function failBox(container, e) {
+    if (!container) return;
+    var msg = (e && e.message) ? e.message : String(e || 'অজানা ত্রুটি');
+    var hint = /relation|does not exist/i.test(msg) ? '<p style="margin-top:6px">⚠️ মনে হচ্ছে ডাটাবেস মাইগ্রেশন এখনো চালানো হয়নি — Supabase SQL Editor-এ 0001 ও 0002 চালাও।</p>' : '';
+    container.innerHTML = '<div class="tn-notice tn-notice--danger" style="display:block">' +
+      '<div><strong>লোড করা যায়নি:</strong> ' + esc(msg) + hint + '</div></div>';
+  }
 
-  var role = null, me = null, admin = false;
+  var me = null, admin = false;
 
   /* ---------- dashboard shell ---------- */
   function dashShell(active) {
@@ -43,7 +51,6 @@
     '</div>';
   }
 
-  /* ---------- KPI helper ---------- */
   function kpis(items) {
     return '<div class="tn-kpis">' + items.map(function (k) {
       return '<div class="tn-kpi"><div class="tn-kpi__label">' + esc(k.label) + '</div>' +
@@ -111,10 +118,8 @@
           '<div class="tn-dash__panel"><div class="tn-dash__panel-title">সাম্প্রতিক কার্যক্রম</div>' +
             '<p class="tn-text-soft">নতুন আবেদন বা স্ট্যাটাস আপডেট এখানে দেখা যাবে। নোটিফিকেশন বেল 🔔-এ সতর্কতা পাবেন।</p>' +
           '</div>';
-      });
-    }).catch(function (e) {
-      content.innerHTML = '<div class="tn-notice tn-notice--danger">লোড করা যায়নি: ' + esc(e.message || '') + '</div>';
-    });
+      }).catch(function (e) { failBox(content, e); });
+    }).catch(function (e) { failBox(content, e); });
   }
 
   function tabPosts() {
@@ -138,9 +143,7 @@
             '<td>' + new Date(p.created_at).toLocaleDateString('bn-BD') + '</td></tr>';
         }).join('') +
         '</tbody></table></div></div>';
-    }).catch(function (e) {
-      content.innerHTML = '<div class="tn-notice tn-notice--danger">লোড করা যায়নি: ' + esc(e.message || '') + '</div>';
-    });
+    }).catch(function (e) { failBox(content, e); });
   }
 
   function tabApplications() {
@@ -186,10 +189,8 @@
         }
         html += '</div>';
         content.innerHTML = html;
-      });
-    }).catch(function (e) {
-      content.innerHTML = '<div class="tn-notice tn-notice--danger">লোড করা যায়নি: ' + esc(e.message || '') + '</div>';
-    });
+      }).catch(function (e) { failBox(content, e); });
+    }).catch(function (e) { failBox(content, e); });
   }
 
   function tabTutorProfile() {
@@ -219,9 +220,7 @@
         (tp.bio ? '<p class="tn-text-soft tn-mt-2">' + esc(tp.bio) + '</p>' : '') +
         '<div class="tn-notice tn-notice--info tn-mt-2">🔒 আপনার ফোন ও ডকুমেন্ট প্রাইভেট — অ্যাডমিন ছাড়া কেউ দেখতে পাবে না।</div>' +
       '</div>';
-    }).catch(function (e) {
-      content.innerHTML = '<div class="tn-notice tn-notice--danger">লোড করা যায়নি: ' + esc(e.message || '') + '</div>';
-    });
+    }).catch(function (e) { failBox(content, e); });
   }
 
   /* ---------- ADMIN PANEL ---------- */
@@ -321,9 +320,7 @@
 
         content.innerHTML = html;
       });
-    }).catch(function (e) {
-      content.innerHTML = '<div class="tn-notice tn-notice--danger">অ্যাডমিন প্যানেল লোড করা যায়নি: ' + esc(e.message || '') + '</div>';
-    });
+    }).catch(function (e) { failBox(content, e); });
   }
 
   /* ---------- admin actions ---------- */
@@ -379,17 +376,28 @@
   function loadDash(active) {
     var root = $('tnDashRoot');
     if (!root) return;
+    // ৫ সেকেন্ড পর সতর্কবার্তা — লোডিং চিরকাল আটকে থাকলে ব্যবহারকারী জানবে
+    var watchdog = setTimeout(function () {
+      if ($('tnDashContent') && $('tnDashContent').innerHTML.indexOf('লোড হচ্ছে') > -1) {
+        failBox($('tnDashContent'), new Error('লোডিং অস্বাভাবিকভাবে দীর্ঘ হচ্ছে — মাইগ্রেশন চালানো হয়েছে কিনা দেখুন, বা ব্রাউজার কনসোলে (F12) error দেখুন'));
+      }
+    }, 5000);
+
+    root.innerHTML = '<div class="tn-empty"><div class="tn-empty__icon">⏳</div><div class="tn-empty__title">লোড হচ্ছে…</div><p>ড্যাশবোর্ড প্রস্তুত হচ্ছে</p></div>';
     H.session().then(function (user) {
       me = user;
       if (!me) {
+        clearTimeout(watchdog);
         root.innerHTML = '<div class="tn-empty"><div class="tn-empty__icon">🔐</div>' +
           '<div class="tn-empty__title">ড্যাশবোর্ড দেখতে লগইন করুন</div>' +
+          '<p class="tn-text-soft">মূল সাইটের লগইন ব্যবহার করে ঢুকুন।</p>' +
           '<p class="tn-mt-2"><a class="tn-btn tn-btn--primary" href="index.html">লগইন / রেজিস্টার</a></p></div>';
         return;
       }
       H.isAdmin().then(function (a) {
         admin = !!a;
         root.innerHTML = dashShell(active || 'overview');
+        clearTimeout(watchdog);
         $('tnDashNav').addEventListener('click', function (ev) {
           var link = ev.target.closest('[data-dtab]');
           if (!link) return;
@@ -400,7 +408,13 @@
           TABS[tab]();
         });
         TABS[active || 'overview']();
+      }).catch(function (e) {
+        clearTimeout(watchdog);
+        failBox(root, e);
       });
+    }).catch(function (e) {
+      clearTimeout(watchdog);
+      failBox(root, e);
     });
   }
 
